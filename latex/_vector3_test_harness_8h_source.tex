@@ -1,0 +1,33 @@
+\doxysection{Vector3\+Test\+Harness.\+h}
+\hypertarget{_vector3_test_harness_8h_source}{}\label{_vector3_test_harness_8h_source}\index{src/gtest/Vector3TestHarness.h@{src/gtest/Vector3TestHarness.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#ifndef\ VECTOR3TESTHARNESS\_H\_}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#define\ VECTOR3TESTHARNESS\_H\_}}
+\DoxyCodeLine{00003\ }
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ <limits.h>}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ <gtest/gtest.h>}}
+\DoxyCodeLine{00006\ }
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#include\ "{}Vector3.h"{}}}
+\DoxyCodeLine{00008\ }
+\DoxyCodeLine{00009\ \textcolor{preprocessor}{\#include\ <memory>}}
+\DoxyCodeLine{00010\ \textcolor{keyword}{using\ }std::shared\_ptr;}
+\DoxyCodeLine{00011\ }
+\DoxyCodeLine{00012\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_vector3_test_harness}{Vector3TestHarness}}\ :\ \textcolor{keyword}{public}\ \mbox{\hyperlink{classtesting_1_1_test}{::testing::Test}}}
+\DoxyCodeLine{00013\ \{}
+\DoxyCodeLine{00014\ \textcolor{keyword}{protected}:}
+\DoxyCodeLine{00015\ }
+\DoxyCodeLine{00016\ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{void}\ SetUp();}
+\DoxyCodeLine{00017\ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{void}\ TearDown();}
+\DoxyCodeLine{00018\ }
+\DoxyCodeLine{00019\ \ \ shared\_ptr<Vector3>\ vec;}
+\DoxyCodeLine{00020\ }
+\DoxyCodeLine{00021\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00022\ }
+\DoxyCodeLine{00023\ \ \ \ \ \mbox{\hyperlink{class_vector3_test_harness}{Vector3TestHarness}}();}
+\DoxyCodeLine{00024\ \ \ \ \ \textcolor{keyword}{virtual}\ \mbox{\hyperlink{class_vector3_test_harness}{\string~Vector3TestHarness}}();}
+\DoxyCodeLine{00025\ \};}
+\DoxyCodeLine{00026\ }
+\DoxyCodeLine{00027\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{//\ VECTOR3TESTHARNESS\_H\_}}
+
+\end{DoxyCode}

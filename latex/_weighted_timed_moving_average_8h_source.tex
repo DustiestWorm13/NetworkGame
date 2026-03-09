@@ -1,0 +1,63 @@
+\doxysection{Weighted\+Timed\+Moving\+Average.\+h}
+\hypertarget{_weighted_timed_moving_average_8h_source}{}\label{_weighted_timed_moving_average_8h_source}\index{src/replication/WeightedTimedMovingAverage.h@{src/replication/WeightedTimedMovingAverage.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#ifndef\ WEIGHTED\_TIMED\_MOVING\_AVERAGE\_H\_}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#define\ WEIGHTED\_TIMED\_MOVING\_AVERAGE\_H\_}}
+\DoxyCodeLine{00003\ }
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ "{}Timing.h"{}}}
+\DoxyCodeLine{00005\ }
+\DoxyCodeLine{00006\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_weighted_timed_moving_average}{WeightedTimedMovingAverage}}}
+\DoxyCodeLine{00007\ \{}
+\DoxyCodeLine{00008\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00009\ }
+\DoxyCodeLine{00010\ \ \ \ \ \mbox{\hyperlink{class_weighted_timed_moving_average}{WeightedTimedMovingAverage}}(\ \textcolor{keywordtype}{float}\ inDuration\ =\ 5.f\ )\ :}
+\DoxyCodeLine{00011\ \ \ \ \ \ \ \ \ mDuration(\ inDuration\ ),}
+\DoxyCodeLine{00012\ \ \ \ \ \ \ \ \ mValue(\ 0.f\ )}
+\DoxyCodeLine{00013\ \ \ \ \ \{}
+\DoxyCodeLine{00014\ \ \ \ \ \ \ \ \ mTimeLastEntryMade\ =\ Timing::sInstance.GetTimef();}
+\DoxyCodeLine{00015\ \ \ \ \ \}}
+\DoxyCodeLine{00016\ }
+\DoxyCodeLine{00017\ \ \ \ \ \textcolor{keywordtype}{void}\ UpdatePerSecond(\ \textcolor{keywordtype}{float}\ inValue\ )}
+\DoxyCodeLine{00018\ \ \ \ \ \{}
+\DoxyCodeLine{00019\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ time\ =\ Timing::sInstance.GetTimef();}
+\DoxyCodeLine{00020\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ timeSinceLastEntry\ =\ time\ -\/\ mTimeLastEntryMade;}
+\DoxyCodeLine{00021\ }
+\DoxyCodeLine{00022\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ valueOverTime\ =\ inValue\ /\ timeSinceLastEntry;}
+\DoxyCodeLine{00023\ }
+\DoxyCodeLine{00024\ \ \ \ \ \ \ \ \ \textcolor{comment}{//now\ update\ our\ value\ by\ whatever\ amount\ of\ the\ duration\ that\ was..}}
+\DoxyCodeLine{00025\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ fractionOfDuration\ \ =\ (\ timeSinceLastEntry\ /\ mDuration\ );}
+\DoxyCodeLine{00026\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(\ fractionOfDuration\ >\ 1.f\ )\ \{\ fractionOfDuration\ =\ 1.f;\ \}}
+\DoxyCodeLine{00027\ }
+\DoxyCodeLine{00028\ \ \ \ \ \ \ \ \ mValue\ =\ mValue\ *\ (\ 1.f\ -\/\ fractionOfDuration\ )\ +\ valueOverTime\ *\ fractionOfDuration;}
+\DoxyCodeLine{00029\ }
+\DoxyCodeLine{00030\ \ \ \ \ \ \ \ \ mTimeLastEntryMade\ =\ time;}
+\DoxyCodeLine{00031\ \ \ \ \ \}}
+\DoxyCodeLine{00032\ }
+\DoxyCodeLine{00033\ \ \ \ \ \textcolor{keywordtype}{void}\ Update(\ \textcolor{keywordtype}{float}\ inValue\ )}
+\DoxyCodeLine{00034\ \ \ \ \ \{}
+\DoxyCodeLine{00035\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ time\ =\ Timing::sInstance.GetTimef();}
+\DoxyCodeLine{00036\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ timeSinceLastEntry\ =\ time\ -\/\ mTimeLastEntryMade;}
+\DoxyCodeLine{00037\ }
+\DoxyCodeLine{00038\ \ \ \ \ \ \ \ \ \textcolor{comment}{//now\ update\ our\ value\ by\ whatever\ amount\ of\ the\ duration\ that\ was..}}
+\DoxyCodeLine{00039\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{float}\ fractionOfDuration\ \ =\ (\ timeSinceLastEntry\ /\ mDuration\ );}
+\DoxyCodeLine{00040\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}(\ fractionOfDuration\ >\ 1.f\ )\ \{\ fractionOfDuration\ =\ 1.f;\ \}}
+\DoxyCodeLine{00041\ }
+\DoxyCodeLine{00042\ \ \ \ \ \ \ \ \ mValue\ =\ mValue\ *\ (\ 1.f\ -\/\ fractionOfDuration\ )\ +\ inValue\ *\ fractionOfDuration;}
+\DoxyCodeLine{00043\ }
+\DoxyCodeLine{00044\ \ \ \ \ \ \ \ \ mTimeLastEntryMade\ =\ time;}
+\DoxyCodeLine{00045\ \ \ \ \ \}}
+\DoxyCodeLine{00046\ }
+\DoxyCodeLine{00047\ \ \ \ \ \textcolor{keywordtype}{float}\ GetValue()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ mValue;\ \}}
+\DoxyCodeLine{00048\ }
+\DoxyCodeLine{00049\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00050\ }
+\DoxyCodeLine{00051\ \ \ \ \ \textcolor{keywordtype}{float}\ \ \ \ \ \ \ \ \ \ \ mTimeLastEntryMade;}
+\DoxyCodeLine{00052\ \ \ \ \ \textcolor{keywordtype}{float}\ \ \ \ \ \ \ \ \ \ \ mValue;}
+\DoxyCodeLine{00053\ \ \ \ \ \textcolor{keywordtype}{float}\ \ \ \ \ \ \ \ \ \ \ mDuration;}
+\DoxyCodeLine{00054\ }
+\DoxyCodeLine{00055\ \};}
+\DoxyCodeLine{00056\ }
+\DoxyCodeLine{00057\ \textcolor{preprocessor}{\#endif}}
+
+\end{DoxyCode}

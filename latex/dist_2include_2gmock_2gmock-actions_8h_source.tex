@@ -1,0 +1,1693 @@
+\doxysection{gmock-\/actions.h}
+\hypertarget{dist_2include_2gmock_2gmock-actions_8h_source}{}\label{dist_2include_2gmock_2gmock-actions_8h_source}\index{build/dist/include/gmock/gmock-\/actions.h@{build/dist/include/gmock/gmock-\/actions.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{//\ Copyright\ 2007,\ Google\ Inc.}}
+\DoxyCodeLine{00002\ \textcolor{comment}{//\ All\ rights\ reserved.}}
+\DoxyCodeLine{00003\ \textcolor{comment}{//}}
+\DoxyCodeLine{00004\ \textcolor{comment}{//\ Redistribution\ and\ use\ in\ source\ and\ binary\ forms,\ with\ or\ without}}
+\DoxyCodeLine{00005\ \textcolor{comment}{//\ modification,\ are\ permitted\ provided\ that\ the\ following\ conditions\ are}}
+\DoxyCodeLine{00006\ \textcolor{comment}{//\ met:}}
+\DoxyCodeLine{00007\ \textcolor{comment}{//}}
+\DoxyCodeLine{00008\ \textcolor{comment}{//\ \ \ \ \ *\ Redistributions\ of\ source\ code\ must\ retain\ the\ above\ copyright}}
+\DoxyCodeLine{00009\ \textcolor{comment}{//\ notice,\ this\ list\ of\ conditions\ and\ the\ following\ disclaimer.}}
+\DoxyCodeLine{00010\ \textcolor{comment}{//\ \ \ \ \ *\ Redistributions\ in\ binary\ form\ must\ reproduce\ the\ above}}
+\DoxyCodeLine{00011\ \textcolor{comment}{//\ copyright\ notice,\ this\ list\ of\ conditions\ and\ the\ following\ disclaimer}}
+\DoxyCodeLine{00012\ \textcolor{comment}{//\ in\ the\ documentation\ and/or\ other\ materials\ provided\ with\ the}}
+\DoxyCodeLine{00013\ \textcolor{comment}{//\ distribution.}}
+\DoxyCodeLine{00014\ \textcolor{comment}{//\ \ \ \ \ *\ Neither\ the\ name\ of\ Google\ Inc.\ nor\ the\ names\ of\ its}}
+\DoxyCodeLine{00015\ \textcolor{comment}{//\ contributors\ may\ be\ used\ to\ endorse\ or\ promote\ products\ derived\ from}}
+\DoxyCodeLine{00016\ \textcolor{comment}{//\ this\ software\ without\ specific\ prior\ written\ permission.}}
+\DoxyCodeLine{00017\ \textcolor{comment}{//}}
+\DoxyCodeLine{00018\ \textcolor{comment}{//\ THIS\ SOFTWARE\ IS\ PROVIDED\ BY\ THE\ COPYRIGHT\ HOLDERS\ AND\ CONTRIBUTORS}}
+\DoxyCodeLine{00019\ \textcolor{comment}{//\ "{}AS\ IS"{}\ AND\ ANY\ EXPRESS\ OR\ IMPLIED\ WARRANTIES,\ INCLUDING,\ BUT\ NOT}}
+\DoxyCodeLine{00020\ \textcolor{comment}{//\ LIMITED\ TO,\ THE\ IMPLIED\ WARRANTIES\ OF\ MERCHANTABILITY\ AND\ FITNESS\ FOR}}
+\DoxyCodeLine{00021\ \textcolor{comment}{//\ A\ PARTICULAR\ PURPOSE\ ARE\ DISCLAIMED.\ IN\ NO\ EVENT\ SHALL\ THE\ COPYRIGHT}}
+\DoxyCodeLine{00022\ \textcolor{comment}{//\ OWNER\ OR\ CONTRIBUTORS\ BE\ LIABLE\ FOR\ ANY\ DIRECT,\ INDIRECT,\ INCIDENTAL,}}
+\DoxyCodeLine{00023\ \textcolor{comment}{//\ SPECIAL,\ EXEMPLARY,\ OR\ CONSEQUENTIAL\ DAMAGES\ (INCLUDING,\ BUT\ NOT}}
+\DoxyCodeLine{00024\ \textcolor{comment}{//\ LIMITED\ TO,\ PROCUREMENT\ OF\ SUBSTITUTE\ GOODS\ OR\ SERVICES;\ LOSS\ OF\ USE,}}
+\DoxyCodeLine{00025\ \textcolor{comment}{//\ DATA,\ OR\ PROFITS;\ OR\ BUSINESS\ INTERRUPTION)\ HOWEVER\ CAUSED\ AND\ ON\ ANY}}
+\DoxyCodeLine{00026\ \textcolor{comment}{//\ THEORY\ OF\ LIABILITY,\ WHETHER\ IN\ CONTRACT,\ STRICT\ LIABILITY,\ OR\ TORT}}
+\DoxyCodeLine{00027\ \textcolor{comment}{//\ (INCLUDING\ NEGLIGENCE\ OR\ OTHERWISE)\ ARISING\ IN\ ANY\ WAY\ OUT\ OF\ THE\ USE}}
+\DoxyCodeLine{00028\ \textcolor{comment}{//\ OF\ THIS\ SOFTWARE,\ EVEN\ IF\ ADVISED\ OF\ THE\ POSSIBILITY\ OF\ SUCH\ DAMAGE.}}
+\DoxyCodeLine{00029\ }
+\DoxyCodeLine{00030\ }
+\DoxyCodeLine{00031\ \textcolor{comment}{//\ Google\ Mock\ -\/\ a\ framework\ for\ writing\ C++\ mock\ classes.}}
+\DoxyCodeLine{00032\ \textcolor{comment}{//}}
+\DoxyCodeLine{00033\ \textcolor{comment}{//\ The\ ACTION*\ family\ of\ macros\ can\ be\ used\ in\ a\ namespace\ scope\ to}}
+\DoxyCodeLine{00034\ \textcolor{comment}{//\ define\ custom\ actions\ easily.\ \ The\ syntax:}}
+\DoxyCodeLine{00035\ \textcolor{comment}{//}}
+\DoxyCodeLine{00036\ \textcolor{comment}{//\ \ \ ACTION(name)\ \{\ statements;\ \}}}
+\DoxyCodeLine{00037\ \textcolor{comment}{//}}
+\DoxyCodeLine{00038\ \textcolor{comment}{//\ will\ define\ an\ action\ with\ the\ given\ name\ that\ executes\ the}}
+\DoxyCodeLine{00039\ \textcolor{comment}{//\ statements.\ \ The\ value\ returned\ by\ the\ statements\ will\ be\ used\ as}}
+\DoxyCodeLine{00040\ \textcolor{comment}{//\ the\ return\ value\ of\ the\ action.\ \ Inside\ the\ statements,\ you\ can}}
+\DoxyCodeLine{00041\ \textcolor{comment}{//\ refer\ to\ the\ K-\/th\ (0-\/based)\ argument\ of\ the\ mock\ function\ by}}
+\DoxyCodeLine{00042\ \textcolor{comment}{//\ 'argK',\ and\ refer\ to\ its\ type\ by\ 'argK\_type'.\ \ For\ example:}}
+\DoxyCodeLine{00043\ \textcolor{comment}{//}}
+\DoxyCodeLine{00044\ \textcolor{comment}{//\ \ \ ACTION(IncrementArg1)\ \{}}
+\DoxyCodeLine{00045\ \textcolor{comment}{//\ \ \ \ \ arg1\_type\ temp\ =\ arg1;}}
+\DoxyCodeLine{00046\ \textcolor{comment}{//\ \ \ \ \ return\ ++(*temp);}}
+\DoxyCodeLine{00047\ \textcolor{comment}{//\ \ \ \}}}
+\DoxyCodeLine{00048\ \textcolor{comment}{//}}
+\DoxyCodeLine{00049\ \textcolor{comment}{//\ allows\ you\ to\ write}}
+\DoxyCodeLine{00050\ \textcolor{comment}{//}}
+\DoxyCodeLine{00051\ \textcolor{comment}{//\ \ \ ...WillOnce(IncrementArg1());}}
+\DoxyCodeLine{00052\ \textcolor{comment}{//}}
+\DoxyCodeLine{00053\ \textcolor{comment}{//\ You\ can\ also\ refer\ to\ the\ entire\ argument\ tuple\ and\ its\ type\ by}}
+\DoxyCodeLine{00054\ \textcolor{comment}{//\ 'args'\ and\ 'args\_type',\ and\ refer\ to\ the\ mock\ function\ type\ and\ its}}
+\DoxyCodeLine{00055\ \textcolor{comment}{//\ return\ type\ by\ 'function\_type'\ and\ 'return\_type'.}}
+\DoxyCodeLine{00056\ \textcolor{comment}{//}}
+\DoxyCodeLine{00057\ \textcolor{comment}{//\ Note\ that\ you\ don't\ need\ to\ specify\ the\ types\ of\ the\ mock\ function}}
+\DoxyCodeLine{00058\ \textcolor{comment}{//\ arguments.\ \ However\ rest\ assured\ that\ your\ code\ is\ still\ type-\/safe:}}
+\DoxyCodeLine{00059\ \textcolor{comment}{//\ you'll\ get\ a\ compiler\ error\ if\ *arg1\ doesn't\ support\ the\ ++}}
+\DoxyCodeLine{00060\ \textcolor{comment}{//\ operator,\ or\ if\ the\ type\ of\ ++(*arg1)\ isn't\ compatible\ with\ the}}
+\DoxyCodeLine{00061\ \textcolor{comment}{//\ mock\ function's\ return\ type,\ for\ example.}}
+\DoxyCodeLine{00062\ \textcolor{comment}{//}}
+\DoxyCodeLine{00063\ \textcolor{comment}{//\ Sometimes\ you'll\ want\ to\ parameterize\ the\ action.\ \ \ For\ that\ you\ can\ use}}
+\DoxyCodeLine{00064\ \textcolor{comment}{//\ another\ macro:}}
+\DoxyCodeLine{00065\ \textcolor{comment}{//}}
+\DoxyCodeLine{00066\ \textcolor{comment}{//\ \ \ ACTION\_P(name,\ param\_name)\ \{\ statements;\ \}}}
+\DoxyCodeLine{00067\ \textcolor{comment}{//}}
+\DoxyCodeLine{00068\ \textcolor{comment}{//\ For\ example:}}
+\DoxyCodeLine{00069\ \textcolor{comment}{//}}
+\DoxyCodeLine{00070\ \textcolor{comment}{//\ \ \ ACTION\_P(Add,\ n)\ \{\ return\ arg0\ +\ n;\ \}}}
+\DoxyCodeLine{00071\ \textcolor{comment}{//}}
+\DoxyCodeLine{00072\ \textcolor{comment}{//\ will\ allow\ you\ to\ write:}}
+\DoxyCodeLine{00073\ \textcolor{comment}{//}}
+\DoxyCodeLine{00074\ \textcolor{comment}{//\ \ \ ...WillOnce(Add(5));}}
+\DoxyCodeLine{00075\ \textcolor{comment}{//}}
+\DoxyCodeLine{00076\ \textcolor{comment}{//\ Note\ that\ you\ don't\ need\ to\ provide\ the\ type\ of\ the\ parameter}}
+\DoxyCodeLine{00077\ \textcolor{comment}{//\ either.\ \ If\ you\ need\ to\ reference\ the\ type\ of\ a\ parameter\ named}}
+\DoxyCodeLine{00078\ \textcolor{comment}{//\ 'foo',\ you\ can\ write\ 'foo\_type'.\ \ For\ example,\ in\ the\ body\ of}}
+\DoxyCodeLine{00079\ \textcolor{comment}{//\ ACTION\_P(Add,\ n)\ above,\ you\ can\ write\ 'n\_type'\ to\ refer\ to\ the\ type}}
+\DoxyCodeLine{00080\ \textcolor{comment}{//\ of\ 'n'.}}
+\DoxyCodeLine{00081\ \textcolor{comment}{//}}
+\DoxyCodeLine{00082\ \textcolor{comment}{//\ We\ also\ provide\ ACTION\_P2,\ ACTION\_P3,\ ...,\ up\ to\ ACTION\_P10\ to\ support}}
+\DoxyCodeLine{00083\ \textcolor{comment}{//\ multi-\/parameter\ actions.}}
+\DoxyCodeLine{00084\ \textcolor{comment}{//}}
+\DoxyCodeLine{00085\ \textcolor{comment}{//\ For\ the\ purpose\ of\ typing,\ you\ can\ view}}
+\DoxyCodeLine{00086\ \textcolor{comment}{//}}
+\DoxyCodeLine{00087\ \textcolor{comment}{//\ \ \ ACTION\_Pk(Foo,\ p1,\ ...,\ pk)\ \{\ ...\ \}}}
+\DoxyCodeLine{00088\ \textcolor{comment}{//}}
+\DoxyCodeLine{00089\ \textcolor{comment}{//\ as\ shorthand\ for}}
+\DoxyCodeLine{00090\ \textcolor{comment}{//}}
+\DoxyCodeLine{00091\ \textcolor{comment}{//\ \ \ template\ <typename\ p1\_type,\ ...,\ typename\ pk\_type>}}
+\DoxyCodeLine{00092\ \textcolor{comment}{//\ \ \ FooActionPk<p1\_type,\ ...,\ pk\_type>\ Foo(p1\_type\ p1,\ ...,\ pk\_type\ pk)\ \{\ ...\ \}}}
+\DoxyCodeLine{00093\ \textcolor{comment}{//}}
+\DoxyCodeLine{00094\ \textcolor{comment}{//\ In\ particular,\ you\ can\ provide\ the\ template\ type\ arguments}}
+\DoxyCodeLine{00095\ \textcolor{comment}{//\ explicitly\ when\ invoking\ Foo(),\ as\ in\ Foo<long,\ bool>(5,\ false);}}
+\DoxyCodeLine{00096\ \textcolor{comment}{//\ although\ usually\ you\ can\ rely\ on\ the\ compiler\ to\ infer\ the\ types}}
+\DoxyCodeLine{00097\ \textcolor{comment}{//\ for\ you\ automatically.\ \ You\ can\ assign\ the\ result\ of\ expression}}
+\DoxyCodeLine{00098\ \textcolor{comment}{//\ Foo(p1,\ ...,\ pk)\ to\ a\ variable\ of\ type\ FooActionPk<p1\_type,\ ...,}}
+\DoxyCodeLine{00099\ \textcolor{comment}{//\ pk\_type>.\ \ This\ can\ be\ useful\ when\ composing\ actions.}}
+\DoxyCodeLine{00100\ \textcolor{comment}{//}}
+\DoxyCodeLine{00101\ \textcolor{comment}{//\ You\ can\ also\ overload\ actions\ with\ different\ numbers\ of\ parameters:}}
+\DoxyCodeLine{00102\ \textcolor{comment}{//}}
+\DoxyCodeLine{00103\ \textcolor{comment}{//\ \ \ ACTION\_P(Plus,\ a)\ \{\ ...\ \}}}
+\DoxyCodeLine{00104\ \textcolor{comment}{//\ \ \ ACTION\_P2(Plus,\ a,\ b)\ \{\ ...\ \}}}
+\DoxyCodeLine{00105\ \textcolor{comment}{//}}
+\DoxyCodeLine{00106\ \textcolor{comment}{//\ While\ it's\ tempting\ to\ always\ use\ the\ ACTION*\ macros\ when\ defining}}
+\DoxyCodeLine{00107\ \textcolor{comment}{//\ a\ new\ action,\ you\ should\ also\ consider\ implementing\ ActionInterface}}
+\DoxyCodeLine{00108\ \textcolor{comment}{//\ or\ using\ MakePolymorphicAction()\ instead,\ especially\ if\ you\ need\ to}}
+\DoxyCodeLine{00109\ \textcolor{comment}{//\ use\ the\ action\ a\ lot.\ \ While\ these\ approaches\ require\ more\ work,}}
+\DoxyCodeLine{00110\ \textcolor{comment}{//\ they\ give\ you\ more\ control\ on\ the\ types\ of\ the\ mock\ function}}
+\DoxyCodeLine{00111\ \textcolor{comment}{//\ arguments\ and\ the\ action\ parameters,\ which\ in\ general\ leads\ to}}
+\DoxyCodeLine{00112\ \textcolor{comment}{//\ better\ compiler\ error\ messages\ that\ pay\ off\ in\ the\ long\ run.\ \ They}}
+\DoxyCodeLine{00113\ \textcolor{comment}{//\ also\ allow\ overloading\ actions\ based\ on\ parameter\ types\ (as\ opposed}}
+\DoxyCodeLine{00114\ \textcolor{comment}{//\ to\ just\ based\ on\ the\ number\ of\ parameters).}}
+\DoxyCodeLine{00115\ \textcolor{comment}{//}}
+\DoxyCodeLine{00116\ \textcolor{comment}{//\ CAVEAT:}}
+\DoxyCodeLine{00117\ \textcolor{comment}{//}}
+\DoxyCodeLine{00118\ \textcolor{comment}{//\ ACTION*()\ can\ only\ be\ used\ in\ a\ namespace\ scope\ as\ templates\ cannot\ be}}
+\DoxyCodeLine{00119\ \textcolor{comment}{//\ declared\ inside\ of\ a\ local\ class.}}
+\DoxyCodeLine{00120\ \textcolor{comment}{//\ Users\ can,\ however,\ define\ any\ local\ functors\ (e.g.\ a\ lambda)\ that}}
+\DoxyCodeLine{00121\ \textcolor{comment}{//\ can\ be\ used\ as\ actions.}}
+\DoxyCodeLine{00122\ \textcolor{comment}{//}}
+\DoxyCodeLine{00123\ \textcolor{comment}{//\ MORE\ INFORMATION:}}
+\DoxyCodeLine{00124\ \textcolor{comment}{//}}
+\DoxyCodeLine{00125\ \textcolor{comment}{//\ To\ learn\ more\ about\ using\ these\ macros,\ please\ search\ for\ 'ACTION'\ on}}
+\DoxyCodeLine{00126\ \textcolor{comment}{//\ https://github.com/google/googletest/blob/master/docs/gmock\_cook\_book.md}}
+\DoxyCodeLine{00127\ }
+\DoxyCodeLine{00128\ \textcolor{comment}{//\ GOOGLETEST\_CM0002\ DO\ NOT\ DELETE}}
+\DoxyCodeLine{00129\ }
+\DoxyCodeLine{00130\ \textcolor{preprocessor}{\#ifndef\ GOOGLEMOCK\_INCLUDE\_GMOCK\_GMOCK\_ACTIONS\_H\_}}
+\DoxyCodeLine{00131\ \textcolor{preprocessor}{\#define\ GOOGLEMOCK\_INCLUDE\_GMOCK\_GMOCK\_ACTIONS\_H\_}}
+\DoxyCodeLine{00132\ }
+\DoxyCodeLine{00133\ \textcolor{preprocessor}{\#ifndef\ \_WIN32\_WCE}}
+\DoxyCodeLine{00134\ \textcolor{preprocessor}{\#\ include\ <errno.h>}}
+\DoxyCodeLine{00135\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00136\ }
+\DoxyCodeLine{00137\ \textcolor{preprocessor}{\#include\ <algorithm>}}
+\DoxyCodeLine{00138\ \textcolor{preprocessor}{\#include\ <functional>}}
+\DoxyCodeLine{00139\ \textcolor{preprocessor}{\#include\ <memory>}}
+\DoxyCodeLine{00140\ \textcolor{preprocessor}{\#include\ <string>}}
+\DoxyCodeLine{00141\ \textcolor{preprocessor}{\#include\ <tuple>}}
+\DoxyCodeLine{00142\ \textcolor{preprocessor}{\#include\ <type\_traits>}}
+\DoxyCodeLine{00143\ \textcolor{preprocessor}{\#include\ <utility>}}
+\DoxyCodeLine{00144\ }
+\DoxyCodeLine{00145\ \textcolor{preprocessor}{\#include\ "{}gmock/internal/gmock-\/internal-\/utils.h"{}}}
+\DoxyCodeLine{00146\ \textcolor{preprocessor}{\#include\ "{}gmock/internal/gmock-\/port.h"{}}}
+\DoxyCodeLine{00147\ \textcolor{preprocessor}{\#include\ "{}gmock/internal/gmock-\/pp.h"{}}}
+\DoxyCodeLine{00148\ }
+\DoxyCodeLine{00149\ \textcolor{preprocessor}{\#ifdef\ \_MSC\_VER}}
+\DoxyCodeLine{00150\ \textcolor{preprocessor}{\#\ pragma\ warning(push)}}
+\DoxyCodeLine{00151\ \textcolor{preprocessor}{\#\ pragma\ warning(disable:4100)}}
+\DoxyCodeLine{00152\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00153\ }
+\DoxyCodeLine{00154\ \textcolor{keyword}{namespace\ }testing\ \{}
+\DoxyCodeLine{00155\ }
+\DoxyCodeLine{00156\ \textcolor{comment}{//\ To\ implement\ an\ action\ Foo,\ define:}}
+\DoxyCodeLine{00157\ \textcolor{comment}{//\ \ \ 1.\ a\ class\ FooAction\ that\ implements\ the\ ActionInterface\ interface,\ and}}
+\DoxyCodeLine{00158\ \textcolor{comment}{//\ \ \ 2.\ a\ factory\ function\ that\ creates\ an\ Action\ object\ from\ a}}
+\DoxyCodeLine{00159\ \textcolor{comment}{//\ \ \ \ \ \ const\ FooAction*.}}
+\DoxyCodeLine{00160\ \textcolor{comment}{//}}
+\DoxyCodeLine{00161\ \textcolor{comment}{//\ The\ two-\/level\ delegation\ design\ follows\ that\ of\ Matcher,\ providing}}
+\DoxyCodeLine{00162\ \textcolor{comment}{//\ consistency\ for\ extension\ developers.\ \ It\ also\ eases\ ownership}}
+\DoxyCodeLine{00163\ \textcolor{comment}{//\ management\ as\ Action\ objects\ can\ now\ be\ copied\ like\ plain\ values.}}
+\DoxyCodeLine{00164\ }
+\DoxyCodeLine{00165\ \textcolor{keyword}{namespace\ }internal\ \{}
+\DoxyCodeLine{00166\ }
+\DoxyCodeLine{00167\ \textcolor{comment}{//\ BuiltInDefaultValueGetter<T,\ true>::Get()\ returns\ a}}
+\DoxyCodeLine{00168\ \textcolor{comment}{//\ default-\/constructed\ T\ value.\ \ BuiltInDefaultValueGetter<T,}}
+\DoxyCodeLine{00169\ \textcolor{comment}{//\ false>::Get()\ crashes\ with\ an\ error.}}
+\DoxyCodeLine{00170\ \textcolor{comment}{//}}
+\DoxyCodeLine{00171\ \textcolor{comment}{//\ This\ primary\ template\ is\ used\ when\ kDefaultConstructible\ is\ true.}}
+\DoxyCodeLine{00172\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T,\ \textcolor{keywordtype}{bool}\ kDefaultConstructible>}
+\DoxyCodeLine{00173\ \textcolor{keyword}{struct\ }BuiltInDefaultValueGetter\ \{}
+\DoxyCodeLine{00174\ \ \ \textcolor{keyword}{static}\ T\ Get()\ \{\ \textcolor{keywordflow}{return}\ T();\ \}}
+\DoxyCodeLine{00175\ \};}
+\DoxyCodeLine{00176\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00177\ \textcolor{keyword}{struct\ }BuiltInDefaultValueGetter<T,\ false>\ \{}
+\DoxyCodeLine{00178\ \ \ \textcolor{keyword}{static}\ T\ Get()\ \{}
+\DoxyCodeLine{00179\ \ \ \ \ Assert(\textcolor{keyword}{false},\ \_\_FILE\_\_,\ \_\_LINE\_\_,}
+\DoxyCodeLine{00180\ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}Default\ action\ undefined\ for\ the\ function\ return\ type."{}});}
+\DoxyCodeLine{00181\ \ \ \ \ \textcolor{keywordflow}{return}\ internal::Invalid<T>();}
+\DoxyCodeLine{00182\ \ \ \ \ \textcolor{comment}{//\ The\ above\ statement\ will\ never\ be\ reached,\ but\ is\ required\ in}}
+\DoxyCodeLine{00183\ \ \ \ \ \textcolor{comment}{//\ order\ for\ this\ function\ to\ compile.}}
+\DoxyCodeLine{00184\ \ \ \}}
+\DoxyCodeLine{00185\ \};}
+\DoxyCodeLine{00186\ }
+\DoxyCodeLine{00187\ \textcolor{comment}{//\ BuiltInDefaultValue<T>::Get()\ returns\ the\ "{}built-\/in"{}\ default\ value}}
+\DoxyCodeLine{00188\ \textcolor{comment}{//\ for\ type\ T,\ which\ is\ NULL\ when\ T\ is\ a\ raw\ pointer\ type,\ 0\ when\ T\ is}}
+\DoxyCodeLine{00189\ \textcolor{comment}{//\ a\ numeric\ type,\ false\ when\ T\ is\ bool,\ or\ "{}"{}\ when\ T\ is\ string\ or}}
+\DoxyCodeLine{00190\ \textcolor{comment}{//\ std::string.\ \ In\ addition,\ in\ C++11\ and\ above,\ it\ turns\ a}}
+\DoxyCodeLine{00191\ \textcolor{comment}{//\ default-\/constructed\ T\ value\ if\ T\ is\ default\ constructible.\ \ For\ any}}
+\DoxyCodeLine{00192\ \textcolor{comment}{//\ other\ type\ T,\ the\ built-\/in\ default\ T\ value\ is\ undefined,\ and\ the}}
+\DoxyCodeLine{00193\ \textcolor{comment}{//\ function\ will\ abort\ the\ process.}}
+\DoxyCodeLine{00194\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00195\ \textcolor{keyword}{class\ }BuiltInDefaultValue\ \{}
+\DoxyCodeLine{00196\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00197\ \ \ \textcolor{comment}{//\ This\ function\ returns\ true\ if\ and\ only\ if\ type\ T\ has\ a\ built-\/in\ default}}
+\DoxyCodeLine{00198\ \ \ \textcolor{comment}{//\ value.}}
+\DoxyCodeLine{00199\ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ Exists()\ \{}
+\DoxyCodeLine{00200\ \ \ \ \ return\ ::std::is\_default\_constructible<T>::value;}
+\DoxyCodeLine{00201\ \ \ \}}
+\DoxyCodeLine{00202\ }
+\DoxyCodeLine{00203\ \ \ \textcolor{keyword}{static}\ T\ Get()\ \{}
+\DoxyCodeLine{00204\ \ \ \ \ \textcolor{keywordflow}{return}\ BuiltInDefaultValueGetter<}
+\DoxyCodeLine{00205\ \ \ \ \ \ \ \ \ T,\ ::std::is\_default\_constructible<T>::value>::Get();}
+\DoxyCodeLine{00206\ \ \ \}}
+\DoxyCodeLine{00207\ \};}
+\DoxyCodeLine{00208\ }
+\DoxyCodeLine{00209\ \textcolor{comment}{//\ This\ partial\ specialization\ says\ that\ we\ use\ the\ same\ built-\/in}}
+\DoxyCodeLine{00210\ \textcolor{comment}{//\ default\ value\ for\ T\ and\ const\ T.}}
+\DoxyCodeLine{00211\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00212\ \textcolor{keyword}{class\ }BuiltInDefaultValue<const\ T>\ \{}
+\DoxyCodeLine{00213\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00214\ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ Exists()\ \{\ \textcolor{keywordflow}{return}\ BuiltInDefaultValue<T>::Exists();\ \}}
+\DoxyCodeLine{00215\ \ \ \textcolor{keyword}{static}\ T\ Get()\ \{\ \textcolor{keywordflow}{return}\ BuiltInDefaultValue<T>::Get();\ \}}
+\DoxyCodeLine{00216\ \};}
+\DoxyCodeLine{00217\ }
+\DoxyCodeLine{00218\ \textcolor{comment}{//\ This\ partial\ specialization\ defines\ the\ default\ values\ for\ pointer}}
+\DoxyCodeLine{00219\ \textcolor{comment}{//\ types.}}
+\DoxyCodeLine{00220\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00221\ \textcolor{keyword}{class\ }BuiltInDefaultValue<T*>\ \{}
+\DoxyCodeLine{00222\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00223\ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ Exists()\ \{\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};\ \}}
+\DoxyCodeLine{00224\ \ \ \textcolor{keyword}{static}\ T*\ Get()\ \{\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{nullptr};\ \}}
+\DoxyCodeLine{00225\ \};}
+\DoxyCodeLine{00226\ }
+\DoxyCodeLine{00227\ \textcolor{comment}{//\ The\ following\ specializations\ define\ the\ default\ values\ for}}
+\DoxyCodeLine{00228\ \textcolor{comment}{//\ specific\ types\ we\ care\ about.}}
+\DoxyCodeLine{00229\ \textcolor{preprocessor}{\#define\ GMOCK\_DEFINE\_DEFAULT\_ACTION\_FOR\_RETURN\_TYPE\_(type,\ value)\ \(\backslash\)}}
+\DoxyCodeLine{00230\ \textcolor{preprocessor}{\ \ template\ <>\ \(\backslash\)}}
+\DoxyCodeLine{00231\ \textcolor{preprocessor}{\ \ class\ BuiltInDefaultValue<type>\ \{\ \(\backslash\)}}
+\DoxyCodeLine{00232\ \textcolor{preprocessor}{\ \ \ public:\ \(\backslash\)}}
+\DoxyCodeLine{00233\ \textcolor{preprocessor}{\ \ \ \ static\ bool\ Exists()\ \{\ return\ true;\ \}\ \(\backslash\)}}
+\DoxyCodeLine{00234\ \textcolor{preprocessor}{\ \ \ \ static\ type\ Get()\ \{\ return\ value;\ \}\ \(\backslash\)}}
+\DoxyCodeLine{00235\ \textcolor{preprocessor}{\ \ \}}}
+\DoxyCodeLine{00236\ }
+\DoxyCodeLine{00237\ GMOCK\_DEFINE\_DEFAULT\_ACTION\_FOR\_RETURN\_TYPE\_(\textcolor{keywordtype}{void},\ );\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00238\ GMOCK\_DEFINE\_DEFAULT\_ACTION\_FOR\_RETURN\_TYPE\_(::std::string,\ \textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{00239\ GMOCK\_DEFINE\_DEFAULT\_ACTION\_FOR\_RETURN\_TYPE\_(\textcolor{keywordtype}{bool},\ \textcolor{keyword}{false});}
+\DoxyCodeLine{00240\ GMOCK\_DEFINE\_DEFAULT\_ACTION\_FOR\_RETURN\_TYPE\_(\textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char},\ \textcolor{charliteral}{'\(\backslash\)0'});}
+\DoxyCodeLine{00241\ GMOCK\_DEFINE\_DEFAULT\_ACTION\_FOR\_RETURN\_TYPE\_(\textcolor{keywordtype}{signed}\ \textcolor{keywordtype}{char},\ \textcolor{charliteral}{'\(\backslash\)0'});}
+\DoxyCodeLine{00242\ GMOCK\_DEFINE\_DEFAULT\_ACTION\_FOR\_RETURN\_TYPE\_(\textcolor{keywordtype}{char},\ \textcolor{charliteral}{'\(\backslash\)0'});}
+\DoxyCodeLine{00243\ }
+\DoxyCodeLine{00244\ \textcolor{comment}{//\ There's\ no\ need\ for\ a\ default\ action\ for\ signed\ wchar\_t,\ as\ that}}
+\DoxyCodeLine{00245\ \textcolor{comment}{//\ type\ is\ the\ same\ as\ wchar\_t\ for\ gcc,\ and\ invalid\ for\ MSVC.}}
+\DoxyCodeLine{00246\ \textcolor{comment}{//}}
+\DoxyCodeLine{00247\ \textcolor{comment}{//\ There's\ also\ no\ need\ for\ a\ default\ action\ for\ unsigned\ wchar\_t,\ as}}
+\DoxyCodeLine{00248\ \textcolor{comment}{//\ that\ type\ is\ the\ same\ as\ unsigned\ int\ for\ gcc,\ and\ invalid\ for}}
+\DoxyCodeLine{00249\ \textcolor{comment}{//\ MSVC.}}
+\DoxyCodeLine{00250\ \textcolor{preprocessor}{\#if\ GMOCK\_WCHAR\_T\_IS\_NATIVE\_}}
+\DoxyCodeLine{00251\ GMOCK\_DEFINE\_DEFAULT\_ACTION\_FOR\_RETURN\_TYPE\_(\textcolor{keywordtype}{wchar\_t},\ 0U);\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00252\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00253\ }
+\DoxyCodeLine{00254\ GMOCK\_DEFINE\_DEFAULT\_ACTION\_FOR\_RETURN\_TYPE\_(\textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{short},\ 0U);\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00255\ GMOCK\_DEFINE\_DEFAULT\_ACTION\_FOR\_RETURN\_TYPE\_(\textcolor{keywordtype}{signed}\ \textcolor{keywordtype}{short},\ 0);\ \ \ \ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00256\ GMOCK\_DEFINE\_DEFAULT\_ACTION\_FOR\_RETURN\_TYPE\_(\textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{int},\ 0U);}
+\DoxyCodeLine{00257\ GMOCK\_DEFINE\_DEFAULT\_ACTION\_FOR\_RETURN\_TYPE\_(\textcolor{keywordtype}{signed}\ \textcolor{keywordtype}{int},\ 0);}
+\DoxyCodeLine{00258\ GMOCK\_DEFINE\_DEFAULT\_ACTION\_FOR\_RETURN\_TYPE\_(\textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{long},\ 0UL);\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00259\ GMOCK\_DEFINE\_DEFAULT\_ACTION\_FOR\_RETURN\_TYPE\_(\textcolor{keywordtype}{signed}\ \textcolor{keywordtype}{long},\ 0L);\ \ \ \ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00260\ GMOCK\_DEFINE\_DEFAULT\_ACTION\_FOR\_RETURN\_TYPE\_(\textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{long}\ \textcolor{keywordtype}{long},\ 0);\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00261\ GMOCK\_DEFINE\_DEFAULT\_ACTION\_FOR\_RETURN\_TYPE\_(\textcolor{keywordtype}{signed}\ \textcolor{keywordtype}{long}\ \textcolor{keywordtype}{long},\ 0);\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00262\ GMOCK\_DEFINE\_DEFAULT\_ACTION\_FOR\_RETURN\_TYPE\_(\textcolor{keywordtype}{float},\ 0);}
+\DoxyCodeLine{00263\ GMOCK\_DEFINE\_DEFAULT\_ACTION\_FOR\_RETURN\_TYPE\_(\textcolor{keywordtype}{double},\ 0);}
+\DoxyCodeLine{00264\ }
+\DoxyCodeLine{00265\ \textcolor{preprocessor}{\#undef\ GMOCK\_DEFINE\_DEFAULT\_ACTION\_FOR\_RETURN\_TYPE\_}}
+\DoxyCodeLine{00266\ }
+\DoxyCodeLine{00267\ \textcolor{comment}{//\ Simple\ two-\/arg\ form\ of\ std::disjunction.}}
+\DoxyCodeLine{00268\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ P,\ \textcolor{keyword}{typename}\ Q>}
+\DoxyCodeLine{00269\ \textcolor{keyword}{using\ }disjunction\ =\ typename\ ::std::conditional<P::value,\ P,\ Q>::type;}
+\DoxyCodeLine{00270\ }
+\DoxyCodeLine{00271\ \}\ \ \textcolor{comment}{//\ namespace\ internal}}
+\DoxyCodeLine{00272\ }
+\DoxyCodeLine{00273\ \textcolor{comment}{//\ When\ an\ unexpected\ function\ call\ is\ encountered,\ Google\ Mock\ will}}
+\DoxyCodeLine{00274\ \textcolor{comment}{//\ let\ it\ return\ a\ default\ value\ if\ the\ user\ has\ specified\ one\ for\ its}}
+\DoxyCodeLine{00275\ \textcolor{comment}{//\ return\ type,\ or\ if\ the\ return\ type\ has\ a\ built-\/in\ default\ value;}}
+\DoxyCodeLine{00276\ \textcolor{comment}{//\ otherwise\ Google\ Mock\ won't\ know\ what\ value\ to\ return\ and\ will\ have}}
+\DoxyCodeLine{00277\ \textcolor{comment}{//\ to\ abort\ the\ process.}}
+\DoxyCodeLine{00278\ \textcolor{comment}{//}}
+\DoxyCodeLine{00279\ \textcolor{comment}{//\ The\ DefaultValue<T>\ class\ allows\ a\ user\ to\ specify\ the}}
+\DoxyCodeLine{00280\ \textcolor{comment}{//\ default\ value\ for\ a\ type\ T\ that\ is\ both\ copyable\ and\ publicly}}
+\DoxyCodeLine{00281\ \textcolor{comment}{//\ destructible\ (i.e.\ anything\ that\ can\ be\ used\ as\ a\ function\ return}}
+\DoxyCodeLine{00282\ \textcolor{comment}{//\ type).\ \ The\ usage\ is:}}
+\DoxyCodeLine{00283\ \textcolor{comment}{//}}
+\DoxyCodeLine{00284\ \textcolor{comment}{//\ \ \ //\ Sets\ the\ default\ value\ for\ type\ T\ to\ be\ foo.}}
+\DoxyCodeLine{00285\ \textcolor{comment}{//\ \ \ DefaultValue<T>::Set(foo);}}
+\DoxyCodeLine{00286\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00287\ \textcolor{keyword}{class\ }DefaultValue\ \{}
+\DoxyCodeLine{00288\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00289\ \ \ \textcolor{comment}{//\ Sets\ the\ default\ value\ for\ type\ T;\ requires\ T\ to\ be}}
+\DoxyCodeLine{00290\ \ \ \textcolor{comment}{//\ copy-\/constructable\ and\ have\ a\ public\ destructor.}}
+\DoxyCodeLine{00291\ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ Set(T\ x)\ \{}
+\DoxyCodeLine{00292\ \ \ \ \ \textcolor{keyword}{delete}\ producer\_;}
+\DoxyCodeLine{00293\ \ \ \ \ producer\_\ =\ \textcolor{keyword}{new}\ FixedValueProducer(x);}
+\DoxyCodeLine{00294\ \ \ \}}
+\DoxyCodeLine{00295\ }
+\DoxyCodeLine{00296\ \ \ \textcolor{comment}{//\ Provides\ a\ factory\ function\ to\ be\ called\ to\ generate\ the\ default\ value.}}
+\DoxyCodeLine{00297\ \ \ \textcolor{comment}{//\ This\ method\ can\ be\ used\ even\ if\ T\ is\ only\ move-\/constructible,\ but\ it\ is\ not}}
+\DoxyCodeLine{00298\ \ \ \textcolor{comment}{//\ limited\ to\ that\ case.}}
+\DoxyCodeLine{00299\ \ \ \textcolor{keyword}{typedef}\ T\ (*FactoryFunction)();}
+\DoxyCodeLine{00300\ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ SetFactory(FactoryFunction\ factory)\ \{}
+\DoxyCodeLine{00301\ \ \ \ \ \textcolor{keyword}{delete}\ producer\_;}
+\DoxyCodeLine{00302\ \ \ \ \ producer\_\ =\ \textcolor{keyword}{new}\ FactoryValueProducer(factory);}
+\DoxyCodeLine{00303\ \ \ \}}
+\DoxyCodeLine{00304\ }
+\DoxyCodeLine{00305\ \ \ \textcolor{comment}{//\ Unsets\ the\ default\ value\ for\ type\ T.}}
+\DoxyCodeLine{00306\ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ Clear()\ \{}
+\DoxyCodeLine{00307\ \ \ \ \ \textcolor{keyword}{delete}\ producer\_;}
+\DoxyCodeLine{00308\ \ \ \ \ producer\_\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00309\ \ \ \}}
+\DoxyCodeLine{00310\ }
+\DoxyCodeLine{00311\ \ \ \textcolor{comment}{//\ Returns\ true\ if\ and\ only\ if\ the\ user\ has\ set\ the\ default\ value\ for\ type\ T.}}
+\DoxyCodeLine{00312\ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ IsSet()\ \{\ \textcolor{keywordflow}{return}\ producer\_\ !=\ \textcolor{keyword}{nullptr};\ \}}
+\DoxyCodeLine{00313\ }
+\DoxyCodeLine{00314\ \ \ \textcolor{comment}{//\ Returns\ true\ if\ T\ has\ a\ default\ return\ value\ set\ by\ the\ user\ or\ there}}
+\DoxyCodeLine{00315\ \ \ \textcolor{comment}{//\ exists\ a\ built-\/in\ default\ value.}}
+\DoxyCodeLine{00316\ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ Exists()\ \{}
+\DoxyCodeLine{00317\ \ \ \ \ \textcolor{keywordflow}{return}\ IsSet()\ ||\ internal::BuiltInDefaultValue<T>::Exists();}
+\DoxyCodeLine{00318\ \ \ \}}
+\DoxyCodeLine{00319\ }
+\DoxyCodeLine{00320\ \ \ \textcolor{comment}{//\ Returns\ the\ default\ value\ for\ type\ T\ if\ the\ user\ has\ set\ one;}}
+\DoxyCodeLine{00321\ \ \ \textcolor{comment}{//\ otherwise\ returns\ the\ built-\/in\ default\ value.\ Requires\ that\ Exists()}}
+\DoxyCodeLine{00322\ \ \ \textcolor{comment}{//\ is\ true,\ which\ ensures\ that\ the\ return\ value\ is\ well-\/defined.}}
+\DoxyCodeLine{00323\ \ \ \textcolor{keyword}{static}\ T\ Get()\ \{}
+\DoxyCodeLine{00324\ \ \ \ \ \textcolor{keywordflow}{return}\ producer\_\ ==\ \textcolor{keyword}{nullptr}\ ?\ internal::BuiltInDefaultValue<T>::Get()}
+\DoxyCodeLine{00325\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ :\ producer\_-\/>Produce();}
+\DoxyCodeLine{00326\ \ \ \}}
+\DoxyCodeLine{00327\ }
+\DoxyCodeLine{00328\ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00329\ \ \ \textcolor{keyword}{class\ }ValueProducer\ \{}
+\DoxyCodeLine{00330\ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00331\ \ \ \ \ \textcolor{keyword}{virtual}\ \string~ValueProducer()\ \{\}}
+\DoxyCodeLine{00332\ \ \ \ \ \textcolor{keyword}{virtual}\ T\ Produce()\ =\ 0;}
+\DoxyCodeLine{00333\ \ \ \};}
+\DoxyCodeLine{00334\ }
+\DoxyCodeLine{00335\ \ \ \textcolor{keyword}{class\ }FixedValueProducer\ :\ \textcolor{keyword}{public}\ ValueProducer\ \{}
+\DoxyCodeLine{00336\ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00337\ \ \ \ \ \textcolor{keyword}{explicit}\ FixedValueProducer(T\ value)\ :\ value\_(value)\ \{\}}
+\DoxyCodeLine{00338\ \ \ \ \ T\ Produce()\textcolor{keyword}{\ override\ }\{\ \textcolor{keywordflow}{return}\ value\_;\ \}}
+\DoxyCodeLine{00339\ }
+\DoxyCodeLine{00340\ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00341\ \ \ \ \ \textcolor{keyword}{const}\ T\ value\_;}
+\DoxyCodeLine{00342\ \ \ \ \ GTEST\_DISALLOW\_COPY\_AND\_ASSIGN\_(FixedValueProducer);}
+\DoxyCodeLine{00343\ \ \ \};}
+\DoxyCodeLine{00344\ }
+\DoxyCodeLine{00345\ \ \ \textcolor{keyword}{class\ }FactoryValueProducer\ :\ \textcolor{keyword}{public}\ ValueProducer\ \{}
+\DoxyCodeLine{00346\ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00347\ \ \ \ \ \textcolor{keyword}{explicit}\ FactoryValueProducer(FactoryFunction\ factory)}
+\DoxyCodeLine{00348\ \ \ \ \ \ \ \ \ :\ factory\_(factory)\ \{\}}
+\DoxyCodeLine{00349\ \ \ \ \ T\ Produce()\textcolor{keyword}{\ override\ }\{\ \textcolor{keywordflow}{return}\ factory\_();\ \}}
+\DoxyCodeLine{00350\ }
+\DoxyCodeLine{00351\ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00352\ \ \ \ \ \textcolor{keyword}{const}\ FactoryFunction\ factory\_;}
+\DoxyCodeLine{00353\ \ \ \ \ GTEST\_DISALLOW\_COPY\_AND\_ASSIGN\_(FactoryValueProducer);}
+\DoxyCodeLine{00354\ \ \ \};}
+\DoxyCodeLine{00355\ }
+\DoxyCodeLine{00356\ \ \ \textcolor{keyword}{static}\ ValueProducer*\ producer\_;}
+\DoxyCodeLine{00357\ \};}
+\DoxyCodeLine{00358\ }
+\DoxyCodeLine{00359\ \textcolor{comment}{//\ This\ partial\ specialization\ allows\ a\ user\ to\ set\ default\ values\ for}}
+\DoxyCodeLine{00360\ \textcolor{comment}{//\ reference\ types.}}
+\DoxyCodeLine{00361\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00362\ \textcolor{keyword}{class\ }DefaultValue<T\&>\ \{}
+\DoxyCodeLine{00363\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00364\ \ \ \textcolor{comment}{//\ Sets\ the\ default\ value\ for\ type\ T\&.}}
+\DoxyCodeLine{00365\ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ Set(T\&\ x)\ \{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00366\ \ \ \ \ address\_\ =\ \&x;}
+\DoxyCodeLine{00367\ \ \ \}}
+\DoxyCodeLine{00368\ }
+\DoxyCodeLine{00369\ \ \ \textcolor{comment}{//\ Unsets\ the\ default\ value\ for\ type\ T\&.}}
+\DoxyCodeLine{00370\ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ Clear()\ \{\ address\_\ =\ \textcolor{keyword}{nullptr};\ \}}
+\DoxyCodeLine{00371\ }
+\DoxyCodeLine{00372\ \ \ \textcolor{comment}{//\ Returns\ true\ if\ and\ only\ if\ the\ user\ has\ set\ the\ default\ value\ for\ type\ T\&.}}
+\DoxyCodeLine{00373\ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ IsSet()\ \{\ \textcolor{keywordflow}{return}\ address\_\ !=\ \textcolor{keyword}{nullptr};\ \}}
+\DoxyCodeLine{00374\ }
+\DoxyCodeLine{00375\ \ \ \textcolor{comment}{//\ Returns\ true\ if\ T\ has\ a\ default\ return\ value\ set\ by\ the\ user\ or\ there}}
+\DoxyCodeLine{00376\ \ \ \textcolor{comment}{//\ exists\ a\ built-\/in\ default\ value.}}
+\DoxyCodeLine{00377\ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ Exists()\ \{}
+\DoxyCodeLine{00378\ \ \ \ \ \textcolor{keywordflow}{return}\ IsSet()\ ||\ internal::BuiltInDefaultValue<T\&>::Exists();}
+\DoxyCodeLine{00379\ \ \ \}}
+\DoxyCodeLine{00380\ }
+\DoxyCodeLine{00381\ \ \ \textcolor{comment}{//\ Returns\ the\ default\ value\ for\ type\ T\&\ if\ the\ user\ has\ set\ one;}}
+\DoxyCodeLine{00382\ \ \ \textcolor{comment}{//\ otherwise\ returns\ the\ built-\/in\ default\ value\ if\ there\ is\ one;}}
+\DoxyCodeLine{00383\ \ \ \textcolor{comment}{//\ otherwise\ aborts\ the\ process.}}
+\DoxyCodeLine{00384\ \ \ \textcolor{keyword}{static}\ T\&\ Get()\ \{}
+\DoxyCodeLine{00385\ \ \ \ \ \textcolor{keywordflow}{return}\ address\_\ ==\ \textcolor{keyword}{nullptr}\ ?\ internal::BuiltInDefaultValue<T\&>::Get()}
+\DoxyCodeLine{00386\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ :\ *address\_;}
+\DoxyCodeLine{00387\ \ \ \}}
+\DoxyCodeLine{00388\ }
+\DoxyCodeLine{00389\ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00390\ \ \ \textcolor{keyword}{static}\ T*\ address\_;}
+\DoxyCodeLine{00391\ \};}
+\DoxyCodeLine{00392\ }
+\DoxyCodeLine{00393\ \textcolor{comment}{//\ This\ specialization\ allows\ DefaultValue<void>::Get()\ to}}
+\DoxyCodeLine{00394\ \textcolor{comment}{//\ compile.}}
+\DoxyCodeLine{00395\ \textcolor{keyword}{template}\ <>}
+\DoxyCodeLine{00396\ \textcolor{keyword}{class\ }DefaultValue<void>\ \{}
+\DoxyCodeLine{00397\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00398\ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ Exists()\ \{\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};\ \}}
+\DoxyCodeLine{00399\ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ Get()\ \{\}}
+\DoxyCodeLine{00400\ \};}
+\DoxyCodeLine{00401\ }
+\DoxyCodeLine{00402\ \textcolor{comment}{//\ Points\ to\ the\ user-\/set\ default\ value\ for\ type\ T.}}
+\DoxyCodeLine{00403\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00404\ \textcolor{keyword}{typename}\ DefaultValue<T>::ValueProducer*\ DefaultValue<T>::producer\_\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00405\ }
+\DoxyCodeLine{00406\ \textcolor{comment}{//\ Points\ to\ the\ user-\/set\ default\ value\ for\ type\ T\&.}}
+\DoxyCodeLine{00407\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00408\ T*\ DefaultValue<T\&>::address\_\ =\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00409\ }
+\DoxyCodeLine{00410\ \textcolor{comment}{//\ Implement\ this\ interface\ to\ define\ an\ action\ for\ function\ type\ F.}}
+\DoxyCodeLine{00411\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ F>}
+\DoxyCodeLine{00412\ \textcolor{keyword}{class\ }ActionInterface\ \{}
+\DoxyCodeLine{00413\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00414\ \ \ \textcolor{keyword}{typedef}\ \textcolor{keyword}{typename}\ internal::Function<F>::Result\ Result;}
+\DoxyCodeLine{00415\ \ \ \textcolor{keyword}{typedef}\ \textcolor{keyword}{typename}\ internal::Function<F>::ArgumentTuple\ ArgumentTuple;}
+\DoxyCodeLine{00416\ }
+\DoxyCodeLine{00417\ \ \ ActionInterface()\ \{\}}
+\DoxyCodeLine{00418\ \ \ \textcolor{keyword}{virtual}\ \string~ActionInterface()\ \{\}}
+\DoxyCodeLine{00419\ }
+\DoxyCodeLine{00420\ \ \ \textcolor{comment}{//\ Performs\ the\ action.\ \ This\ method\ is\ not\ const,\ as\ in\ general\ an}}
+\DoxyCodeLine{00421\ \ \ \textcolor{comment}{//\ action\ can\ have\ side\ effects\ and\ be\ stateful.\ \ For\ example,\ a}}
+\DoxyCodeLine{00422\ \ \ \textcolor{comment}{//\ get-\/the-\/next-\/element-\/from-\/the-\/collection\ action\ will\ need\ to}}
+\DoxyCodeLine{00423\ \ \ \textcolor{comment}{//\ remember\ the\ current\ element.}}
+\DoxyCodeLine{00424\ \ \ \textcolor{keyword}{virtual}\ Result\ Perform(\textcolor{keyword}{const}\ ArgumentTuple\&\ args)\ =\ 0;}
+\DoxyCodeLine{00425\ }
+\DoxyCodeLine{00426\ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00427\ \ \ GTEST\_DISALLOW\_COPY\_AND\_ASSIGN\_(ActionInterface);}
+\DoxyCodeLine{00428\ \};}
+\DoxyCodeLine{00429\ }
+\DoxyCodeLine{00430\ \textcolor{comment}{//\ An\ Action<F>\ is\ a\ copyable\ and\ IMMUTABLE\ (except\ by\ assignment)}}
+\DoxyCodeLine{00431\ \textcolor{comment}{//\ object\ that\ represents\ an\ action\ to\ be\ taken\ when\ a\ mock\ function}}
+\DoxyCodeLine{00432\ \textcolor{comment}{//\ of\ type\ F\ is\ called.\ \ The\ implementation\ of\ Action<T>\ is\ just\ a}}
+\DoxyCodeLine{00433\ \textcolor{comment}{//\ std::shared\_ptr\ to\ const\ ActionInterface<T>.\ Don't\ inherit\ from\ Action!}}
+\DoxyCodeLine{00434\ \textcolor{comment}{//\ You\ can\ view\ an\ object\ implementing\ ActionInterface<F>\ as\ a}}
+\DoxyCodeLine{00435\ \textcolor{comment}{//\ concrete\ action\ (including\ its\ current\ state),\ and\ an\ Action<F>}}
+\DoxyCodeLine{00436\ \textcolor{comment}{//\ object\ as\ a\ handle\ to\ it.}}
+\DoxyCodeLine{00437\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ F>}
+\DoxyCodeLine{00438\ \textcolor{keyword}{class\ }Action\ \{}
+\DoxyCodeLine{00439\ \ \ \textcolor{comment}{//\ Adapter\ class\ to\ allow\ constructing\ Action\ from\ a\ legacy\ ActionInterface.}}
+\DoxyCodeLine{00440\ \ \ \textcolor{comment}{//\ New\ code\ should\ create\ Actions\ from\ functors\ instead.}}
+\DoxyCodeLine{00441\ \ \ \textcolor{keyword}{struct\ }ActionAdapter\ \{}
+\DoxyCodeLine{00442\ \ \ \ \ \textcolor{comment}{//\ Adapter\ must\ be\ copyable\ to\ satisfy\ std::function\ requirements.}}
+\DoxyCodeLine{00443\ \ \ \ \ ::std::shared\_ptr<ActionInterface<F>>\ impl\_;}
+\DoxyCodeLine{00444\ }
+\DoxyCodeLine{00445\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...\ Args>}
+\DoxyCodeLine{00446\ \ \ \ \ \textcolor{keyword}{typename}\ internal::Function<F>::Result\ operator()(Args\&\&...\ args)\ \{}
+\DoxyCodeLine{00447\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ impl\_-\/>Perform(}
+\DoxyCodeLine{00448\ \ \ \ \ \ \ \ \ \ \ ::std::forward\_as\_tuple(::std::forward<Args>(args)...));}
+\DoxyCodeLine{00449\ \ \ \ \ \}}
+\DoxyCodeLine{00450\ \ \ \};}
+\DoxyCodeLine{00451\ }
+\DoxyCodeLine{00452\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ G>}
+\DoxyCodeLine{00453\ \ \ \textcolor{keyword}{using\ }IsCompatibleFunctor\ =\ std::is\_constructible<std::function<F>,\ G>;}
+\DoxyCodeLine{00454\ }
+\DoxyCodeLine{00455\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00456\ \ \ \textcolor{keyword}{typedef}\ \textcolor{keyword}{typename}\ internal::Function<F>::Result\ Result;}
+\DoxyCodeLine{00457\ \ \ \textcolor{keyword}{typedef}\ \textcolor{keyword}{typename}\ internal::Function<F>::ArgumentTuple\ ArgumentTuple;}
+\DoxyCodeLine{00458\ }
+\DoxyCodeLine{00459\ \ \ \textcolor{comment}{//\ Constructs\ a\ null\ Action.\ \ Needed\ for\ storing\ Action\ objects\ in}}
+\DoxyCodeLine{00460\ \ \ \textcolor{comment}{//\ STL\ containers.}}
+\DoxyCodeLine{00461\ \ \ Action()\ \{\}}
+\DoxyCodeLine{00462\ }
+\DoxyCodeLine{00463\ \ \ \textcolor{comment}{//\ Construct\ an\ Action\ from\ a\ specified\ callable.}}
+\DoxyCodeLine{00464\ \ \ \textcolor{comment}{//\ This\ cannot\ take\ std::function\ directly,\ because\ then\ Action\ would\ not\ be}}
+\DoxyCodeLine{00465\ \ \ \textcolor{comment}{//\ directly\ constructible\ from\ lambda\ (it\ would\ require\ two\ conversions).}}
+\DoxyCodeLine{00466\ \ \ \textcolor{keyword}{template}\ <}
+\DoxyCodeLine{00467\ \ \ \ \ \ \ \textcolor{keyword}{typename}\ G,}
+\DoxyCodeLine{00468\ \ \ \ \ \ \ \textcolor{keyword}{typename}\ =\ \textcolor{keyword}{typename}\ std::enable\_if<internal::disjunction<}
+\DoxyCodeLine{00469\ \ \ \ \ \ \ \ \ \ \ IsCompatibleFunctor<G>,\ std::is\_constructible<std::function<Result()>,}
+\DoxyCodeLine{00470\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ G>>::value>::type>}
+\DoxyCodeLine{00471\ \ \ Action(G\&\&\ fun)\ \{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00472\ \ \ \ \ Init(::std::forward<G>(fun),\ IsCompatibleFunctor<G>());}
+\DoxyCodeLine{00473\ \ \ \}}
+\DoxyCodeLine{00474\ }
+\DoxyCodeLine{00475\ \ \ \textcolor{comment}{//\ Constructs\ an\ Action\ from\ its\ implementation.}}
+\DoxyCodeLine{00476\ \ \ \textcolor{keyword}{explicit}\ Action(ActionInterface<F>*\ impl)}
+\DoxyCodeLine{00477\ \ \ \ \ \ \ :\ fun\_(ActionAdapter\{::std::shared\_ptr<ActionInterface<F>>(impl)\})\ \{\}}
+\DoxyCodeLine{00478\ }
+\DoxyCodeLine{00479\ \ \ \textcolor{comment}{//\ This\ constructor\ allows\ us\ to\ turn\ an\ Action<Func>\ object\ into\ an}}
+\DoxyCodeLine{00480\ \ \ \textcolor{comment}{//\ Action<F>,\ as\ long\ as\ F's\ arguments\ can\ be\ implicitly\ converted}}
+\DoxyCodeLine{00481\ \ \ \textcolor{comment}{//\ to\ Func's\ and\ Func's\ return\ type\ can\ be\ implicitly\ converted\ to\ F's.}}
+\DoxyCodeLine{00482\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Func>}
+\DoxyCodeLine{00483\ \ \ \textcolor{keyword}{explicit}\ Action(\textcolor{keyword}{const}\ Action<Func>\&\ action)\ :\ fun\_(action.fun\_)\ \{\}}
+\DoxyCodeLine{00484\ }
+\DoxyCodeLine{00485\ \ \ \textcolor{comment}{//\ Returns\ true\ if\ and\ only\ if\ this\ is\ the\ DoDefault()\ action.}}
+\DoxyCodeLine{00486\ \ \ \textcolor{keywordtype}{bool}\ IsDoDefault()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ fun\_\ ==\ \textcolor{keyword}{nullptr};\ \}}
+\DoxyCodeLine{00487\ }
+\DoxyCodeLine{00488\ \ \ \textcolor{comment}{//\ Performs\ the\ action.\ \ Note\ that\ this\ method\ is\ const\ even\ though}}
+\DoxyCodeLine{00489\ \ \ \textcolor{comment}{//\ the\ corresponding\ method\ in\ ActionInterface\ is\ not.\ \ The\ reason}}
+\DoxyCodeLine{00490\ \ \ \textcolor{comment}{//\ is\ that\ a\ const\ Action<F>\ means\ that\ it\ cannot\ be\ re-\/bound\ to}}
+\DoxyCodeLine{00491\ \ \ \textcolor{comment}{//\ another\ concrete\ action,\ not\ that\ the\ concrete\ action\ it\ binds\ to}}
+\DoxyCodeLine{00492\ \ \ \textcolor{comment}{//\ cannot\ change\ state.\ \ (Think\ of\ the\ difference\ between\ a\ const}}
+\DoxyCodeLine{00493\ \ \ \textcolor{comment}{//\ pointer\ and\ a\ pointer\ to\ const.)}}
+\DoxyCodeLine{00494\ \ \ Result\ Perform(ArgumentTuple\ args)\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00495\ \ \ \ \ \textcolor{keywordflow}{if}\ (IsDoDefault())\ \{}
+\DoxyCodeLine{00496\ \ \ \ \ \ \ internal::IllegalDoDefault(\_\_FILE\_\_,\ \_\_LINE\_\_);}
+\DoxyCodeLine{00497\ \ \ \ \ \}}
+\DoxyCodeLine{00498\ \ \ \ \ \textcolor{keywordflow}{return}\ internal::Apply(fun\_,\ ::std::move(args));}
+\DoxyCodeLine{00499\ \ \ \}}
+\DoxyCodeLine{00500\ }
+\DoxyCodeLine{00501\ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00502\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ G>}
+\DoxyCodeLine{00503\ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{class\ }Action;}
+\DoxyCodeLine{00504\ }
+\DoxyCodeLine{00505\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ G>}
+\DoxyCodeLine{00506\ \ \ \textcolor{keywordtype}{void}\ Init(G\&\&\ g,\ ::std::true\_type)\ \{}
+\DoxyCodeLine{00507\ \ \ \ \ fun\_\ =\ ::std::forward<G>(g);}
+\DoxyCodeLine{00508\ \ \ \}}
+\DoxyCodeLine{00509\ }
+\DoxyCodeLine{00510\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ G>}
+\DoxyCodeLine{00511\ \ \ \textcolor{keywordtype}{void}\ Init(G\&\&\ g,\ ::std::false\_type)\ \{}
+\DoxyCodeLine{00512\ \ \ \ \ fun\_\ =\ IgnoreArgs<typename\ ::std::decay<G>::type>\{::std::forward<G>(g)\};}
+\DoxyCodeLine{00513\ \ \ \}}
+\DoxyCodeLine{00514\ }
+\DoxyCodeLine{00515\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ FunctionImpl>}
+\DoxyCodeLine{00516\ \ \ \textcolor{keyword}{struct\ }IgnoreArgs\ \{}
+\DoxyCodeLine{00517\ \ \ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...\ Args>}
+\DoxyCodeLine{00518\ \ \ \ \ Result\ operator()(\textcolor{keyword}{const}\ Args\&...)\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00519\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ function\_impl();}
+\DoxyCodeLine{00520\ \ \ \ \ \}}
+\DoxyCodeLine{00521\ }
+\DoxyCodeLine{00522\ \ \ \ \ FunctionImpl\ function\_impl;}
+\DoxyCodeLine{00523\ \ \ \};}
+\DoxyCodeLine{00524\ }
+\DoxyCodeLine{00525\ \ \ \textcolor{comment}{//\ fun\_\ is\ an\ empty\ function\ if\ and\ only\ if\ this\ is\ the\ DoDefault()\ action.}}
+\DoxyCodeLine{00526\ \ \ ::std::function<F>\ fun\_;}
+\DoxyCodeLine{00527\ \};}
+\DoxyCodeLine{00528\ }
+\DoxyCodeLine{00529\ \textcolor{comment}{//\ The\ PolymorphicAction\ class\ template\ makes\ it\ easy\ to\ implement\ a}}
+\DoxyCodeLine{00530\ \textcolor{comment}{//\ polymorphic\ action\ (i.e.\ an\ action\ that\ can\ be\ used\ in\ mock}}
+\DoxyCodeLine{00531\ \textcolor{comment}{//\ functions\ of\ than\ one\ type,\ e.g.\ Return()).}}
+\DoxyCodeLine{00532\ \textcolor{comment}{//}}
+\DoxyCodeLine{00533\ \textcolor{comment}{//\ To\ define\ a\ polymorphic\ action,\ a\ user\ first\ provides\ a\ COPYABLE}}
+\DoxyCodeLine{00534\ \textcolor{comment}{//\ implementation\ class\ that\ has\ a\ Perform()\ method\ template:}}
+\DoxyCodeLine{00535\ \textcolor{comment}{//}}
+\DoxyCodeLine{00536\ \textcolor{comment}{//\ \ \ class\ FooAction\ \{}}
+\DoxyCodeLine{00537\ \textcolor{comment}{//\ \ \ \ public:}}
+\DoxyCodeLine{00538\ \textcolor{comment}{//\ \ \ \ \ template\ <typename\ Result,\ typename\ ArgumentTuple>}}
+\DoxyCodeLine{00539\ \textcolor{comment}{//\ \ \ \ \ Result\ Perform(const\ ArgumentTuple\&\ args)\ const\ \{}}
+\DoxyCodeLine{00540\ \textcolor{comment}{//\ \ \ \ \ \ \ //\ Processes\ the\ arguments\ and\ returns\ a\ result,\ using}}
+\DoxyCodeLine{00541\ \textcolor{comment}{//\ \ \ \ \ \ \ //\ std::get<N>(args)\ to\ get\ the\ N-\/th\ (0-\/based)\ argument\ in\ the\ tuple.}}
+\DoxyCodeLine{00542\ \textcolor{comment}{//\ \ \ \ \ \}}}
+\DoxyCodeLine{00543\ \textcolor{comment}{//\ \ \ \ \ ...}}
+\DoxyCodeLine{00544\ \textcolor{comment}{//\ \ \ \};}}
+\DoxyCodeLine{00545\ \textcolor{comment}{//}}
+\DoxyCodeLine{00546\ \textcolor{comment}{//\ Then\ the\ user\ creates\ the\ polymorphic\ action\ using}}
+\DoxyCodeLine{00547\ \textcolor{comment}{//\ MakePolymorphicAction(object)\ where\ object\ has\ type\ FooAction.\ \ See}}
+\DoxyCodeLine{00548\ \textcolor{comment}{//\ the\ definition\ of\ Return(void)\ and\ SetArgumentPointee<N>(value)\ for}}
+\DoxyCodeLine{00549\ \textcolor{comment}{//\ complete\ examples.}}
+\DoxyCodeLine{00550\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Impl>}
+\DoxyCodeLine{00551\ \textcolor{keyword}{class\ }PolymorphicAction\ \{}
+\DoxyCodeLine{00552\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00553\ \ \ \textcolor{keyword}{explicit}\ PolymorphicAction(\textcolor{keyword}{const}\ Impl\&\ impl)\ :\ impl\_(impl)\ \{\}}
+\DoxyCodeLine{00554\ }
+\DoxyCodeLine{00555\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ F>}
+\DoxyCodeLine{00556\ \ \ \textcolor{keyword}{operator}\ Action<F>()\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00557\ \ \ \ \ \textcolor{keywordflow}{return}\ Action<F>(\textcolor{keyword}{new}\ MonomorphicImpl<F>(impl\_));}
+\DoxyCodeLine{00558\ \ \ \}}
+\DoxyCodeLine{00559\ }
+\DoxyCodeLine{00560\ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00561\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ F>}
+\DoxyCodeLine{00562\ \ \ \textcolor{keyword}{class\ }MonomorphicImpl\ :\ \textcolor{keyword}{public}\ ActionInterface<F>\ \{}
+\DoxyCodeLine{00563\ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00564\ \ \ \ \ \textcolor{keyword}{typedef}\ \textcolor{keyword}{typename}\ internal::Function<F>::Result\ Result;}
+\DoxyCodeLine{00565\ \ \ \ \ \textcolor{keyword}{typedef}\ \textcolor{keyword}{typename}\ internal::Function<F>::ArgumentTuple\ ArgumentTuple;}
+\DoxyCodeLine{00566\ }
+\DoxyCodeLine{00567\ \ \ \ \ \textcolor{keyword}{explicit}\ MonomorphicImpl(\textcolor{keyword}{const}\ Impl\&\ impl)\ :\ impl\_(impl)\ \{\}}
+\DoxyCodeLine{00568\ }
+\DoxyCodeLine{00569\ \ \ \ \ Result\ Perform(\textcolor{keyword}{const}\ ArgumentTuple\&\ args)\textcolor{keyword}{\ override\ }\{}
+\DoxyCodeLine{00570\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ impl\_.template\ Perform<Result>(args);}
+\DoxyCodeLine{00571\ \ \ \ \ \}}
+\DoxyCodeLine{00572\ }
+\DoxyCodeLine{00573\ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00574\ \ \ \ \ Impl\ impl\_;}
+\DoxyCodeLine{00575\ \ \ \};}
+\DoxyCodeLine{00576\ }
+\DoxyCodeLine{00577\ \ \ Impl\ impl\_;}
+\DoxyCodeLine{00578\ \};}
+\DoxyCodeLine{00579\ }
+\DoxyCodeLine{00580\ \textcolor{comment}{//\ Creates\ an\ Action\ from\ its\ implementation\ and\ returns\ it.\ \ The}}
+\DoxyCodeLine{00581\ \textcolor{comment}{//\ created\ Action\ object\ owns\ the\ implementation.}}
+\DoxyCodeLine{00582\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ F>}
+\DoxyCodeLine{00583\ Action<F>\ MakeAction(ActionInterface<F>*\ impl)\ \{}
+\DoxyCodeLine{00584\ \ \ \textcolor{keywordflow}{return}\ Action<F>(impl);}
+\DoxyCodeLine{00585\ \}}
+\DoxyCodeLine{00586\ }
+\DoxyCodeLine{00587\ \textcolor{comment}{//\ Creates\ a\ polymorphic\ action\ from\ its\ implementation.\ \ This\ is}}
+\DoxyCodeLine{00588\ \textcolor{comment}{//\ easier\ to\ use\ than\ the\ PolymorphicAction<Impl>\ constructor\ as\ it}}
+\DoxyCodeLine{00589\ \textcolor{comment}{//\ doesn't\ require\ you\ to\ explicitly\ write\ the\ template\ argument,\ e.g.}}
+\DoxyCodeLine{00590\ \textcolor{comment}{//}}
+\DoxyCodeLine{00591\ \textcolor{comment}{//\ \ \ MakePolymorphicAction(foo);}}
+\DoxyCodeLine{00592\ \textcolor{comment}{//\ vs}}
+\DoxyCodeLine{00593\ \textcolor{comment}{//\ \ \ PolymorphicAction<TypeOfFoo>(foo);}}
+\DoxyCodeLine{00594\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Impl>}
+\DoxyCodeLine{00595\ \textcolor{keyword}{inline}\ PolymorphicAction<Impl>\ MakePolymorphicAction(\textcolor{keyword}{const}\ Impl\&\ impl)\ \{}
+\DoxyCodeLine{00596\ \ \ \textcolor{keywordflow}{return}\ PolymorphicAction<Impl>(impl);}
+\DoxyCodeLine{00597\ \}}
+\DoxyCodeLine{00598\ }
+\DoxyCodeLine{00599\ \textcolor{keyword}{namespace\ }internal\ \{}
+\DoxyCodeLine{00600\ }
+\DoxyCodeLine{00601\ \textcolor{comment}{//\ Helper\ struct\ to\ specialize\ ReturnAction\ to\ execute\ a\ move\ instead\ of\ a\ copy}}
+\DoxyCodeLine{00602\ \textcolor{comment}{//\ on\ return.\ Useful\ for\ move-\/only\ types,\ but\ could\ be\ used\ on\ any\ type.}}
+\DoxyCodeLine{00603\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00604\ \textcolor{keyword}{struct\ }ByMoveWrapper\ \{}
+\DoxyCodeLine{00605\ \ \ \textcolor{keyword}{explicit}\ ByMoveWrapper(T\ value)\ :\ payload(std::move(value))\ \{\}}
+\DoxyCodeLine{00606\ \ \ T\ payload;}
+\DoxyCodeLine{00607\ \};}
+\DoxyCodeLine{00608\ }
+\DoxyCodeLine{00609\ \textcolor{comment}{//\ Implements\ the\ polymorphic\ Return(x)\ action,\ which\ can\ be\ used\ in}}
+\DoxyCodeLine{00610\ \textcolor{comment}{//\ any\ function\ that\ returns\ the\ type\ of\ x,\ regardless\ of\ the\ argument}}
+\DoxyCodeLine{00611\ \textcolor{comment}{//\ types.}}
+\DoxyCodeLine{00612\ \textcolor{comment}{//}}
+\DoxyCodeLine{00613\ \textcolor{comment}{//\ Note:\ The\ value\ passed\ into\ Return\ must\ be\ converted\ into}}
+\DoxyCodeLine{00614\ \textcolor{comment}{//\ Function<F>::Result\ when\ this\ action\ is\ cast\ to\ Action<F>\ rather\ than}}
+\DoxyCodeLine{00615\ \textcolor{comment}{//\ when\ that\ action\ is\ performed.\ This\ is\ important\ in\ scenarios\ like}}
+\DoxyCodeLine{00616\ \textcolor{comment}{//}}
+\DoxyCodeLine{00617\ \textcolor{comment}{//\ MOCK\_METHOD1(Method,\ T(U));}}
+\DoxyCodeLine{00618\ \textcolor{comment}{//\ ...}}
+\DoxyCodeLine{00619\ \textcolor{comment}{//\ \{}}
+\DoxyCodeLine{00620\ \textcolor{comment}{//\ \ \ Foo\ foo;}}
+\DoxyCodeLine{00621\ \textcolor{comment}{//\ \ \ X\ x(\&foo);}}
+\DoxyCodeLine{00622\ \textcolor{comment}{//\ \ \ EXPECT\_CALL(mock,\ Method(\_)).WillOnce(Return(x));}}
+\DoxyCodeLine{00623\ \textcolor{comment}{//\ \}}}
+\DoxyCodeLine{00624\ \textcolor{comment}{//}}
+\DoxyCodeLine{00625\ \textcolor{comment}{//\ In\ the\ example\ above\ the\ variable\ x\ holds\ reference\ to\ foo\ which\ leaves}}
+\DoxyCodeLine{00626\ \textcolor{comment}{//\ scope\ and\ gets\ destroyed.\ \ If\ copying\ X\ just\ copies\ a\ reference\ to\ foo,}}
+\DoxyCodeLine{00627\ \textcolor{comment}{//\ that\ copy\ will\ be\ left\ with\ a\ hanging\ reference.\ \ If\ conversion\ to\ T}}
+\DoxyCodeLine{00628\ \textcolor{comment}{//\ makes\ a\ copy\ of\ foo,\ the\ above\ code\ is\ safe.\ To\ support\ that\ scenario,\ we}}
+\DoxyCodeLine{00629\ \textcolor{comment}{//\ need\ to\ make\ sure\ that\ the\ type\ conversion\ happens\ inside\ the\ EXPECT\_CALL}}
+\DoxyCodeLine{00630\ \textcolor{comment}{//\ statement,\ and\ conversion\ of\ the\ result\ of\ Return\ to\ Action<T(U)>\ is\ a}}
+\DoxyCodeLine{00631\ \textcolor{comment}{//\ good\ place\ for\ that.}}
+\DoxyCodeLine{00632\ \textcolor{comment}{//}}
+\DoxyCodeLine{00633\ \textcolor{comment}{//\ The\ real\ life\ example\ of\ the\ above\ scenario\ happens\ when\ an\ invocation}}
+\DoxyCodeLine{00634\ \textcolor{comment}{//\ of\ gtl::Container()\ is\ passed\ into\ Return.}}
+\DoxyCodeLine{00635\ \textcolor{comment}{//}}
+\DoxyCodeLine{00636\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ R>}
+\DoxyCodeLine{00637\ \textcolor{keyword}{class\ }ReturnAction\ \{}
+\DoxyCodeLine{00638\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00639\ \ \ \textcolor{comment}{//\ Constructs\ a\ ReturnAction\ object\ from\ the\ value\ to\ be\ returned.}}
+\DoxyCodeLine{00640\ \ \ \textcolor{comment}{//\ 'value'\ is\ passed\ by\ value\ instead\ of\ by\ const\ reference\ in\ order}}
+\DoxyCodeLine{00641\ \ \ \textcolor{comment}{//\ to\ allow\ Return("{}string\ literal"{})\ to\ compile.}}
+\DoxyCodeLine{00642\ \ \ \textcolor{keyword}{explicit}\ ReturnAction(R\ value)\ :\ value\_(new\ R(std::move(value)))\ \{\}}
+\DoxyCodeLine{00643\ }
+\DoxyCodeLine{00644\ \ \ \textcolor{comment}{//\ This\ template\ type\ conversion\ operator\ allows\ Return(x)\ to\ be}}
+\DoxyCodeLine{00645\ \ \ \textcolor{comment}{//\ used\ in\ ANY\ function\ that\ returns\ x's\ type.}}
+\DoxyCodeLine{00646\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ F>}
+\DoxyCodeLine{00647\ \ \ \textcolor{keyword}{operator}\ Action<F>()\textcolor{keyword}{\ const\ }\{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00648\ \ \ \ \ \textcolor{comment}{//\ Assert\ statement\ belongs\ here\ because\ this\ is\ the\ best\ place\ to\ verify}}
+\DoxyCodeLine{00649\ \ \ \ \ \textcolor{comment}{//\ conditions\ on\ F.\ It\ produces\ the\ clearest\ error\ messages}}
+\DoxyCodeLine{00650\ \ \ \ \ \textcolor{comment}{//\ in\ most\ compilers.}}
+\DoxyCodeLine{00651\ \ \ \ \ \textcolor{comment}{//\ Impl\ really\ belongs\ in\ this\ scope\ as\ a\ local\ class\ but\ can't}}
+\DoxyCodeLine{00652\ \ \ \ \ \textcolor{comment}{//\ because\ MSVC\ produces\ duplicate\ symbols\ in\ different\ translation\ units}}
+\DoxyCodeLine{00653\ \ \ \ \ \textcolor{comment}{//\ in\ this\ case.\ Until\ MS\ fixes\ that\ bug\ we\ put\ Impl\ into\ the\ class\ scope}}
+\DoxyCodeLine{00654\ \ \ \ \ \textcolor{comment}{//\ and\ put\ the\ typedef\ both\ here\ (for\ use\ in\ assert\ statement)\ and}}
+\DoxyCodeLine{00655\ \ \ \ \ \textcolor{comment}{//\ in\ the\ Impl\ class.\ But\ both\ definitions\ must\ be\ the\ same.}}
+\DoxyCodeLine{00656\ \ \ \ \ \textcolor{keyword}{typedef}\ \textcolor{keyword}{typename}\ Function<F>::Result\ Result;}
+\DoxyCodeLine{00657\ \ \ \ \ GTEST\_COMPILE\_ASSERT\_(}
+\DoxyCodeLine{00658\ \ \ \ \ \ \ \ \ !std::is\_reference<Result>::value,}
+\DoxyCodeLine{00659\ \ \ \ \ \ \ \ \ use\_ReturnRef\_instead\_of\_Return\_to\_return\_a\_reference);}
+\DoxyCodeLine{00660\ \ \ \ \ \textcolor{keyword}{static\_assert}(!std::is\_void<Result>::value,}
+\DoxyCodeLine{00661\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}Can't\ use\ Return()\ on\ an\ action\ expected\ to\ return\ \`{}void`."{}});}
+\DoxyCodeLine{00662\ \ \ \ \ \textcolor{keywordflow}{return}\ Action<F>(\textcolor{keyword}{new}\ Impl<R,\ F>(value\_));}
+\DoxyCodeLine{00663\ \ \ \}}
+\DoxyCodeLine{00664\ }
+\DoxyCodeLine{00665\ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00666\ \ \ \textcolor{comment}{//\ Implements\ the\ Return(x)\ action\ for\ a\ particular\ function\ type\ F.}}
+\DoxyCodeLine{00667\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ R\_,\ \textcolor{keyword}{typename}\ F>}
+\DoxyCodeLine{00668\ \ \ \textcolor{keyword}{class\ }Impl\ :\ \textcolor{keyword}{public}\ ActionInterface<F>\ \{}
+\DoxyCodeLine{00669\ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00670\ \ \ \ \ \textcolor{keyword}{typedef}\ \textcolor{keyword}{typename}\ Function<F>::Result\ Result;}
+\DoxyCodeLine{00671\ \ \ \ \ \textcolor{keyword}{typedef}\ \textcolor{keyword}{typename}\ Function<F>::ArgumentTuple\ ArgumentTuple;}
+\DoxyCodeLine{00672\ }
+\DoxyCodeLine{00673\ \ \ \ \ \textcolor{comment}{//\ The\ implicit\ cast\ is\ necessary\ when\ Result\ has\ more\ than\ one}}
+\DoxyCodeLine{00674\ \ \ \ \ \textcolor{comment}{//\ single-\/argument\ constructor\ (e.g.\ Result\ is\ std::vector<int>)\ and\ R}}
+\DoxyCodeLine{00675\ \ \ \ \ \textcolor{comment}{//\ has\ a\ type\ conversion\ operator\ template.\ \ In\ that\ case,\ value\_(value)}}
+\DoxyCodeLine{00676\ \ \ \ \ \textcolor{comment}{//\ won't\ compile\ as\ the\ compiler\ doesn't\ known\ which\ constructor\ of}}
+\DoxyCodeLine{00677\ \ \ \ \ \textcolor{comment}{//\ Result\ to\ call.\ \ ImplicitCast\_\ forces\ the\ compiler\ to\ convert\ R\ to}}
+\DoxyCodeLine{00678\ \ \ \ \ \textcolor{comment}{//\ Result\ without\ considering\ explicit\ constructors,\ thus\ resolving\ the}}
+\DoxyCodeLine{00679\ \ \ \ \ \textcolor{comment}{//\ ambiguity.\ value\_\ is\ then\ initialized\ using\ its\ copy\ constructor.}}
+\DoxyCodeLine{00680\ \ \ \ \ \textcolor{keyword}{explicit}\ Impl(\textcolor{keyword}{const}\ std::shared\_ptr<R>\&\ value)}
+\DoxyCodeLine{00681\ \ \ \ \ \ \ \ \ :\ value\_before\_cast\_(*value),}
+\DoxyCodeLine{00682\ \ \ \ \ \ \ \ \ \ \ value\_(ImplicitCast\_<Result>(value\_before\_cast\_))\ \{\}}
+\DoxyCodeLine{00683\ }
+\DoxyCodeLine{00684\ \ \ \ \ Result\ Perform(\textcolor{keyword}{const}\ ArgumentTuple\&)\textcolor{keyword}{\ override\ }\{\ \textcolor{keywordflow}{return}\ value\_;\ \}}
+\DoxyCodeLine{00685\ }
+\DoxyCodeLine{00686\ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00687\ \ \ \ \ GTEST\_COMPILE\_ASSERT\_(!std::is\_reference<Result>::value,}
+\DoxyCodeLine{00688\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ Result\_cannot\_be\_a\_reference\_type);}
+\DoxyCodeLine{00689\ \ \ \ \ \textcolor{comment}{//\ We\ save\ the\ value\ before\ casting\ just\ in\ case\ it\ is\ being\ cast\ to\ a}}
+\DoxyCodeLine{00690\ \ \ \ \ \textcolor{comment}{//\ wrapper\ type.}}
+\DoxyCodeLine{00691\ \ \ \ \ R\ value\_before\_cast\_;}
+\DoxyCodeLine{00692\ \ \ \ \ Result\ value\_;}
+\DoxyCodeLine{00693\ }
+\DoxyCodeLine{00694\ \ \ \ \ GTEST\_DISALLOW\_COPY\_AND\_ASSIGN\_(Impl);}
+\DoxyCodeLine{00695\ \ \ \};}
+\DoxyCodeLine{00696\ }
+\DoxyCodeLine{00697\ \ \ \textcolor{comment}{//\ Partially\ specialize\ for\ ByMoveWrapper.\ This\ version\ of\ ReturnAction\ will}}
+\DoxyCodeLine{00698\ \ \ \textcolor{comment}{//\ move\ its\ contents\ instead.}}
+\DoxyCodeLine{00699\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ R\_,\ \textcolor{keyword}{typename}\ F>}
+\DoxyCodeLine{00700\ \ \ \textcolor{keyword}{class\ }Impl<ByMoveWrapper<R\_>,\ F>\ :\ \textcolor{keyword}{public}\ ActionInterface<F>\ \{}
+\DoxyCodeLine{00701\ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00702\ \ \ \ \ \textcolor{keyword}{typedef}\ \textcolor{keyword}{typename}\ Function<F>::Result\ Result;}
+\DoxyCodeLine{00703\ \ \ \ \ \textcolor{keyword}{typedef}\ \textcolor{keyword}{typename}\ Function<F>::ArgumentTuple\ ArgumentTuple;}
+\DoxyCodeLine{00704\ }
+\DoxyCodeLine{00705\ \ \ \ \ \textcolor{keyword}{explicit}\ Impl(\textcolor{keyword}{const}\ std::shared\_ptr<R>\&\ wrapper)}
+\DoxyCodeLine{00706\ \ \ \ \ \ \ \ \ :\ performed\_(false),\ wrapper\_(wrapper)\ \{\}}
+\DoxyCodeLine{00707\ }
+\DoxyCodeLine{00708\ \ \ \ \ Result\ Perform(\textcolor{keyword}{const}\ ArgumentTuple\&)\textcolor{keyword}{\ override\ }\{}
+\DoxyCodeLine{00709\ \ \ \ \ \ \ GTEST\_CHECK\_(!performed\_)}
+\DoxyCodeLine{00710\ \ \ \ \ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{}A\ ByMove()\ action\ should\ only\ be\ performed\ once."{}};}
+\DoxyCodeLine{00711\ \ \ \ \ \ \ performed\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00712\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ std::move(wrapper\_-\/>payload);}
+\DoxyCodeLine{00713\ \ \ \ \ \}}
+\DoxyCodeLine{00714\ }
+\DoxyCodeLine{00715\ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00716\ \ \ \ \ \textcolor{keywordtype}{bool}\ performed\_;}
+\DoxyCodeLine{00717\ \ \ \ \ \textcolor{keyword}{const}\ std::shared\_ptr<R>\ wrapper\_;}
+\DoxyCodeLine{00718\ \ \ \};}
+\DoxyCodeLine{00719\ }
+\DoxyCodeLine{00720\ \ \ \textcolor{keyword}{const}\ std::shared\_ptr<R>\ value\_;}
+\DoxyCodeLine{00721\ \};}
+\DoxyCodeLine{00722\ }
+\DoxyCodeLine{00723\ \textcolor{comment}{//\ Implements\ the\ ReturnNull()\ action.}}
+\DoxyCodeLine{00724\ \textcolor{keyword}{class\ }ReturnNullAction\ \{}
+\DoxyCodeLine{00725\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00726\ \ \ \textcolor{comment}{//\ Allows\ ReturnNull()\ to\ be\ used\ in\ any\ pointer-\/returning\ function.\ In\ C++11}}
+\DoxyCodeLine{00727\ \ \ \textcolor{comment}{//\ this\ is\ enforced\ by\ returning\ nullptr,\ and\ in\ non-\/C++11\ by\ asserting\ a}}
+\DoxyCodeLine{00728\ \ \ \textcolor{comment}{//\ pointer\ type\ on\ compile\ time.}}
+\DoxyCodeLine{00729\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Result,\ \textcolor{keyword}{typename}\ ArgumentTuple>}
+\DoxyCodeLine{00730\ \ \ \textcolor{keyword}{static}\ Result\ Perform(\textcolor{keyword}{const}\ ArgumentTuple\&)\ \{}
+\DoxyCodeLine{00731\ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00732\ \ \ \}}
+\DoxyCodeLine{00733\ \};}
+\DoxyCodeLine{00734\ }
+\DoxyCodeLine{00735\ \textcolor{comment}{//\ Implements\ the\ Return()\ action.}}
+\DoxyCodeLine{00736\ \textcolor{keyword}{class\ }ReturnVoidAction\ \{}
+\DoxyCodeLine{00737\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00738\ \ \ \textcolor{comment}{//\ Allows\ Return()\ to\ be\ used\ in\ any\ void-\/returning\ function.}}
+\DoxyCodeLine{00739\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Result,\ \textcolor{keyword}{typename}\ ArgumentTuple>}
+\DoxyCodeLine{00740\ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ Perform(\textcolor{keyword}{const}\ ArgumentTuple\&)\ \{}
+\DoxyCodeLine{00741\ \ \ \ \ \textcolor{keyword}{static\_assert}(std::is\_void<Result>::value,\ \textcolor{stringliteral}{"{}Result\ should\ be\ void."{}});}
+\DoxyCodeLine{00742\ \ \ \}}
+\DoxyCodeLine{00743\ \};}
+\DoxyCodeLine{00744\ }
+\DoxyCodeLine{00745\ \textcolor{comment}{//\ Implements\ the\ polymorphic\ ReturnRef(x)\ action,\ which\ can\ be\ used}}
+\DoxyCodeLine{00746\ \textcolor{comment}{//\ in\ any\ function\ that\ returns\ a\ reference\ to\ the\ type\ of\ x,}}
+\DoxyCodeLine{00747\ \textcolor{comment}{//\ regardless\ of\ the\ argument\ types.}}
+\DoxyCodeLine{00748\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00749\ \textcolor{keyword}{class\ }ReturnRefAction\ \{}
+\DoxyCodeLine{00750\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00751\ \ \ \textcolor{comment}{//\ Constructs\ a\ ReturnRefAction\ object\ from\ the\ reference\ to\ be\ returned.}}
+\DoxyCodeLine{00752\ \ \ \textcolor{keyword}{explicit}\ ReturnRefAction(T\&\ ref)\ :\ ref\_(ref)\ \{\}\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00753\ }
+\DoxyCodeLine{00754\ \ \ \textcolor{comment}{//\ This\ template\ type\ conversion\ operator\ allows\ ReturnRef(x)\ to\ be}}
+\DoxyCodeLine{00755\ \ \ \textcolor{comment}{//\ used\ in\ ANY\ function\ that\ returns\ a\ reference\ to\ x's\ type.}}
+\DoxyCodeLine{00756\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ F>}
+\DoxyCodeLine{00757\ \ \ \textcolor{keyword}{operator}\ Action<F>()\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00758\ \ \ \ \ \textcolor{keyword}{typedef}\ \textcolor{keyword}{typename}\ Function<F>::Result\ Result;}
+\DoxyCodeLine{00759\ \ \ \ \ \textcolor{comment}{//\ Asserts\ that\ the\ function\ return\ type\ is\ a\ reference.\ \ This}}
+\DoxyCodeLine{00760\ \ \ \ \ \textcolor{comment}{//\ catches\ the\ user\ error\ of\ using\ ReturnRef(x)\ when\ Return(x)}}
+\DoxyCodeLine{00761\ \ \ \ \ \textcolor{comment}{//\ should\ be\ used,\ and\ generates\ some\ helpful\ error\ message.}}
+\DoxyCodeLine{00762\ \ \ \ \ GTEST\_COMPILE\_ASSERT\_(std::is\_reference<Result>::value,}
+\DoxyCodeLine{00763\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ use\_Return\_instead\_of\_ReturnRef\_to\_return\_a\_value);}
+\DoxyCodeLine{00764\ \ \ \ \ \textcolor{keywordflow}{return}\ Action<F>(\textcolor{keyword}{new}\ Impl<F>(ref\_));}
+\DoxyCodeLine{00765\ \ \ \}}
+\DoxyCodeLine{00766\ }
+\DoxyCodeLine{00767\ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00768\ \ \ \textcolor{comment}{//\ Implements\ the\ ReturnRef(x)\ action\ for\ a\ particular\ function\ type\ F.}}
+\DoxyCodeLine{00769\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ F>}
+\DoxyCodeLine{00770\ \ \ \textcolor{keyword}{class\ }Impl\ :\ \textcolor{keyword}{public}\ ActionInterface<F>\ \{}
+\DoxyCodeLine{00771\ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00772\ \ \ \ \ \textcolor{keyword}{typedef}\ \textcolor{keyword}{typename}\ Function<F>::Result\ Result;}
+\DoxyCodeLine{00773\ \ \ \ \ \textcolor{keyword}{typedef}\ \textcolor{keyword}{typename}\ Function<F>::ArgumentTuple\ ArgumentTuple;}
+\DoxyCodeLine{00774\ }
+\DoxyCodeLine{00775\ \ \ \ \ \textcolor{keyword}{explicit}\ Impl(T\&\ ref)\ :\ ref\_(ref)\ \{\}\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00776\ }
+\DoxyCodeLine{00777\ \ \ \ \ Result\ Perform(\textcolor{keyword}{const}\ ArgumentTuple\&)\textcolor{keyword}{\ override\ }\{\ \textcolor{keywordflow}{return}\ ref\_;\ \}}
+\DoxyCodeLine{00778\ }
+\DoxyCodeLine{00779\ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00780\ \ \ \ \ T\&\ ref\_;}
+\DoxyCodeLine{00781\ \ \ \};}
+\DoxyCodeLine{00782\ }
+\DoxyCodeLine{00783\ \ \ T\&\ ref\_;}
+\DoxyCodeLine{00784\ \};}
+\DoxyCodeLine{00785\ }
+\DoxyCodeLine{00786\ \textcolor{comment}{//\ Implements\ the\ polymorphic\ ReturnRefOfCopy(x)\ action,\ which\ can\ be}}
+\DoxyCodeLine{00787\ \textcolor{comment}{//\ used\ in\ any\ function\ that\ returns\ a\ reference\ to\ the\ type\ of\ x,}}
+\DoxyCodeLine{00788\ \textcolor{comment}{//\ regardless\ of\ the\ argument\ types.}}
+\DoxyCodeLine{00789\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00790\ \textcolor{keyword}{class\ }ReturnRefOfCopyAction\ \{}
+\DoxyCodeLine{00791\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00792\ \ \ \textcolor{comment}{//\ Constructs\ a\ ReturnRefOfCopyAction\ object\ from\ the\ reference\ to}}
+\DoxyCodeLine{00793\ \ \ \textcolor{comment}{//\ be\ returned.}}
+\DoxyCodeLine{00794\ \ \ \textcolor{keyword}{explicit}\ ReturnRefOfCopyAction(\textcolor{keyword}{const}\ T\&\ value)\ :\ value\_(value)\ \{\}\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00795\ }
+\DoxyCodeLine{00796\ \ \ \textcolor{comment}{//\ This\ template\ type\ conversion\ operator\ allows\ ReturnRefOfCopy(x)\ to\ be}}
+\DoxyCodeLine{00797\ \ \ \textcolor{comment}{//\ used\ in\ ANY\ function\ that\ returns\ a\ reference\ to\ x's\ type.}}
+\DoxyCodeLine{00798\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ F>}
+\DoxyCodeLine{00799\ \ \ \textcolor{keyword}{operator}\ Action<F>()\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00800\ \ \ \ \ \textcolor{keyword}{typedef}\ \textcolor{keyword}{typename}\ Function<F>::Result\ Result;}
+\DoxyCodeLine{00801\ \ \ \ \ \textcolor{comment}{//\ Asserts\ that\ the\ function\ return\ type\ is\ a\ reference.\ \ This}}
+\DoxyCodeLine{00802\ \ \ \ \ \textcolor{comment}{//\ catches\ the\ user\ error\ of\ using\ ReturnRefOfCopy(x)\ when\ Return(x)}}
+\DoxyCodeLine{00803\ \ \ \ \ \textcolor{comment}{//\ should\ be\ used,\ and\ generates\ some\ helpful\ error\ message.}}
+\DoxyCodeLine{00804\ \ \ \ \ GTEST\_COMPILE\_ASSERT\_(}
+\DoxyCodeLine{00805\ \ \ \ \ \ \ \ \ std::is\_reference<Result>::value,}
+\DoxyCodeLine{00806\ \ \ \ \ \ \ \ \ use\_Return\_instead\_of\_ReturnRefOfCopy\_to\_return\_a\_value);}
+\DoxyCodeLine{00807\ \ \ \ \ \textcolor{keywordflow}{return}\ Action<F>(\textcolor{keyword}{new}\ Impl<F>(value\_));}
+\DoxyCodeLine{00808\ \ \ \}}
+\DoxyCodeLine{00809\ }
+\DoxyCodeLine{00810\ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00811\ \ \ \textcolor{comment}{//\ Implements\ the\ ReturnRefOfCopy(x)\ action\ for\ a\ particular\ function\ type\ F.}}
+\DoxyCodeLine{00812\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ F>}
+\DoxyCodeLine{00813\ \ \ \textcolor{keyword}{class\ }Impl\ :\ \textcolor{keyword}{public}\ ActionInterface<F>\ \{}
+\DoxyCodeLine{00814\ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00815\ \ \ \ \ \textcolor{keyword}{typedef}\ \textcolor{keyword}{typename}\ Function<F>::Result\ Result;}
+\DoxyCodeLine{00816\ \ \ \ \ \textcolor{keyword}{typedef}\ \textcolor{keyword}{typename}\ Function<F>::ArgumentTuple\ ArgumentTuple;}
+\DoxyCodeLine{00817\ }
+\DoxyCodeLine{00818\ \ \ \ \ \textcolor{keyword}{explicit}\ Impl(\textcolor{keyword}{const}\ T\&\ value)\ :\ value\_(value)\ \{\}\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00819\ }
+\DoxyCodeLine{00820\ \ \ \ \ Result\ Perform(\textcolor{keyword}{const}\ ArgumentTuple\&)\textcolor{keyword}{\ override\ }\{\ \textcolor{keywordflow}{return}\ value\_;\ \}}
+\DoxyCodeLine{00821\ }
+\DoxyCodeLine{00822\ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00823\ \ \ \ \ T\ value\_;}
+\DoxyCodeLine{00824\ \ \ \};}
+\DoxyCodeLine{00825\ }
+\DoxyCodeLine{00826\ \ \ \textcolor{keyword}{const}\ T\ value\_;}
+\DoxyCodeLine{00827\ \};}
+\DoxyCodeLine{00828\ }
+\DoxyCodeLine{00829\ \textcolor{comment}{//\ Implements\ the\ polymorphic\ ReturnRoundRobin(v)\ action,\ which\ can\ be}}
+\DoxyCodeLine{00830\ \textcolor{comment}{//\ used\ in\ any\ function\ that\ returns\ the\ element\_type\ of\ v.}}
+\DoxyCodeLine{00831\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00832\ \textcolor{keyword}{class\ }ReturnRoundRobinAction\ \{}
+\DoxyCodeLine{00833\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00834\ \ \ \textcolor{keyword}{explicit}\ ReturnRoundRobinAction(std::vector<T>\ values)\ \{}
+\DoxyCodeLine{00835\ \ \ \ \ GTEST\_CHECK\_(!values.empty())}
+\DoxyCodeLine{00836\ \ \ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{}ReturnRoundRobin\ requires\ at\ least\ one\ element."{}};}
+\DoxyCodeLine{00837\ \ \ \ \ state\_-\/>values\ =\ std::move(values);}
+\DoxyCodeLine{00838\ \ \ \}}
+\DoxyCodeLine{00839\ }
+\DoxyCodeLine{00840\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...\ Args>}
+\DoxyCodeLine{00841\ \ \ T\ operator()(Args\&\&...)\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00842\ \ \ \ \ \ \textcolor{keywordflow}{return}\ state\_-\/>Next();}
+\DoxyCodeLine{00843\ \ \ \}}
+\DoxyCodeLine{00844\ }
+\DoxyCodeLine{00845\ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00846\ \ \ \textcolor{keyword}{struct\ }State\ \{}
+\DoxyCodeLine{00847\ \ \ \ \ T\ Next()\ \{}
+\DoxyCodeLine{00848\ \ \ \ \ \ \ T\ ret\_val\ =\ values[i++];}
+\DoxyCodeLine{00849\ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (i\ ==\ values.size())\ i\ =\ 0;}
+\DoxyCodeLine{00850\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ ret\_val;}
+\DoxyCodeLine{00851\ \ \ \ \ \}}
+\DoxyCodeLine{00852\ }
+\DoxyCodeLine{00853\ \ \ \ \ std::vector<T>\ values;}
+\DoxyCodeLine{00854\ \ \ \ \ \textcolor{keywordtype}{size\_t}\ i\ =\ 0;}
+\DoxyCodeLine{00855\ \ \ \};}
+\DoxyCodeLine{00856\ \ \ std::shared\_ptr<State>\ state\_\ =\ std::make\_shared<State>();}
+\DoxyCodeLine{00857\ \};}
+\DoxyCodeLine{00858\ }
+\DoxyCodeLine{00859\ \textcolor{comment}{//\ Implements\ the\ polymorphic\ DoDefault()\ action.}}
+\DoxyCodeLine{00860\ \textcolor{keyword}{class\ }DoDefaultAction\ \{}
+\DoxyCodeLine{00861\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00862\ \ \ \textcolor{comment}{//\ This\ template\ type\ conversion\ operator\ allows\ DoDefault()\ to\ be}}
+\DoxyCodeLine{00863\ \ \ \textcolor{comment}{//\ used\ in\ any\ function.}}
+\DoxyCodeLine{00864\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ F>}
+\DoxyCodeLine{00865\ \ \ \textcolor{keyword}{operator}\ Action<F>()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ Action<F>();\ \}\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00866\ \};}
+\DoxyCodeLine{00867\ }
+\DoxyCodeLine{00868\ \textcolor{comment}{//\ Implements\ the\ Assign\ action\ to\ set\ a\ given\ pointer\ referent\ to\ a}}
+\DoxyCodeLine{00869\ \textcolor{comment}{//\ particular\ value.}}
+\DoxyCodeLine{00870\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T1,\ \textcolor{keyword}{typename}\ T2>}
+\DoxyCodeLine{00871\ \textcolor{keyword}{class\ }AssignAction\ \{}
+\DoxyCodeLine{00872\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00873\ \ \ AssignAction(T1*\ ptr,\ T2\ value)\ :\ ptr\_(ptr),\ value\_(value)\ \{\}}
+\DoxyCodeLine{00874\ }
+\DoxyCodeLine{00875\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Result,\ \textcolor{keyword}{typename}\ ArgumentTuple>}
+\DoxyCodeLine{00876\ \ \ \textcolor{keywordtype}{void}\ Perform(\textcolor{keyword}{const}\ ArgumentTuple\&\ \textcolor{comment}{/*\ args\ */})\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00877\ \ \ \ \ *ptr\_\ =\ value\_;}
+\DoxyCodeLine{00878\ \ \ \}}
+\DoxyCodeLine{00879\ }
+\DoxyCodeLine{00880\ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00881\ \ \ T1*\ \textcolor{keyword}{const}\ ptr\_;}
+\DoxyCodeLine{00882\ \ \ \textcolor{keyword}{const}\ T2\ value\_;}
+\DoxyCodeLine{00883\ \};}
+\DoxyCodeLine{00884\ }
+\DoxyCodeLine{00885\ \textcolor{preprocessor}{\#if\ !GTEST\_OS\_WINDOWS\_MOBILE}}
+\DoxyCodeLine{00886\ }
+\DoxyCodeLine{00887\ \textcolor{comment}{//\ Implements\ the\ SetErrnoAndReturn\ action\ to\ simulate\ return\ from}}
+\DoxyCodeLine{00888\ \textcolor{comment}{//\ various\ system\ calls\ and\ libc\ functions.}}
+\DoxyCodeLine{00889\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00890\ \textcolor{keyword}{class\ }SetErrnoAndReturnAction\ \{}
+\DoxyCodeLine{00891\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00892\ \ \ SetErrnoAndReturnAction(\textcolor{keywordtype}{int}\ errno\_value,\ T\ result)}
+\DoxyCodeLine{00893\ \ \ \ \ \ \ :\ errno\_(errno\_value),}
+\DoxyCodeLine{00894\ \ \ \ \ \ \ \ \ result\_(result)\ \{\}}
+\DoxyCodeLine{00895\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Result,\ \textcolor{keyword}{typename}\ ArgumentTuple>}
+\DoxyCodeLine{00896\ \ \ Result\ Perform(\textcolor{keyword}{const}\ ArgumentTuple\&\ \textcolor{comment}{/*\ args\ */})\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00897\ \ \ \ \ errno\ =\ errno\_;}
+\DoxyCodeLine{00898\ \ \ \ \ \textcolor{keywordflow}{return}\ result\_;}
+\DoxyCodeLine{00899\ \ \ \}}
+\DoxyCodeLine{00900\ }
+\DoxyCodeLine{00901\ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00902\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ errno\_;}
+\DoxyCodeLine{00903\ \ \ \textcolor{keyword}{const}\ T\ result\_;}
+\DoxyCodeLine{00904\ \};}
+\DoxyCodeLine{00905\ }
+\DoxyCodeLine{00906\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ !GTEST\_OS\_WINDOWS\_MOBILE}}
+\DoxyCodeLine{00907\ }
+\DoxyCodeLine{00908\ \textcolor{comment}{//\ Implements\ the\ SetArgumentPointee<N>(x)\ action\ for\ any\ function}}
+\DoxyCodeLine{00909\ \textcolor{comment}{//\ whose\ N-\/th\ argument\ (0-\/based)\ is\ a\ pointer\ to\ x's\ type.}}
+\DoxyCodeLine{00910\ \textcolor{keyword}{template}\ <\textcolor{keywordtype}{size\_t}\ N,\ \textcolor{keyword}{typename}\ A,\ \textcolor{keyword}{typename}\ =\ \textcolor{keywordtype}{void}>}
+\DoxyCodeLine{00911\ \textcolor{keyword}{struct\ }SetArgumentPointeeAction\ \{}
+\DoxyCodeLine{00912\ \ \ A\ value;}
+\DoxyCodeLine{00913\ }
+\DoxyCodeLine{00914\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...\ Args>}
+\DoxyCodeLine{00915\ \ \ \textcolor{keywordtype}{void}\ operator()(\textcolor{keyword}{const}\ Args\&...\ args)\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00916\ \ \ \ \ *::std::get<N>(std::tie(args...))\ =\ value;}
+\DoxyCodeLine{00917\ \ \ \}}
+\DoxyCodeLine{00918\ \};}
+\DoxyCodeLine{00919\ }
+\DoxyCodeLine{00920\ \textcolor{comment}{//\ Implements\ the\ Invoke(object\_ptr,\ \&Class::Method)\ action.}}
+\DoxyCodeLine{00921\ \textcolor{keyword}{template}\ <\textcolor{keyword}{class}\ Class,\ \textcolor{keyword}{typename}\ MethodPtr>}
+\DoxyCodeLine{00922\ \textcolor{keyword}{struct\ }InvokeMethodAction\ \{}
+\DoxyCodeLine{00923\ \ \ Class*\ \textcolor{keyword}{const}\ obj\_ptr;}
+\DoxyCodeLine{00924\ \ \ \textcolor{keyword}{const}\ MethodPtr\ method\_ptr;}
+\DoxyCodeLine{00925\ }
+\DoxyCodeLine{00926\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...\ Args>}
+\DoxyCodeLine{00927\ \ \ \textcolor{keyword}{auto}\ operator()(Args\&\&...\ args)\ \textcolor{keyword}{const}}
+\DoxyCodeLine{00928\ \ \ \ \ \ \ -\/>\ \textcolor{keyword}{decltype}((obj\_ptr-\/>*method\_ptr)(std::forward<Args>(args)...))\ \{}
+\DoxyCodeLine{00929\ \ \ \ \ \textcolor{keywordflow}{return}\ (obj\_ptr-\/>*method\_ptr)(std::forward<Args>(args)...);}
+\DoxyCodeLine{00930\ \ \ \}}
+\DoxyCodeLine{00931\ \};}
+\DoxyCodeLine{00932\ }
+\DoxyCodeLine{00933\ \textcolor{comment}{//\ Implements\ the\ InvokeWithoutArgs(f)\ action.\ \ The\ template\ argument}}
+\DoxyCodeLine{00934\ \textcolor{comment}{//\ FunctionImpl\ is\ the\ implementation\ type\ of\ f,\ which\ can\ be\ either\ a}}
+\DoxyCodeLine{00935\ \textcolor{comment}{//\ function\ pointer\ or\ a\ functor.\ \ InvokeWithoutArgs(f)\ can\ be\ used\ as\ an}}
+\DoxyCodeLine{00936\ \textcolor{comment}{//\ Action<F>\ as\ long\ as\ f's\ type\ is\ compatible\ with\ F.}}
+\DoxyCodeLine{00937\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ FunctionImpl>}
+\DoxyCodeLine{00938\ \textcolor{keyword}{struct\ }InvokeWithoutArgsAction\ \{}
+\DoxyCodeLine{00939\ \ \ FunctionImpl\ function\_impl;}
+\DoxyCodeLine{00940\ }
+\DoxyCodeLine{00941\ \ \ \textcolor{comment}{//\ Allows\ InvokeWithoutArgs(f)\ to\ be\ used\ as\ any\ action\ whose\ type\ is}}
+\DoxyCodeLine{00942\ \ \ \textcolor{comment}{//\ compatible\ with\ f.}}
+\DoxyCodeLine{00943\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...\ Args>}
+\DoxyCodeLine{00944\ \ \ \textcolor{keyword}{auto}\ operator()(\textcolor{keyword}{const}\ Args\&...)\ -\/>\ \textcolor{keyword}{decltype}(function\_impl())\ \{}
+\DoxyCodeLine{00945\ \ \ \ \ \textcolor{keywordflow}{return}\ function\_impl();}
+\DoxyCodeLine{00946\ \ \ \}}
+\DoxyCodeLine{00947\ \};}
+\DoxyCodeLine{00948\ }
+\DoxyCodeLine{00949\ \textcolor{comment}{//\ Implements\ the\ InvokeWithoutArgs(object\_ptr,\ \&Class::Method)\ action.}}
+\DoxyCodeLine{00950\ \textcolor{keyword}{template}\ <\textcolor{keyword}{class}\ Class,\ \textcolor{keyword}{typename}\ MethodPtr>}
+\DoxyCodeLine{00951\ \textcolor{keyword}{struct\ }InvokeMethodWithoutArgsAction\ \{}
+\DoxyCodeLine{00952\ \ \ Class*\ \textcolor{keyword}{const}\ obj\_ptr;}
+\DoxyCodeLine{00953\ \ \ \textcolor{keyword}{const}\ MethodPtr\ method\_ptr;}
+\DoxyCodeLine{00954\ }
+\DoxyCodeLine{00955\ \ \ \textcolor{keyword}{using\ }ReturnType\ =}
+\DoxyCodeLine{00956\ \ \ \ \ \ \ \textcolor{keyword}{decltype}((std::declval<Class*>()-\/>*std::declval<MethodPtr>())());}
+\DoxyCodeLine{00957\ }
+\DoxyCodeLine{00958\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...\ Args>}
+\DoxyCodeLine{00959\ \ \ ReturnType\ operator()(\textcolor{keyword}{const}\ Args\&...)\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00960\ \ \ \ \ \textcolor{keywordflow}{return}\ (obj\_ptr-\/>*method\_ptr)();}
+\DoxyCodeLine{00961\ \ \ \}}
+\DoxyCodeLine{00962\ \};}
+\DoxyCodeLine{00963\ }
+\DoxyCodeLine{00964\ \textcolor{comment}{//\ Implements\ the\ IgnoreResult(action)\ action.}}
+\DoxyCodeLine{00965\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ A>}
+\DoxyCodeLine{00966\ \textcolor{keyword}{class\ }IgnoreResultAction\ \{}
+\DoxyCodeLine{00967\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00968\ \ \ \textcolor{keyword}{explicit}\ IgnoreResultAction(\textcolor{keyword}{const}\ A\&\ action)\ :\ action\_(action)\ \{\}}
+\DoxyCodeLine{00969\ }
+\DoxyCodeLine{00970\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ F>}
+\DoxyCodeLine{00971\ \ \ \textcolor{keyword}{operator}\ Action<F>()\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00972\ \ \ \ \ \textcolor{comment}{//\ Assert\ statement\ belongs\ here\ because\ this\ is\ the\ best\ place\ to\ verify}}
+\DoxyCodeLine{00973\ \ \ \ \ \textcolor{comment}{//\ conditions\ on\ F.\ It\ produces\ the\ clearest\ error\ messages}}
+\DoxyCodeLine{00974\ \ \ \ \ \textcolor{comment}{//\ in\ most\ compilers.}}
+\DoxyCodeLine{00975\ \ \ \ \ \textcolor{comment}{//\ Impl\ really\ belongs\ in\ this\ scope\ as\ a\ local\ class\ but\ can't}}
+\DoxyCodeLine{00976\ \ \ \ \ \textcolor{comment}{//\ because\ MSVC\ produces\ duplicate\ symbols\ in\ different\ translation\ units}}
+\DoxyCodeLine{00977\ \ \ \ \ \textcolor{comment}{//\ in\ this\ case.\ Until\ MS\ fixes\ that\ bug\ we\ put\ Impl\ into\ the\ class\ scope}}
+\DoxyCodeLine{00978\ \ \ \ \ \textcolor{comment}{//\ and\ put\ the\ typedef\ both\ here\ (for\ use\ in\ assert\ statement)\ and}}
+\DoxyCodeLine{00979\ \ \ \ \ \textcolor{comment}{//\ in\ the\ Impl\ class.\ But\ both\ definitions\ must\ be\ the\ same.}}
+\DoxyCodeLine{00980\ \ \ \ \ \textcolor{keyword}{typedef}\ \textcolor{keyword}{typename}\ internal::Function<F>::Result\ Result;}
+\DoxyCodeLine{00981\ }
+\DoxyCodeLine{00982\ \ \ \ \ \textcolor{comment}{//\ Asserts\ at\ compile\ time\ that\ F\ returns\ void.}}
+\DoxyCodeLine{00983\ \ \ \ \ \textcolor{keyword}{static\_assert}(std::is\_void<Result>::value,\ \textcolor{stringliteral}{"{}Result\ type\ should\ be\ void."{}});}
+\DoxyCodeLine{00984\ }
+\DoxyCodeLine{00985\ \ \ \ \ \textcolor{keywordflow}{return}\ Action<F>(\textcolor{keyword}{new}\ Impl<F>(action\_));}
+\DoxyCodeLine{00986\ \ \ \}}
+\DoxyCodeLine{00987\ }
+\DoxyCodeLine{00988\ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00989\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ F>}
+\DoxyCodeLine{00990\ \ \ \textcolor{keyword}{class\ }Impl\ :\ \textcolor{keyword}{public}\ ActionInterface<F>\ \{}
+\DoxyCodeLine{00991\ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00992\ \ \ \ \ \textcolor{keyword}{typedef}\ \textcolor{keyword}{typename}\ internal::Function<F>::Result\ Result;}
+\DoxyCodeLine{00993\ \ \ \ \ \textcolor{keyword}{typedef}\ \textcolor{keyword}{typename}\ internal::Function<F>::ArgumentTuple\ ArgumentTuple;}
+\DoxyCodeLine{00994\ }
+\DoxyCodeLine{00995\ \ \ \ \ \textcolor{keyword}{explicit}\ Impl(\textcolor{keyword}{const}\ A\&\ action)\ :\ action\_(action)\ \{\}}
+\DoxyCodeLine{00996\ }
+\DoxyCodeLine{00997\ \ \ \ \ \textcolor{keywordtype}{void}\ Perform(\textcolor{keyword}{const}\ ArgumentTuple\&\ args)\textcolor{keyword}{\ override\ }\{}
+\DoxyCodeLine{00998\ \ \ \ \ \ \ \textcolor{comment}{//\ Performs\ the\ action\ and\ ignores\ its\ result.}}
+\DoxyCodeLine{00999\ \ \ \ \ \ \ action\_.Perform(args);}
+\DoxyCodeLine{01000\ \ \ \ \ \}}
+\DoxyCodeLine{01001\ }
+\DoxyCodeLine{01002\ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{01003\ \ \ \ \ \textcolor{comment}{//\ Type\ OriginalFunction\ is\ the\ same\ as\ F\ except\ that\ its\ return}}
+\DoxyCodeLine{01004\ \ \ \ \ \textcolor{comment}{//\ type\ is\ IgnoredValue.}}
+\DoxyCodeLine{01005\ \ \ \ \ \textcolor{keyword}{typedef}\ \textcolor{keyword}{typename}\ internal::Function<F>::MakeResultIgnoredValue}
+\DoxyCodeLine{01006\ \ \ \ \ \ \ \ \ OriginalFunction;}
+\DoxyCodeLine{01007\ }
+\DoxyCodeLine{01008\ \ \ \ \ \textcolor{keyword}{const}\ Action<OriginalFunction>\ action\_;}
+\DoxyCodeLine{01009\ \ \ \};}
+\DoxyCodeLine{01010\ }
+\DoxyCodeLine{01011\ \ \ \textcolor{keyword}{const}\ A\ action\_;}
+\DoxyCodeLine{01012\ \};}
+\DoxyCodeLine{01013\ }
+\DoxyCodeLine{01014\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ InnerAction,\ \textcolor{keywordtype}{size\_t}...\ I>}
+\DoxyCodeLine{01015\ \textcolor{keyword}{struct\ }WithArgsAction\ \{}
+\DoxyCodeLine{01016\ \ \ InnerAction\ action;}
+\DoxyCodeLine{01017\ }
+\DoxyCodeLine{01018\ \ \ \textcolor{comment}{//\ The\ inner\ action\ could\ be\ anything\ convertible\ to\ Action<X>.}}
+\DoxyCodeLine{01019\ \ \ \textcolor{comment}{//\ We\ use\ the\ conversion\ operator\ to\ detect\ the\ signature\ of\ the\ inner\ Action.}}
+\DoxyCodeLine{01020\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ R,\ \textcolor{keyword}{typename}...\ Args>}
+\DoxyCodeLine{01021\ \ \ \textcolor{keyword}{operator}\ Action<R(Args...)>()\ \textcolor{keyword}{const}\ \{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{01022\ \ \ \ \ \textcolor{keyword}{using\ }TupleType\ =\ std::tuple<Args...>;}
+\DoxyCodeLine{01023\ \ \ \ \ Action<R(\textcolor{keyword}{typename}\ std::tuple\_element<I,\ TupleType>::type...)>}
+\DoxyCodeLine{01024\ \ \ \ \ \ \ \ \ converted(action);}
+\DoxyCodeLine{01025\ }
+\DoxyCodeLine{01026\ \ \ \ \ \textcolor{keywordflow}{return}\ [converted](Args...\ args)\ -\/>\ R\ \{}
+\DoxyCodeLine{01027\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ converted.Perform(std::forward\_as\_tuple(}
+\DoxyCodeLine{01028\ \ \ \ \ \ \ \ \ std::get<I>(std::forward\_as\_tuple(std::forward<Args>(args)...))...));}
+\DoxyCodeLine{01029\ \ \ \ \ \};}
+\DoxyCodeLine{01030\ \ \ \}}
+\DoxyCodeLine{01031\ \};}
+\DoxyCodeLine{01032\ }
+\DoxyCodeLine{01033\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...\ Actions>}
+\DoxyCodeLine{01034\ \textcolor{keyword}{struct\ }DoAllAction\ \{}
+\DoxyCodeLine{01035\ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{01036\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{01037\ \ \ \textcolor{keyword}{using\ }NonFinalType\ =}
+\DoxyCodeLine{01038\ \ \ \ \ \ \ \textcolor{keyword}{typename}\ std::conditional<std::is\_scalar<T>::value,\ T,\ \textcolor{keyword}{const}\ T\&>::type;}
+\DoxyCodeLine{01039\ }
+\DoxyCodeLine{01040\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ ActionT,\ \textcolor{keywordtype}{size\_t}...\ I>}
+\DoxyCodeLine{01041\ \ \ std::vector<ActionT>\ Convert(IndexSequence<I...>)\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{01042\ \ \ \ \ \textcolor{keywordflow}{return}\ \{ActionT(std::get<I>(actions))...\};}
+\DoxyCodeLine{01043\ \ \ \}}
+\DoxyCodeLine{01044\ }
+\DoxyCodeLine{01045\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{01046\ \ \ std::tuple<Actions...>\ actions;}
+\DoxyCodeLine{01047\ }
+\DoxyCodeLine{01048\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ R,\ \textcolor{keyword}{typename}...\ Args>}
+\DoxyCodeLine{01049\ \ \ \textcolor{keyword}{operator}\ Action<R(Args...)>()\ \textcolor{keyword}{const}\ \{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{01050\ \ \ \ \ \textcolor{keyword}{struct\ }Op\ \{}
+\DoxyCodeLine{01051\ \ \ \ \ \ \ std::vector<Action<void(NonFinalType<Args>...)>>\ converted;}
+\DoxyCodeLine{01052\ \ \ \ \ \ \ Action<R(Args...)>\ last;}
+\DoxyCodeLine{01053\ \ \ \ \ \ \ R\ operator()(Args...\ args)\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{01054\ \ \ \ \ \ \ \ \ \textcolor{keyword}{auto}\ tuple\_args\ =\ std::forward\_as\_tuple(std::forward<Args>(args)...);}
+\DoxyCodeLine{01055\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keyword}{auto}\&\ a\ :\ converted)\ \{}
+\DoxyCodeLine{01056\ \ \ \ \ \ \ \ \ \ \ a.Perform(tuple\_args);}
+\DoxyCodeLine{01057\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01058\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ last.Perform(std::move(tuple\_args));}
+\DoxyCodeLine{01059\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{01060\ \ \ \ \ \};}
+\DoxyCodeLine{01061\ \ \ \ \ \textcolor{keywordflow}{return}\ Op\{Convert<Action<void(NonFinalType<Args>...)>>(}
+\DoxyCodeLine{01062\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ MakeIndexSequence<\textcolor{keyword}{sizeof}...(Actions)\ -\/\ 1>()),}
+\DoxyCodeLine{01063\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::get<\textcolor{keyword}{sizeof}...(Actions)\ -\/\ 1>(actions)\};}
+\DoxyCodeLine{01064\ \ \ \}}
+\DoxyCodeLine{01065\ \};}
+\DoxyCodeLine{01066\ }
+\DoxyCodeLine{01067\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T,\ \textcolor{keyword}{typename}...\ Params>}
+\DoxyCodeLine{01068\ \textcolor{keyword}{struct\ }ReturnNewAction\ \{}
+\DoxyCodeLine{01069\ \ \ T*\ operator()()\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{01070\ \ \ \ \ \textcolor{keywordflow}{return}\ internal::Apply(}
+\DoxyCodeLine{01071\ \ \ \ \ \ \ \ \ [](\textcolor{keyword}{const}\ Params\&...\ unpacked\_params)\ \{}
+\DoxyCodeLine{01072\ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{new}\ T(unpacked\_params...);}
+\DoxyCodeLine{01073\ \ \ \ \ \ \ \ \ \},}
+\DoxyCodeLine{01074\ \ \ \ \ \ \ \ \ params);}
+\DoxyCodeLine{01075\ \ \ \}}
+\DoxyCodeLine{01076\ \ \ std::tuple<Params...>\ params;}
+\DoxyCodeLine{01077\ \};}
+\DoxyCodeLine{01078\ }
+\DoxyCodeLine{01079\ \textcolor{keyword}{template}\ <\textcolor{keywordtype}{size\_t}\ k>}
+\DoxyCodeLine{01080\ \textcolor{keyword}{struct\ }ReturnArgAction\ \{}
+\DoxyCodeLine{01081\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...\ Args>}
+\DoxyCodeLine{01082\ \ \ \textcolor{keyword}{auto}\ operator()(\textcolor{keyword}{const}\ Args\&...\ args)\ \textcolor{keyword}{const}\ -\/>}
+\DoxyCodeLine{01083\ \ \ \ \ \ \ \textcolor{keyword}{typename}\ std::tuple\_element<k,\ std::tuple<Args...>>::type\ \{}
+\DoxyCodeLine{01084\ \ \ \ \ \textcolor{keywordflow}{return}\ std::get<k>(std::tie(args...));}
+\DoxyCodeLine{01085\ \ \ \}}
+\DoxyCodeLine{01086\ \};}
+\DoxyCodeLine{01087\ }
+\DoxyCodeLine{01088\ \textcolor{keyword}{template}\ <\textcolor{keywordtype}{size\_t}\ k,\ \textcolor{keyword}{typename}\ Ptr>}
+\DoxyCodeLine{01089\ \textcolor{keyword}{struct\ }SaveArgAction\ \{}
+\DoxyCodeLine{01090\ \ \ Ptr\ pointer;}
+\DoxyCodeLine{01091\ }
+\DoxyCodeLine{01092\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...\ Args>}
+\DoxyCodeLine{01093\ \ \ \textcolor{keywordtype}{void}\ operator()(\textcolor{keyword}{const}\ Args\&...\ args)\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{01094\ \ \ \ \ *pointer\ =\ std::get<k>(std::tie(args...));}
+\DoxyCodeLine{01095\ \ \ \}}
+\DoxyCodeLine{01096\ \};}
+\DoxyCodeLine{01097\ }
+\DoxyCodeLine{01098\ \textcolor{keyword}{template}\ <\textcolor{keywordtype}{size\_t}\ k,\ \textcolor{keyword}{typename}\ Ptr>}
+\DoxyCodeLine{01099\ \textcolor{keyword}{struct\ }SaveArgPointeeAction\ \{}
+\DoxyCodeLine{01100\ \ \ Ptr\ pointer;}
+\DoxyCodeLine{01101\ }
+\DoxyCodeLine{01102\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...\ Args>}
+\DoxyCodeLine{01103\ \ \ \textcolor{keywordtype}{void}\ operator()(\textcolor{keyword}{const}\ Args\&...\ args)\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{01104\ \ \ \ \ *pointer\ =\ *std::get<k>(std::tie(args...));}
+\DoxyCodeLine{01105\ \ \ \}}
+\DoxyCodeLine{01106\ \};}
+\DoxyCodeLine{01107\ }
+\DoxyCodeLine{01108\ \textcolor{keyword}{template}\ <\textcolor{keywordtype}{size\_t}\ k,\ \textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{01109\ \textcolor{keyword}{struct\ }SetArgRefereeAction\ \{}
+\DoxyCodeLine{01110\ \ \ T\ value;}
+\DoxyCodeLine{01111\ }
+\DoxyCodeLine{01112\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...\ Args>}
+\DoxyCodeLine{01113\ \ \ \textcolor{keywordtype}{void}\ operator()(Args\&\&...\ args)\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{01114\ \ \ \ \ \textcolor{keyword}{using\ }argk\_type\ =}
+\DoxyCodeLine{01115\ \ \ \ \ \ \ \ \ typename\ ::std::tuple\_element<k,\ std::tuple<Args...>>::type;}
+\DoxyCodeLine{01116\ \ \ \ \ \textcolor{keyword}{static\_assert}(std::is\_lvalue\_reference<argk\_type>::value,}
+\DoxyCodeLine{01117\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}Argument\ must\ be\ a\ reference\ type."{}});}
+\DoxyCodeLine{01118\ \ \ \ \ std::get<k>(std::tie(args...))\ =\ value;}
+\DoxyCodeLine{01119\ \ \ \}}
+\DoxyCodeLine{01120\ \};}
+\DoxyCodeLine{01121\ }
+\DoxyCodeLine{01122\ \textcolor{keyword}{template}\ <\textcolor{keywordtype}{size\_t}\ k,\ \textcolor{keyword}{typename}\ I1,\ \textcolor{keyword}{typename}\ I2>}
+\DoxyCodeLine{01123\ \textcolor{keyword}{struct\ }SetArrayArgumentAction\ \{}
+\DoxyCodeLine{01124\ \ \ I1\ first;}
+\DoxyCodeLine{01125\ \ \ I2\ last;}
+\DoxyCodeLine{01126\ }
+\DoxyCodeLine{01127\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...\ Args>}
+\DoxyCodeLine{01128\ \ \ \textcolor{keywordtype}{void}\ operator()(\textcolor{keyword}{const}\ Args\&...\ args)\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{01129\ \ \ \ \ \textcolor{keyword}{auto}\ value\ =\ std::get<k>(std::tie(args...));}
+\DoxyCodeLine{01130\ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keyword}{auto}\ it\ =\ first;\ it\ !=\ last;\ ++it,\ (void)++value)\ \{}
+\DoxyCodeLine{01131\ \ \ \ \ \ \ *value\ =\ *it;}
+\DoxyCodeLine{01132\ \ \ \ \ \}}
+\DoxyCodeLine{01133\ \ \ \}}
+\DoxyCodeLine{01134\ \};}
+\DoxyCodeLine{01135\ }
+\DoxyCodeLine{01136\ \textcolor{keyword}{template}\ <\textcolor{keywordtype}{size\_t}\ k>}
+\DoxyCodeLine{01137\ \textcolor{keyword}{struct\ }DeleteArgAction\ \{}
+\DoxyCodeLine{01138\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...\ Args>}
+\DoxyCodeLine{01139\ \ \ \textcolor{keywordtype}{void}\ operator()(\textcolor{keyword}{const}\ Args\&...\ args)\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{01140\ \ \ \ \ \textcolor{keyword}{delete}\ std::get<k>(std::tie(args...));}
+\DoxyCodeLine{01141\ \ \ \}}
+\DoxyCodeLine{01142\ \};}
+\DoxyCodeLine{01143\ }
+\DoxyCodeLine{01144\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Ptr>}
+\DoxyCodeLine{01145\ \textcolor{keyword}{struct\ }ReturnPointeeAction\ \{}
+\DoxyCodeLine{01146\ \ \ Ptr\ pointer;}
+\DoxyCodeLine{01147\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...\ Args>}
+\DoxyCodeLine{01148\ \ \ \textcolor{keyword}{auto}\ operator()(\textcolor{keyword}{const}\ Args\&...)\ \textcolor{keyword}{const}\ -\/>\ \textcolor{keyword}{decltype}(*pointer)\ \{}
+\DoxyCodeLine{01149\ \ \ \ \ \textcolor{keywordflow}{return}\ *pointer;}
+\DoxyCodeLine{01150\ \ \ \}}
+\DoxyCodeLine{01151\ \};}
+\DoxyCodeLine{01152\ }
+\DoxyCodeLine{01153\ \textcolor{preprocessor}{\#if\ GTEST\_HAS\_EXCEPTIONS}}
+\DoxyCodeLine{01154\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{01155\ \textcolor{keyword}{struct\ }ThrowAction\ \{}
+\DoxyCodeLine{01156\ \ \ T\ exception;}
+\DoxyCodeLine{01157\ \ \ \textcolor{comment}{//\ We\ use\ a\ conversion\ operator\ to\ adapt\ to\ any\ return\ type.}}
+\DoxyCodeLine{01158\ \ \ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ R,\ \textcolor{keyword}{typename}...\ Args>}
+\DoxyCodeLine{01159\ \ \ \textcolor{keyword}{operator}\ Action<R(Args...)>()\ \textcolor{keyword}{const}\ \{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{01160\ \ \ \ \ T\ copy\ =\ exception;}
+\DoxyCodeLine{01161\ \ \ \ \ \textcolor{keywordflow}{return}\ [copy](Args...)\ -\/>\ R\ \{\ \textcolor{keywordflow}{throw}\ copy;\ \};}
+\DoxyCodeLine{01162\ \ \ \}}
+\DoxyCodeLine{01163\ \};}
+\DoxyCodeLine{01164\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ GTEST\_HAS\_EXCEPTIONS}}
+\DoxyCodeLine{01165\ }
+\DoxyCodeLine{01166\ \}\ \ \textcolor{comment}{//\ namespace\ internal}}
+\DoxyCodeLine{01167\ }
+\DoxyCodeLine{01168\ \textcolor{comment}{//\ An\ Unused\ object\ can\ be\ implicitly\ constructed\ from\ ANY\ value.}}
+\DoxyCodeLine{01169\ \textcolor{comment}{//\ This\ is\ handy\ when\ defining\ actions\ that\ ignore\ some\ or\ all\ of\ the}}
+\DoxyCodeLine{01170\ \textcolor{comment}{//\ mock\ function\ arguments.\ \ For\ example,\ given}}
+\DoxyCodeLine{01171\ \textcolor{comment}{//}}
+\DoxyCodeLine{01172\ \textcolor{comment}{//\ \ \ MOCK\_METHOD3(Foo,\ double(const\ string\&\ label,\ double\ x,\ double\ y));}}
+\DoxyCodeLine{01173\ \textcolor{comment}{//\ \ \ MOCK\_METHOD3(Bar,\ double(int\ index,\ double\ x,\ double\ y));}}
+\DoxyCodeLine{01174\ \textcolor{comment}{//}}
+\DoxyCodeLine{01175\ \textcolor{comment}{//\ instead\ of}}
+\DoxyCodeLine{01176\ \textcolor{comment}{//}}
+\DoxyCodeLine{01177\ \textcolor{comment}{//\ \ \ double\ DistanceToOriginWithLabel(const\ string\&\ label,\ double\ x,\ double\ y)\ \{}}
+\DoxyCodeLine{01178\ \textcolor{comment}{//\ \ \ \ \ return\ sqrt(x*x\ +\ y*y);}}
+\DoxyCodeLine{01179\ \textcolor{comment}{//\ \ \ \}}}
+\DoxyCodeLine{01180\ \textcolor{comment}{//\ \ \ double\ DistanceToOriginWithIndex(int\ index,\ double\ x,\ double\ y)\ \{}}
+\DoxyCodeLine{01181\ \textcolor{comment}{//\ \ \ \ \ return\ sqrt(x*x\ +\ y*y);}}
+\DoxyCodeLine{01182\ \textcolor{comment}{//\ \ \ \}}}
+\DoxyCodeLine{01183\ \textcolor{comment}{//\ \ \ ...}}
+\DoxyCodeLine{01184\ \textcolor{comment}{//\ \ \ EXPECT\_CALL(mock,\ Foo("{}abc"{},\ \_,\ \_))}}
+\DoxyCodeLine{01185\ \textcolor{comment}{//\ \ \ \ \ \ \ .WillOnce(Invoke(DistanceToOriginWithLabel));}}
+\DoxyCodeLine{01186\ \textcolor{comment}{//\ \ \ EXPECT\_CALL(mock,\ Bar(5,\ \_,\ \_))}}
+\DoxyCodeLine{01187\ \textcolor{comment}{//\ \ \ \ \ \ \ .WillOnce(Invoke(DistanceToOriginWithIndex));}}
+\DoxyCodeLine{01188\ \textcolor{comment}{//}}
+\DoxyCodeLine{01189\ \textcolor{comment}{//\ you\ could\ write}}
+\DoxyCodeLine{01190\ \textcolor{comment}{//}}
+\DoxyCodeLine{01191\ \textcolor{comment}{//\ \ \ //\ We\ can\ declare\ any\ uninteresting\ argument\ as\ Unused.}}
+\DoxyCodeLine{01192\ \textcolor{comment}{//\ \ \ double\ DistanceToOrigin(Unused,\ double\ x,\ double\ y)\ \{}}
+\DoxyCodeLine{01193\ \textcolor{comment}{//\ \ \ \ \ return\ sqrt(x*x\ +\ y*y);}}
+\DoxyCodeLine{01194\ \textcolor{comment}{//\ \ \ \}}}
+\DoxyCodeLine{01195\ \textcolor{comment}{//\ \ \ ...}}
+\DoxyCodeLine{01196\ \textcolor{comment}{//\ \ \ EXPECT\_CALL(mock,\ Foo("{}abc"{},\ \_,\ \_)).WillOnce(Invoke(DistanceToOrigin));}}
+\DoxyCodeLine{01197\ \textcolor{comment}{//\ \ \ EXPECT\_CALL(mock,\ Bar(5,\ \_,\ \_)).WillOnce(Invoke(DistanceToOrigin));}}
+\DoxyCodeLine{01198\ \textcolor{keyword}{typedef}\ internal::IgnoredValue\ Unused;}
+\DoxyCodeLine{01199\ }
+\DoxyCodeLine{01200\ \textcolor{comment}{//\ Creates\ an\ action\ that\ does\ actions\ a1,\ a2,\ ...,\ sequentially\ in}}
+\DoxyCodeLine{01201\ \textcolor{comment}{//\ each\ invocation.\ All\ but\ the\ last\ action\ will\ have\ a\ readonly\ view\ of\ the}}
+\DoxyCodeLine{01202\ \textcolor{comment}{//\ arguments.}}
+\DoxyCodeLine{01203\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}...\ Action>}
+\DoxyCodeLine{01204\ internal::DoAllAction<typename\ std::decay<Action>::type...>\ DoAll(}
+\DoxyCodeLine{01205\ \ \ \ \ Action\&\&...\ action)\ \{}
+\DoxyCodeLine{01206\ \ \ \textcolor{keywordflow}{return}\ \{std::forward\_as\_tuple(std::forward<Action>(action)...)\};}
+\DoxyCodeLine{01207\ \}}
+\DoxyCodeLine{01208\ }
+\DoxyCodeLine{01209\ \textcolor{comment}{//\ WithArg<k>(an\_action)\ creates\ an\ action\ that\ passes\ the\ k-\/th}}
+\DoxyCodeLine{01210\ \textcolor{comment}{//\ (0-\/based)\ argument\ of\ the\ mock\ function\ to\ an\_action\ and\ performs}}
+\DoxyCodeLine{01211\ \textcolor{comment}{//\ it.\ \ It\ adapts\ an\ action\ accepting\ one\ argument\ to\ one\ that\ accepts}}
+\DoxyCodeLine{01212\ \textcolor{comment}{//\ multiple\ arguments.\ \ For\ convenience,\ we\ also\ provide}}
+\DoxyCodeLine{01213\ \textcolor{comment}{//\ WithArgs<k>(an\_action)\ (defined\ below)\ as\ a\ synonym.}}
+\DoxyCodeLine{01214\ \textcolor{keyword}{template}\ <\textcolor{keywordtype}{size\_t}\ k,\ \textcolor{keyword}{typename}\ InnerAction>}
+\DoxyCodeLine{01215\ internal::WithArgsAction<typename\ std::decay<InnerAction>::type,\ k>}
+\DoxyCodeLine{01216\ WithArg(InnerAction\&\&\ action)\ \{}
+\DoxyCodeLine{01217\ \ \ \textcolor{keywordflow}{return}\ \{std::forward<InnerAction>(action)\};}
+\DoxyCodeLine{01218\ \}}
+\DoxyCodeLine{01219\ }
+\DoxyCodeLine{01220\ \textcolor{comment}{//\ WithArgs<N1,\ N2,\ ...,\ Nk>(an\_action)\ creates\ an\ action\ that\ passes}}
+\DoxyCodeLine{01221\ \textcolor{comment}{//\ the\ selected\ arguments\ of\ the\ mock\ function\ to\ an\_action\ and}}
+\DoxyCodeLine{01222\ \textcolor{comment}{//\ performs\ it.\ \ It\ serves\ as\ an\ adaptor\ between\ actions\ with}}
+\DoxyCodeLine{01223\ \textcolor{comment}{//\ different\ argument\ lists.}}
+\DoxyCodeLine{01224\ \textcolor{keyword}{template}\ <\textcolor{keywordtype}{size\_t}\ k,\ \textcolor{keywordtype}{size\_t}...\ ks,\ \textcolor{keyword}{typename}\ InnerAction>}
+\DoxyCodeLine{01225\ internal::WithArgsAction<typename\ std::decay<InnerAction>::type,\ k,\ ks...>}
+\DoxyCodeLine{01226\ WithArgs(InnerAction\&\&\ action)\ \{}
+\DoxyCodeLine{01227\ \ \ \textcolor{keywordflow}{return}\ \{std::forward<InnerAction>(action)\};}
+\DoxyCodeLine{01228\ \}}
+\DoxyCodeLine{01229\ }
+\DoxyCodeLine{01230\ \textcolor{comment}{//\ WithoutArgs(inner\_action)\ can\ be\ used\ in\ a\ mock\ function\ with\ a}}
+\DoxyCodeLine{01231\ \textcolor{comment}{//\ non-\/empty\ argument\ list\ to\ perform\ inner\_action,\ which\ takes\ no}}
+\DoxyCodeLine{01232\ \textcolor{comment}{//\ argument.\ \ In\ other\ words,\ it\ adapts\ an\ action\ accepting\ no}}
+\DoxyCodeLine{01233\ \textcolor{comment}{//\ argument\ to\ one\ that\ accepts\ (and\ ignores)\ arguments.}}
+\DoxyCodeLine{01234\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ InnerAction>}
+\DoxyCodeLine{01235\ internal::WithArgsAction<typename\ std::decay<InnerAction>::type>}
+\DoxyCodeLine{01236\ WithoutArgs(InnerAction\&\&\ action)\ \{}
+\DoxyCodeLine{01237\ \ \ \textcolor{keywordflow}{return}\ \{std::forward<InnerAction>(action)\};}
+\DoxyCodeLine{01238\ \}}
+\DoxyCodeLine{01239\ }
+\DoxyCodeLine{01240\ \textcolor{comment}{//\ Creates\ an\ action\ that\ returns\ 'value'.\ \ 'value'\ is\ passed\ by\ value}}
+\DoxyCodeLine{01241\ \textcolor{comment}{//\ instead\ of\ const\ reference\ -\/\ otherwise\ Return("{}string\ literal"{})}}
+\DoxyCodeLine{01242\ \textcolor{comment}{//\ will\ trigger\ a\ compiler\ error\ about\ using\ array\ as\ initializer.}}
+\DoxyCodeLine{01243\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ R>}
+\DoxyCodeLine{01244\ internal::ReturnAction<R>\ Return(R\ value)\ \{}
+\DoxyCodeLine{01245\ \ \ \textcolor{keywordflow}{return}\ internal::ReturnAction<R>(std::move(value));}
+\DoxyCodeLine{01246\ \}}
+\DoxyCodeLine{01247\ }
+\DoxyCodeLine{01248\ \textcolor{comment}{//\ Creates\ an\ action\ that\ returns\ NULL.}}
+\DoxyCodeLine{01249\ \textcolor{keyword}{inline}\ PolymorphicAction<internal::ReturnNullAction>\ ReturnNull()\ \{}
+\DoxyCodeLine{01250\ \ \ \textcolor{keywordflow}{return}\ MakePolymorphicAction(internal::ReturnNullAction());}
+\DoxyCodeLine{01251\ \}}
+\DoxyCodeLine{01252\ }
+\DoxyCodeLine{01253\ \textcolor{comment}{//\ Creates\ an\ action\ that\ returns\ from\ a\ void\ function.}}
+\DoxyCodeLine{01254\ \textcolor{keyword}{inline}\ PolymorphicAction<internal::ReturnVoidAction>\ Return()\ \{}
+\DoxyCodeLine{01255\ \ \ \textcolor{keywordflow}{return}\ MakePolymorphicAction(internal::ReturnVoidAction());}
+\DoxyCodeLine{01256\ \}}
+\DoxyCodeLine{01257\ }
+\DoxyCodeLine{01258\ \textcolor{comment}{//\ Creates\ an\ action\ that\ returns\ the\ reference\ to\ a\ variable.}}
+\DoxyCodeLine{01259\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ R>}
+\DoxyCodeLine{01260\ \textcolor{keyword}{inline}\ internal::ReturnRefAction<R>\ ReturnRef(R\&\ x)\ \{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{01261\ \ \ \textcolor{keywordflow}{return}\ internal::ReturnRefAction<R>(x);}
+\DoxyCodeLine{01262\ \}}
+\DoxyCodeLine{01263\ }
+\DoxyCodeLine{01264\ \textcolor{comment}{//\ Prevent\ using\ ReturnRef\ on\ reference\ to\ temporary.}}
+\DoxyCodeLine{01265\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ R,\ R*\ =\ \textcolor{keywordtype}{nullptr}>}
+\DoxyCodeLine{01266\ internal::ReturnRefAction<R>\ ReturnRef(R\&\&)\ =\ \textcolor{keyword}{delete};}
+\DoxyCodeLine{01267\ }
+\DoxyCodeLine{01268\ \textcolor{comment}{//\ Creates\ an\ action\ that\ returns\ the\ reference\ to\ a\ copy\ of\ the}}
+\DoxyCodeLine{01269\ \textcolor{comment}{//\ argument.\ \ The\ copy\ is\ created\ when\ the\ action\ is\ constructed\ and}}
+\DoxyCodeLine{01270\ \textcolor{comment}{//\ lives\ as\ long\ as\ the\ action.}}
+\DoxyCodeLine{01271\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ R>}
+\DoxyCodeLine{01272\ \textcolor{keyword}{inline}\ internal::ReturnRefOfCopyAction<R>\ ReturnRefOfCopy(\textcolor{keyword}{const}\ R\&\ x)\ \{}
+\DoxyCodeLine{01273\ \ \ \textcolor{keywordflow}{return}\ internal::ReturnRefOfCopyAction<R>(x);}
+\DoxyCodeLine{01274\ \}}
+\DoxyCodeLine{01275\ }
+\DoxyCodeLine{01276\ \textcolor{comment}{//\ Modifies\ the\ parent\ action\ (a\ Return()\ action)\ to\ perform\ a\ move\ of\ the}}
+\DoxyCodeLine{01277\ \textcolor{comment}{//\ argument\ instead\ of\ a\ copy.}}
+\DoxyCodeLine{01278\ \textcolor{comment}{//\ Return(ByMove())\ actions\ can\ only\ be\ executed\ once\ and\ will\ assert\ this}}
+\DoxyCodeLine{01279\ \textcolor{comment}{//\ invariant.}}
+\DoxyCodeLine{01280\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ R>}
+\DoxyCodeLine{01281\ internal::ByMoveWrapper<R>\ ByMove(R\ x)\ \{}
+\DoxyCodeLine{01282\ \ \ \textcolor{keywordflow}{return}\ internal::ByMoveWrapper<R>(std::move(x));}
+\DoxyCodeLine{01283\ \}}
+\DoxyCodeLine{01284\ }
+\DoxyCodeLine{01285\ \textcolor{comment}{//\ Creates\ an\ action\ that\ returns\ an\ element\ of\ \`{}vals`.\ Calling\ this\ action\ will}}
+\DoxyCodeLine{01286\ \textcolor{comment}{//\ repeatedly\ return\ the\ next\ value\ from\ \`{}vals`\ until\ it\ reaches\ the\ end\ and}}
+\DoxyCodeLine{01287\ \textcolor{comment}{//\ will\ restart\ from\ the\ beginning.}}
+\DoxyCodeLine{01288\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{01289\ internal::ReturnRoundRobinAction<T>\ ReturnRoundRobin(std::vector<T>\ vals)\ \{}
+\DoxyCodeLine{01290\ \ \ \textcolor{keywordflow}{return}\ internal::ReturnRoundRobinAction<T>(std::move(vals));}
+\DoxyCodeLine{01291\ \}}
+\DoxyCodeLine{01292\ }
+\DoxyCodeLine{01293\ \textcolor{comment}{//\ Creates\ an\ action\ that\ returns\ an\ element\ of\ \`{}vals`.\ Calling\ this\ action\ will}}
+\DoxyCodeLine{01294\ \textcolor{comment}{//\ repeatedly\ return\ the\ next\ value\ from\ \`{}vals`\ until\ it\ reaches\ the\ end\ and}}
+\DoxyCodeLine{01295\ \textcolor{comment}{//\ will\ restart\ from\ the\ beginning.}}
+\DoxyCodeLine{01296\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{01297\ internal::ReturnRoundRobinAction<T>\ ReturnRoundRobin(}
+\DoxyCodeLine{01298\ \ \ \ \ std::initializer\_list<T>\ vals)\ \{}
+\DoxyCodeLine{01299\ \ \ \textcolor{keywordflow}{return}\ internal::ReturnRoundRobinAction<T>(std::vector<T>(vals));}
+\DoxyCodeLine{01300\ \}}
+\DoxyCodeLine{01301\ }
+\DoxyCodeLine{01302\ \textcolor{comment}{//\ Creates\ an\ action\ that\ does\ the\ default\ action\ for\ the\ give\ mock\ function.}}
+\DoxyCodeLine{01303\ \textcolor{keyword}{inline}\ internal::DoDefaultAction\ DoDefault()\ \{}
+\DoxyCodeLine{01304\ \ \ \textcolor{keywordflow}{return}\ internal::DoDefaultAction();}
+\DoxyCodeLine{01305\ \}}
+\DoxyCodeLine{01306\ }
+\DoxyCodeLine{01307\ \textcolor{comment}{//\ Creates\ an\ action\ that\ sets\ the\ variable\ pointed\ by\ the\ N-\/th}}
+\DoxyCodeLine{01308\ \textcolor{comment}{//\ (0-\/based)\ function\ argument\ to\ 'value'.}}
+\DoxyCodeLine{01309\ \textcolor{keyword}{template}\ <\textcolor{keywordtype}{size\_t}\ N,\ \textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{01310\ internal::SetArgumentPointeeAction<N,\ T>\ SetArgPointee(T\ value)\ \{}
+\DoxyCodeLine{01311\ \ \ \textcolor{keywordflow}{return}\ \{std::move(value)\};}
+\DoxyCodeLine{01312\ \}}
+\DoxyCodeLine{01313\ }
+\DoxyCodeLine{01314\ \textcolor{comment}{//\ The\ following\ version\ is\ DEPRECATED.}}
+\DoxyCodeLine{01315\ \textcolor{keyword}{template}\ <\textcolor{keywordtype}{size\_t}\ N,\ \textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{01316\ internal::SetArgumentPointeeAction<N,\ T>\ SetArgumentPointee(T\ value)\ \{}
+\DoxyCodeLine{01317\ \ \ \textcolor{keywordflow}{return}\ \{std::move(value)\};}
+\DoxyCodeLine{01318\ \}}
+\DoxyCodeLine{01319\ }
+\DoxyCodeLine{01320\ \textcolor{comment}{//\ Creates\ an\ action\ that\ sets\ a\ pointer\ referent\ to\ a\ given\ value.}}
+\DoxyCodeLine{01321\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T1,\ \textcolor{keyword}{typename}\ T2>}
+\DoxyCodeLine{01322\ PolymorphicAction<internal::AssignAction<T1,\ T2>\ >\ Assign(T1*\ ptr,\ T2\ val)\ \{}
+\DoxyCodeLine{01323\ \ \ \textcolor{keywordflow}{return}\ MakePolymorphicAction(internal::AssignAction<T1,\ T2>(ptr,\ val));}
+\DoxyCodeLine{01324\ \}}
+\DoxyCodeLine{01325\ }
+\DoxyCodeLine{01326\ \textcolor{preprocessor}{\#if\ !GTEST\_OS\_WINDOWS\_MOBILE}}
+\DoxyCodeLine{01327\ }
+\DoxyCodeLine{01328\ \textcolor{comment}{//\ Creates\ an\ action\ that\ sets\ errno\ and\ returns\ the\ appropriate\ error.}}
+\DoxyCodeLine{01329\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{01330\ PolymorphicAction<internal::SetErrnoAndReturnAction<T>\ >}
+\DoxyCodeLine{01331\ SetErrnoAndReturn(\textcolor{keywordtype}{int}\ errval,\ T\ result)\ \{}
+\DoxyCodeLine{01332\ \ \ \textcolor{keywordflow}{return}\ MakePolymorphicAction(}
+\DoxyCodeLine{01333\ \ \ \ \ \ \ internal::SetErrnoAndReturnAction<T>(errval,\ result));}
+\DoxyCodeLine{01334\ \}}
+\DoxyCodeLine{01335\ }
+\DoxyCodeLine{01336\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ !GTEST\_OS\_WINDOWS\_MOBILE}}
+\DoxyCodeLine{01337\ }
+\DoxyCodeLine{01338\ \textcolor{comment}{//\ Various\ overloads\ for\ Invoke().}}
+\DoxyCodeLine{01339\ }
+\DoxyCodeLine{01340\ \textcolor{comment}{//\ Legacy\ function.}}
+\DoxyCodeLine{01341\ \textcolor{comment}{//\ Actions\ can\ now\ be\ implicitly\ constructed\ from\ callables.\ No\ need\ to\ create}}
+\DoxyCodeLine{01342\ \textcolor{comment}{//\ wrapper\ objects.}}
+\DoxyCodeLine{01343\ \textcolor{comment}{//\ This\ function\ exists\ for\ backwards\ compatibility.}}
+\DoxyCodeLine{01344\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ FunctionImpl>}
+\DoxyCodeLine{01345\ \textcolor{keyword}{typename}\ std::decay<FunctionImpl>::type\ Invoke(FunctionImpl\&\&\ function\_impl)\ \{}
+\DoxyCodeLine{01346\ \ \ \textcolor{keywordflow}{return}\ std::forward<FunctionImpl>(function\_impl);}
+\DoxyCodeLine{01347\ \}}
+\DoxyCodeLine{01348\ }
+\DoxyCodeLine{01349\ \textcolor{comment}{//\ Creates\ an\ action\ that\ invokes\ the\ given\ method\ on\ the\ given\ object}}
+\DoxyCodeLine{01350\ \textcolor{comment}{//\ with\ the\ mock\ function's\ arguments.}}
+\DoxyCodeLine{01351\ \textcolor{keyword}{template}\ <\textcolor{keyword}{class}\ Class,\ \textcolor{keyword}{typename}\ MethodPtr>}
+\DoxyCodeLine{01352\ internal::InvokeMethodAction<Class,\ MethodPtr>\ Invoke(Class*\ obj\_ptr,}
+\DoxyCodeLine{01353\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ MethodPtr\ method\_ptr)\ \{}
+\DoxyCodeLine{01354\ \ \ \textcolor{keywordflow}{return}\ \{obj\_ptr,\ method\_ptr\};}
+\DoxyCodeLine{01355\ \}}
+\DoxyCodeLine{01356\ }
+\DoxyCodeLine{01357\ \textcolor{comment}{//\ Creates\ an\ action\ that\ invokes\ 'function\_impl'\ with\ no\ argument.}}
+\DoxyCodeLine{01358\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ FunctionImpl>}
+\DoxyCodeLine{01359\ internal::InvokeWithoutArgsAction<typename\ std::decay<FunctionImpl>::type>}
+\DoxyCodeLine{01360\ InvokeWithoutArgs(FunctionImpl\ function\_impl)\ \{}
+\DoxyCodeLine{01361\ \ \ \textcolor{keywordflow}{return}\ \{std::move(function\_impl)\};}
+\DoxyCodeLine{01362\ \}}
+\DoxyCodeLine{01363\ }
+\DoxyCodeLine{01364\ \textcolor{comment}{//\ Creates\ an\ action\ that\ invokes\ the\ given\ method\ on\ the\ given\ object}}
+\DoxyCodeLine{01365\ \textcolor{comment}{//\ with\ no\ argument.}}
+\DoxyCodeLine{01366\ \textcolor{keyword}{template}\ <\textcolor{keyword}{class}\ Class,\ \textcolor{keyword}{typename}\ MethodPtr>}
+\DoxyCodeLine{01367\ internal::InvokeMethodWithoutArgsAction<Class,\ MethodPtr>\ InvokeWithoutArgs(}
+\DoxyCodeLine{01368\ \ \ \ \ Class*\ obj\_ptr,\ MethodPtr\ method\_ptr)\ \{}
+\DoxyCodeLine{01369\ \ \ \textcolor{keywordflow}{return}\ \{obj\_ptr,\ method\_ptr\};}
+\DoxyCodeLine{01370\ \}}
+\DoxyCodeLine{01371\ }
+\DoxyCodeLine{01372\ \textcolor{comment}{//\ Creates\ an\ action\ that\ performs\ an\_action\ and\ throws\ away\ its}}
+\DoxyCodeLine{01373\ \textcolor{comment}{//\ result.\ \ In\ other\ words,\ it\ changes\ the\ return\ type\ of\ an\_action\ to}}
+\DoxyCodeLine{01374\ \textcolor{comment}{//\ void.\ \ an\_action\ MUST\ NOT\ return\ void,\ or\ the\ code\ won't\ compile.}}
+\DoxyCodeLine{01375\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ A>}
+\DoxyCodeLine{01376\ \textcolor{keyword}{inline}\ internal::IgnoreResultAction<A>\ IgnoreResult(\textcolor{keyword}{const}\ A\&\ an\_action)\ \{}
+\DoxyCodeLine{01377\ \ \ \textcolor{keywordflow}{return}\ internal::IgnoreResultAction<A>(an\_action);}
+\DoxyCodeLine{01378\ \}}
+\DoxyCodeLine{01379\ }
+\DoxyCodeLine{01380\ \textcolor{comment}{//\ Creates\ a\ reference\ wrapper\ for\ the\ given\ L-\/value.\ \ If\ necessary,}}
+\DoxyCodeLine{01381\ \textcolor{comment}{//\ you\ can\ explicitly\ specify\ the\ type\ of\ the\ reference.\ \ For\ example,}}
+\DoxyCodeLine{01382\ \textcolor{comment}{//\ suppose\ 'derived'\ is\ an\ object\ of\ type\ Derived,\ ByRef(derived)}}
+\DoxyCodeLine{01383\ \textcolor{comment}{//\ would\ wrap\ a\ Derived\&.\ \ If\ you\ want\ to\ wrap\ a\ const\ Base\&\ instead,}}
+\DoxyCodeLine{01384\ \textcolor{comment}{//\ where\ Base\ is\ a\ base\ class\ of\ Derived,\ just\ write:}}
+\DoxyCodeLine{01385\ \textcolor{comment}{//}}
+\DoxyCodeLine{01386\ \textcolor{comment}{//\ \ \ ByRef<const\ Base>(derived)}}
+\DoxyCodeLine{01387\ \textcolor{comment}{//}}
+\DoxyCodeLine{01388\ \textcolor{comment}{//\ N.B.\ ByRef\ is\ redundant\ with\ std::ref,\ std::cref\ and\ std::reference\_wrapper.}}
+\DoxyCodeLine{01389\ \textcolor{comment}{//\ However,\ it\ may\ still\ be\ used\ for\ consistency\ with\ ByMove().}}
+\DoxyCodeLine{01390\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{01391\ inline\ ::std::reference\_wrapper<T>\ ByRef(T\&\ l\_value)\ \{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{01392\ \ \ return\ ::std::reference\_wrapper<T>(l\_value);}
+\DoxyCodeLine{01393\ \}}
+\DoxyCodeLine{01394\ }
+\DoxyCodeLine{01395\ \textcolor{comment}{//\ The\ ReturnNew<T>(a1,\ a2,\ ...,\ a\_k)\ action\ returns\ a\ pointer\ to\ a\ new}}
+\DoxyCodeLine{01396\ \textcolor{comment}{//\ instance\ of\ type\ T,\ constructed\ on\ the\ heap\ with\ constructor\ arguments}}
+\DoxyCodeLine{01397\ \textcolor{comment}{//\ a1,\ a2,\ ...,\ and\ a\_k.\ The\ caller\ assumes\ ownership\ of\ the\ returned\ value.}}
+\DoxyCodeLine{01398\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T,\ \textcolor{keyword}{typename}...\ Params>}
+\DoxyCodeLine{01399\ internal::ReturnNewAction<T,\ typename\ std::decay<Params>::type...>\ ReturnNew(}
+\DoxyCodeLine{01400\ \ \ \ \ Params\&\&...\ params)\ \{}
+\DoxyCodeLine{01401\ \ \ \textcolor{keywordflow}{return}\ \{std::forward\_as\_tuple(std::forward<Params>(params)...)\};}
+\DoxyCodeLine{01402\ \}}
+\DoxyCodeLine{01403\ }
+\DoxyCodeLine{01404\ \textcolor{comment}{//\ Action\ ReturnArg<k>()\ returns\ the\ k-\/th\ argument\ of\ the\ mock\ function.}}
+\DoxyCodeLine{01405\ \textcolor{keyword}{template}\ <\textcolor{keywordtype}{size\_t}\ k>}
+\DoxyCodeLine{01406\ internal::ReturnArgAction<k>\ ReturnArg()\ \{}
+\DoxyCodeLine{01407\ \ \ \textcolor{keywordflow}{return}\ \{\};}
+\DoxyCodeLine{01408\ \}}
+\DoxyCodeLine{01409\ }
+\DoxyCodeLine{01410\ \textcolor{comment}{//\ Action\ SaveArg<k>(pointer)\ saves\ the\ k-\/th\ (0-\/based)\ argument\ of\ the}}
+\DoxyCodeLine{01411\ \textcolor{comment}{//\ mock\ function\ to\ *pointer.}}
+\DoxyCodeLine{01412\ \textcolor{keyword}{template}\ <\textcolor{keywordtype}{size\_t}\ k,\ \textcolor{keyword}{typename}\ Ptr>}
+\DoxyCodeLine{01413\ internal::SaveArgAction<k,\ Ptr>\ SaveArg(Ptr\ pointer)\ \{}
+\DoxyCodeLine{01414\ \ \ \textcolor{keywordflow}{return}\ \{pointer\};}
+\DoxyCodeLine{01415\ \}}
+\DoxyCodeLine{01416\ }
+\DoxyCodeLine{01417\ \textcolor{comment}{//\ Action\ SaveArgPointee<k>(pointer)\ saves\ the\ value\ pointed\ to}}
+\DoxyCodeLine{01418\ \textcolor{comment}{//\ by\ the\ k-\/th\ (0-\/based)\ argument\ of\ the\ mock\ function\ to\ *pointer.}}
+\DoxyCodeLine{01419\ \textcolor{keyword}{template}\ <\textcolor{keywordtype}{size\_t}\ k,\ \textcolor{keyword}{typename}\ Ptr>}
+\DoxyCodeLine{01420\ internal::SaveArgPointeeAction<k,\ Ptr>\ SaveArgPointee(Ptr\ pointer)\ \{}
+\DoxyCodeLine{01421\ \ \ \textcolor{keywordflow}{return}\ \{pointer\};}
+\DoxyCodeLine{01422\ \}}
+\DoxyCodeLine{01423\ }
+\DoxyCodeLine{01424\ \textcolor{comment}{//\ Action\ SetArgReferee<k>(value)\ assigns\ 'value'\ to\ the\ variable}}
+\DoxyCodeLine{01425\ \textcolor{comment}{//\ referenced\ by\ the\ k-\/th\ (0-\/based)\ argument\ of\ the\ mock\ function.}}
+\DoxyCodeLine{01426\ \textcolor{keyword}{template}\ <\textcolor{keywordtype}{size\_t}\ k,\ \textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{01427\ internal::SetArgRefereeAction<k,\ typename\ std::decay<T>::type>\ SetArgReferee(}
+\DoxyCodeLine{01428\ \ \ \ \ T\&\&\ value)\ \{}
+\DoxyCodeLine{01429\ \ \ \textcolor{keywordflow}{return}\ \{std::forward<T>(value)\};}
+\DoxyCodeLine{01430\ \}}
+\DoxyCodeLine{01431\ }
+\DoxyCodeLine{01432\ \textcolor{comment}{//\ Action\ SetArrayArgument<k>(first,\ last)\ copies\ the\ elements\ in}}
+\DoxyCodeLine{01433\ \textcolor{comment}{//\ source\ range\ [first,\ last)\ to\ the\ array\ pointed\ to\ by\ the\ k-\/th}}
+\DoxyCodeLine{01434\ \textcolor{comment}{//\ (0-\/based)\ argument,\ which\ can\ be\ either\ a\ pointer\ or\ an}}
+\DoxyCodeLine{01435\ \textcolor{comment}{//\ iterator.\ The\ action\ does\ not\ take\ ownership\ of\ the\ elements\ in\ the}}
+\DoxyCodeLine{01436\ \textcolor{comment}{//\ source\ range.}}
+\DoxyCodeLine{01437\ \textcolor{keyword}{template}\ <\textcolor{keywordtype}{size\_t}\ k,\ \textcolor{keyword}{typename}\ I1,\ \textcolor{keyword}{typename}\ I2>}
+\DoxyCodeLine{01438\ internal::SetArrayArgumentAction<k,\ I1,\ I2>\ SetArrayArgument(I1\ first,}
+\DoxyCodeLine{01439\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ I2\ last)\ \{}
+\DoxyCodeLine{01440\ \ \ \textcolor{keywordflow}{return}\ \{first,\ last\};}
+\DoxyCodeLine{01441\ \}}
+\DoxyCodeLine{01442\ }
+\DoxyCodeLine{01443\ \textcolor{comment}{//\ Action\ DeleteArg<k>()\ deletes\ the\ k-\/th\ (0-\/based)\ argument\ of\ the\ mock}}
+\DoxyCodeLine{01444\ \textcolor{comment}{//\ function.}}
+\DoxyCodeLine{01445\ \textcolor{keyword}{template}\ <\textcolor{keywordtype}{size\_t}\ k>}
+\DoxyCodeLine{01446\ internal::DeleteArgAction<k>\ DeleteArg()\ \{}
+\DoxyCodeLine{01447\ \ \ \textcolor{keywordflow}{return}\ \{\};}
+\DoxyCodeLine{01448\ \}}
+\DoxyCodeLine{01449\ }
+\DoxyCodeLine{01450\ \textcolor{comment}{//\ This\ action\ returns\ the\ value\ pointed\ to\ by\ 'pointer'.}}
+\DoxyCodeLine{01451\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Ptr>}
+\DoxyCodeLine{01452\ internal::ReturnPointeeAction<Ptr>\ ReturnPointee(Ptr\ pointer)\ \{}
+\DoxyCodeLine{01453\ \ \ \textcolor{keywordflow}{return}\ \{pointer\};}
+\DoxyCodeLine{01454\ \}}
+\DoxyCodeLine{01455\ }
+\DoxyCodeLine{01456\ \textcolor{comment}{//\ Action\ Throw(exception)\ can\ be\ used\ in\ a\ mock\ function\ of\ any\ type}}
+\DoxyCodeLine{01457\ \textcolor{comment}{//\ to\ throw\ the\ given\ exception.\ \ Any\ copyable\ value\ can\ be\ thrown.}}
+\DoxyCodeLine{01458\ \textcolor{preprocessor}{\#if\ GTEST\_HAS\_EXCEPTIONS}}
+\DoxyCodeLine{01459\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{01460\ internal::ThrowAction<typename\ std::decay<T>::type>\ Throw(T\&\&\ exception)\ \{}
+\DoxyCodeLine{01461\ \ \ \textcolor{keywordflow}{return}\ \{std::forward<T>(exception)\};}
+\DoxyCodeLine{01462\ \}}
+\DoxyCodeLine{01463\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ GTEST\_HAS\_EXCEPTIONS}}
+\DoxyCodeLine{01464\ }
+\DoxyCodeLine{01465\ \textcolor{keyword}{namespace\ }internal\ \{}
+\DoxyCodeLine{01466\ }
+\DoxyCodeLine{01467\ \textcolor{comment}{//\ A\ macro\ from\ the\ ACTION*\ family\ (defined\ later\ in\ gmock-\/generated-\/actions.h)}}
+\DoxyCodeLine{01468\ \textcolor{comment}{//\ defines\ an\ action\ that\ can\ be\ used\ in\ a\ mock\ function.\ \ Typically,}}
+\DoxyCodeLine{01469\ \textcolor{comment}{//\ these\ actions\ only\ care\ about\ a\ subset\ of\ the\ arguments\ of\ the\ mock}}
+\DoxyCodeLine{01470\ \textcolor{comment}{//\ function.\ \ For\ example,\ if\ such\ an\ action\ only\ uses\ the\ second}}
+\DoxyCodeLine{01471\ \textcolor{comment}{//\ argument,\ it\ can\ be\ used\ in\ any\ mock\ function\ that\ takes\ >=\ 2}}
+\DoxyCodeLine{01472\ \textcolor{comment}{//\ arguments\ where\ the\ type\ of\ the\ second\ argument\ is\ compatible.}}
+\DoxyCodeLine{01473\ \textcolor{comment}{//}}
+\DoxyCodeLine{01474\ \textcolor{comment}{//\ Therefore,\ the\ action\ implementation\ must\ be\ prepared\ to\ take\ more}}
+\DoxyCodeLine{01475\ \textcolor{comment}{//\ arguments\ than\ it\ needs.\ \ The\ ExcessiveArg\ type\ is\ used\ to}}
+\DoxyCodeLine{01476\ \textcolor{comment}{//\ represent\ those\ excessive\ arguments.\ \ In\ order\ to\ keep\ the\ compiler}}
+\DoxyCodeLine{01477\ \textcolor{comment}{//\ error\ messages\ tractable,\ we\ define\ it\ in\ the\ testing\ namespace}}
+\DoxyCodeLine{01478\ \textcolor{comment}{//\ instead\ of\ testing::internal.\ \ However,\ this\ is\ an\ INTERNAL\ TYPE}}
+\DoxyCodeLine{01479\ \textcolor{comment}{//\ and\ subject\ to\ change\ without\ notice,\ so\ a\ user\ MUST\ NOT\ USE\ THIS}}
+\DoxyCodeLine{01480\ \textcolor{comment}{//\ TYPE\ DIRECTLY.}}
+\DoxyCodeLine{01481\ \textcolor{keyword}{struct\ }ExcessiveArg\ \{\};}
+\DoxyCodeLine{01482\ }
+\DoxyCodeLine{01483\ \textcolor{comment}{//\ Builds\ an\ implementation\ of\ an\ Action<>\ for\ some\ particular\ signature,\ using}}
+\DoxyCodeLine{01484\ \textcolor{comment}{//\ a\ class\ defined\ by\ an\ ACTION*\ macro.}}
+\DoxyCodeLine{01485\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ F,\ \textcolor{keyword}{typename}\ Impl>\ \textcolor{keyword}{struct\ }ActionImpl;}
+\DoxyCodeLine{01486\ }
+\DoxyCodeLine{01487\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Impl>}
+\DoxyCodeLine{01488\ \textcolor{keyword}{struct\ }ImplBase\ \{}
+\DoxyCodeLine{01489\ \ \ \textcolor{keyword}{struct\ }Holder\ \{}
+\DoxyCodeLine{01490\ \ \ \ \ \textcolor{comment}{//\ Allows\ each\ copy\ of\ the\ Action<>\ to\ get\ to\ the\ Impl.}}
+\DoxyCodeLine{01491\ \ \ \ \ \textcolor{keyword}{explicit}\ \textcolor{keyword}{operator}\ \textcolor{keyword}{const}\ Impl\&()\ \textcolor{keyword}{const}\ \{\ \textcolor{keywordflow}{return}\ *ptr;\ \}}
+\DoxyCodeLine{01492\ \ \ \ \ std::shared\_ptr<Impl>\ ptr;}
+\DoxyCodeLine{01493\ \ \ \};}
+\DoxyCodeLine{01494\ \ \ \textcolor{keyword}{using\ }type\ =\ \textcolor{keyword}{typename}\ std::conditional<std::is\_constructible<Impl>::value,}
+\DoxyCodeLine{01495\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ Impl,\ Holder>::type;}
+\DoxyCodeLine{01496\ \};}
+\DoxyCodeLine{01497\ }
+\DoxyCodeLine{01498\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ R,\ \textcolor{keyword}{typename}...\ Args,\ \textcolor{keyword}{typename}\ Impl>}
+\DoxyCodeLine{01499\ \textcolor{keyword}{struct\ }ActionImpl<R(Args...),\ Impl>\ :\ ImplBase<Impl>::type\ \{}
+\DoxyCodeLine{01500\ \ \ \textcolor{keyword}{using\ }Base\ =\ \textcolor{keyword}{typename}\ ImplBase<Impl>::type;}
+\DoxyCodeLine{01501\ \ \ \textcolor{keyword}{using\ }function\_type\ =\ R(Args...);}
+\DoxyCodeLine{01502\ \ \ \textcolor{keyword}{using\ }args\_type\ =\ std::tuple<Args...>;}
+\DoxyCodeLine{01503\ }
+\DoxyCodeLine{01504\ \ \ ActionImpl()\ =\ \textcolor{keywordflow}{default};\ \ \textcolor{comment}{//\ Only\ defined\ if\ appropriate\ for\ Base.}}
+\DoxyCodeLine{01505\ \ \ \textcolor{keyword}{explicit}\ ActionImpl(std::shared\_ptr<Impl>\ impl)\ :\ Base\{std::move(impl)\}\ \{\ \}}
+\DoxyCodeLine{01506\ }
+\DoxyCodeLine{01507\ \ \ R\ operator()(Args\&\&...\ arg)\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{01508\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ \textcolor{keywordtype}{size\_t}\ kMaxArgs\ =}
+\DoxyCodeLine{01509\ \ \ \ \ \ \ \ \ \textcolor{keyword}{sizeof}...(Args)\ <=\ 10\ ?\ \textcolor{keyword}{sizeof}...(Args)\ :\ 10;}
+\DoxyCodeLine{01510\ \ \ \ \ \textcolor{keywordflow}{return}\ Apply(MakeIndexSequence<kMaxArgs>\{\},}
+\DoxyCodeLine{01511\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ MakeIndexSequence<10\ -\/\ kMaxArgs>\{\},}
+\DoxyCodeLine{01512\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ args\_type\{std::forward<Args>(arg)...\});}
+\DoxyCodeLine{01513\ \ \ \}}
+\DoxyCodeLine{01514\ }
+\DoxyCodeLine{01515\ \ \ \textcolor{keyword}{template}\ <std::size\_t...\ arg\_id,\ std::size\_t...\ excess\_id>}
+\DoxyCodeLine{01516\ \ \ R\ Apply(IndexSequence<arg\_id...>,\ IndexSequence<excess\_id...>,}
+\DoxyCodeLine{01517\ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ args\_type\&\ args)\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{01518\ \ \ \ \ \textcolor{comment}{//\ Impl\ need\ not\ be\ specific\ to\ the\ signature\ of\ action\ being\ implemented;}}
+\DoxyCodeLine{01519\ \ \ \ \ \textcolor{comment}{//\ only\ the\ implementing\ function\ body\ needs\ to\ have\ all\ of\ the\ specific}}
+\DoxyCodeLine{01520\ \ \ \ \ \textcolor{comment}{//\ types\ instantiated.\ \ Up\ to\ 10\ of\ the\ args\ that\ are\ provided\ by\ the}}
+\DoxyCodeLine{01521\ \ \ \ \ \textcolor{comment}{//\ args\_type\ get\ passed,\ followed\ by\ a\ dummy\ of\ unspecified\ type\ for\ the}}
+\DoxyCodeLine{01522\ \ \ \ \ \textcolor{comment}{//\ remainder\ up\ to\ 10\ explicit\ args.}}
+\DoxyCodeLine{01523\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keyword}{constexpr}\ ExcessiveArg\ kExcessArg\{\};}
+\DoxyCodeLine{01524\ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{static\_cast<}\textcolor{keyword}{const\ }Impl\&\textcolor{keyword}{>}(*this).template\ gmock\_PerformImpl<}
+\DoxyCodeLine{01525\ \ \ \ \ \ \ \ \ \textcolor{comment}{/*function\_type=*/}function\_type,\ \textcolor{comment}{/*return\_type=*/}R,}
+\DoxyCodeLine{01526\ \ \ \ \ \ \ \ \ \textcolor{comment}{/*args\_type=*/}args\_type,}
+\DoxyCodeLine{01527\ \ \ \ \ \ \ \ \ \textcolor{comment}{/*argN\_type=*/}\textcolor{keyword}{typename}\ std::tuple\_element<arg\_id,\ args\_type>::type...>(}
+\DoxyCodeLine{01528\ \ \ \ \ \ \ \ \ \textcolor{comment}{/*args=*/}args,\ std::get<arg\_id>(args)...,}
+\DoxyCodeLine{01529\ \ \ \ \ \ \ \ \ ((void)excess\_id,\ kExcessArg)...);}
+\DoxyCodeLine{01530\ \ \ \}}
+\DoxyCodeLine{01531\ \};}
+\DoxyCodeLine{01532\ }
+\DoxyCodeLine{01533\ \textcolor{comment}{//\ Stores\ a\ default-\/constructed\ Impl\ as\ part\ of\ the\ Action<>'s}}
+\DoxyCodeLine{01534\ \textcolor{comment}{//\ std::function<>.\ The\ Impl\ should\ be\ trivial\ to\ copy.}}
+\DoxyCodeLine{01535\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ F,\ \textcolor{keyword}{typename}\ Impl>}
+\DoxyCodeLine{01536\ \mbox{\hyperlink{classtesting_1_1_action}{::testing::Action<F>}}\ MakeAction()\ \{}
+\DoxyCodeLine{01537\ \ \ return\ ::testing::Action<F>(ActionImpl<F,\ Impl>());}
+\DoxyCodeLine{01538\ \}}
+\DoxyCodeLine{01539\ }
+\DoxyCodeLine{01540\ \textcolor{comment}{//\ Stores\ just\ the\ one\ given\ instance\ of\ Impl.}}
+\DoxyCodeLine{01541\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ F,\ \textcolor{keyword}{typename}\ Impl>}
+\DoxyCodeLine{01542\ \mbox{\hyperlink{classtesting_1_1_action}{::testing::Action<F>}}\ MakeAction(std::shared\_ptr<Impl>\ impl)\ \{}
+\DoxyCodeLine{01543\ \ \ return\ ::testing::Action<F>(ActionImpl<F,\ Impl>(std::move(impl)));}
+\DoxyCodeLine{01544\ \}}
+\DoxyCodeLine{01545\ }
+\DoxyCodeLine{01546\ \textcolor{preprocessor}{\#define\ GMOCK\_INTERNAL\_ARG\_UNUSED(i,\ data,\ el)\ \(\backslash\)}}
+\DoxyCodeLine{01547\ \textcolor{preprocessor}{\ \ ,\ const\ arg\#\#i\#\#\_type\&\ arg\#\#i\ GTEST\_ATTRIBUTE\_UNUSED\_}}
+\DoxyCodeLine{01548\ \textcolor{preprocessor}{\#define\ GMOCK\_ACTION\_ARG\_TYPES\_AND\_NAMES\_UNUSED\_\ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01549\ \textcolor{preprocessor}{\ \ const\ args\_type\&\ args\ GTEST\_ATTRIBUTE\_UNUSED\_\ GMOCK\_PP\_REPEAT(\ \(\backslash\)}}
+\DoxyCodeLine{01550\ \textcolor{preprocessor}{\ \ \ \ \ \ GMOCK\_INTERNAL\_ARG\_UNUSED,\ ,\ 10)}}
+\DoxyCodeLine{01551\ }
+\DoxyCodeLine{01552\ \textcolor{preprocessor}{\#define\ GMOCK\_INTERNAL\_ARG(i,\ data,\ el)\ ,\ const\ arg\#\#i\#\#\_type\&\ arg\#\#i}}
+\DoxyCodeLine{01553\ \textcolor{preprocessor}{\#define\ GMOCK\_ACTION\_ARG\_TYPES\_AND\_NAMES\_\ \(\backslash\)}}
+\DoxyCodeLine{01554\ \textcolor{preprocessor}{\ \ const\ args\_type\&\ args\ GMOCK\_PP\_REPEAT(GMOCK\_INTERNAL\_ARG,\ ,\ 10)}}
+\DoxyCodeLine{01555\ }
+\DoxyCodeLine{01556\ \textcolor{preprocessor}{\#define\ GMOCK\_INTERNAL\_TEMPLATE\_ARG(i,\ data,\ el)\ ,\ typename\ arg\#\#i\#\#\_type}}
+\DoxyCodeLine{01557\ \textcolor{preprocessor}{\#define\ GMOCK\_ACTION\_TEMPLATE\_ARGS\_NAMES\_\ \(\backslash\)}}
+\DoxyCodeLine{01558\ \textcolor{preprocessor}{\ \ GMOCK\_PP\_TAIL(GMOCK\_PP\_REPEAT(GMOCK\_INTERNAL\_TEMPLATE\_ARG,\ ,\ 10))}}
+\DoxyCodeLine{01559\ }
+\DoxyCodeLine{01560\ \textcolor{preprocessor}{\#define\ GMOCK\_INTERNAL\_TYPENAME\_PARAM(i,\ data,\ param)\ ,\ typename\ param\#\#\_type}}
+\DoxyCodeLine{01561\ \textcolor{preprocessor}{\#define\ GMOCK\_ACTION\_TYPENAME\_PARAMS\_(params)\ \(\backslash\)}}
+\DoxyCodeLine{01562\ \textcolor{preprocessor}{\ \ GMOCK\_PP\_TAIL(GMOCK\_PP\_FOR\_EACH(GMOCK\_INTERNAL\_TYPENAME\_PARAM,\ ,\ params))}}
+\DoxyCodeLine{01563\ }
+\DoxyCodeLine{01564\ \textcolor{preprocessor}{\#define\ GMOCK\_INTERNAL\_TYPE\_PARAM(i,\ data,\ param)\ ,\ param\#\#\_type}}
+\DoxyCodeLine{01565\ \textcolor{preprocessor}{\#define\ GMOCK\_ACTION\_TYPE\_PARAMS\_(params)\ \(\backslash\)}}
+\DoxyCodeLine{01566\ \textcolor{preprocessor}{\ \ GMOCK\_PP\_TAIL(GMOCK\_PP\_FOR\_EACH(GMOCK\_INTERNAL\_TYPE\_PARAM,\ ,\ params))}}
+\DoxyCodeLine{01567\ }
+\DoxyCodeLine{01568\ \textcolor{preprocessor}{\#define\ GMOCK\_INTERNAL\_TYPE\_GVALUE\_PARAM(i,\ data,\ param)\ \(\backslash\)}}
+\DoxyCodeLine{01569\ \textcolor{preprocessor}{\ \ ,\ param\#\#\_type\ gmock\_p\#\#i}}
+\DoxyCodeLine{01570\ \textcolor{preprocessor}{\#define\ GMOCK\_ACTION\_TYPE\_GVALUE\_PARAMS\_(params)\ \(\backslash\)}}
+\DoxyCodeLine{01571\ \textcolor{preprocessor}{\ \ GMOCK\_PP\_TAIL(GMOCK\_PP\_FOR\_EACH(GMOCK\_INTERNAL\_TYPE\_GVALUE\_PARAM,\ ,\ params))}}
+\DoxyCodeLine{01572\ }
+\DoxyCodeLine{01573\ \textcolor{preprocessor}{\#define\ GMOCK\_INTERNAL\_GVALUE\_PARAM(i,\ data,\ param)\ \(\backslash\)}}
+\DoxyCodeLine{01574\ \textcolor{preprocessor}{\ \ ,\ std::forward<param\#\#\_type>(gmock\_p\#\#i)}}
+\DoxyCodeLine{01575\ \textcolor{preprocessor}{\#define\ GMOCK\_ACTION\_GVALUE\_PARAMS\_(params)\ \(\backslash\)}}
+\DoxyCodeLine{01576\ \textcolor{preprocessor}{\ \ GMOCK\_PP\_TAIL(GMOCK\_PP\_FOR\_EACH(GMOCK\_INTERNAL\_GVALUE\_PARAM,\ ,\ params))}}
+\DoxyCodeLine{01577\ }
+\DoxyCodeLine{01578\ \textcolor{preprocessor}{\#define\ GMOCK\_INTERNAL\_INIT\_PARAM(i,\ data,\ param)\ \(\backslash\)}}
+\DoxyCodeLine{01579\ \textcolor{preprocessor}{\ \ ,\ param(::std::forward<param\#\#\_type>(gmock\_p\#\#i))}}
+\DoxyCodeLine{01580\ \textcolor{preprocessor}{\#define\ GMOCK\_ACTION\_INIT\_PARAMS\_(params)\ \(\backslash\)}}
+\DoxyCodeLine{01581\ \textcolor{preprocessor}{\ \ GMOCK\_PP\_TAIL(GMOCK\_PP\_FOR\_EACH(GMOCK\_INTERNAL\_INIT\_PARAM,\ ,\ params))}}
+\DoxyCodeLine{01582\ }
+\DoxyCodeLine{01583\ \textcolor{preprocessor}{\#define\ GMOCK\_INTERNAL\_FIELD\_PARAM(i,\ data,\ param)\ param\#\#\_type\ param;}}
+\DoxyCodeLine{01584\ \textcolor{preprocessor}{\#define\ GMOCK\_ACTION\_FIELD\_PARAMS\_(params)\ \(\backslash\)}}
+\DoxyCodeLine{01585\ \textcolor{preprocessor}{\ \ GMOCK\_PP\_FOR\_EACH(GMOCK\_INTERNAL\_FIELD\_PARAM,\ ,\ params)}}
+\DoxyCodeLine{01586\ }
+\DoxyCodeLine{01587\ \textcolor{preprocessor}{\#define\ GMOCK\_INTERNAL\_ACTION(name,\ full\_name,\ params)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01588\ \textcolor{preprocessor}{\ \ template\ <GMOCK\_ACTION\_TYPENAME\_PARAMS\_(params)>\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01589\ \textcolor{preprocessor}{\ \ class\ full\_name\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01590\ \textcolor{preprocessor}{\ \ \ public:\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01591\ \textcolor{preprocessor}{\ \ \ \ explicit\ full\_name(GMOCK\_ACTION\_TYPE\_GVALUE\_PARAMS\_(params))\ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01592\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ :\ impl\_(std::make\_shared<gmock\_Impl>(\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01593\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ GMOCK\_ACTION\_GVALUE\_PARAMS\_(params)))\ \{\ \}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01594\ \textcolor{preprocessor}{\ \ \ \ full\_name(const\ full\_name\&)\ =\ default;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01595\ \textcolor{preprocessor}{\ \ \ \ full\_name(full\_name\&\&)\ noexcept\ =\ default;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01596\ \textcolor{preprocessor}{\ \ \ \ template\ <typename\ F>\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01597\ \textcolor{preprocessor}{\ \ \ \ operator\ ::testing::Action<F>()\ const\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01598\ \textcolor{preprocessor}{\ \ \ \ \ \ return\ ::testing::internal::MakeAction<F>(impl\_);\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01599\ \textcolor{preprocessor}{\ \ \ \ \}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01600\ \textcolor{preprocessor}{\ \ \ private:\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01601\ \textcolor{preprocessor}{\ \ \ \ class\ gmock\_Impl\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01602\ \textcolor{preprocessor}{\ \ \ \ \ public:\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01603\ \textcolor{preprocessor}{\ \ \ \ \ \ explicit\ gmock\_Impl(GMOCK\_ACTION\_TYPE\_GVALUE\_PARAMS\_(params))\ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01604\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ :\ GMOCK\_ACTION\_INIT\_PARAMS\_(params)\ \{\}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01605\ \textcolor{preprocessor}{\ \ \ \ \ \ template\ <typename\ function\_type,\ typename\ return\_type,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01606\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ typename\ args\_type,\ GMOCK\_ACTION\_TEMPLATE\_ARGS\_NAMES\_>\ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01607\ \textcolor{preprocessor}{\ \ \ \ \ \ return\_type\ gmock\_PerformImpl(GMOCK\_ACTION\_ARG\_TYPES\_AND\_NAMES\_)\ const;\ \(\backslash\)}}
+\DoxyCodeLine{01608\ \textcolor{preprocessor}{\ \ \ \ \ \ GMOCK\_ACTION\_FIELD\_PARAMS\_(params)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01609\ \textcolor{preprocessor}{\ \ \ \ \};\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01610\ \textcolor{preprocessor}{\ \ \ \ std::shared\_ptr<const\ gmock\_Impl>\ impl\_;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01611\ \textcolor{preprocessor}{\ \ \};\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01612\ \textcolor{preprocessor}{\ \ template\ <GMOCK\_ACTION\_TYPENAME\_PARAMS\_(params)>\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01613\ \textcolor{preprocessor}{\ \ inline\ full\_name<GMOCK\_ACTION\_TYPE\_PARAMS\_(params)>\ name(\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01614\ \textcolor{preprocessor}{\ \ \ \ \ \ GMOCK\_ACTION\_TYPE\_GVALUE\_PARAMS\_(params))\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01615\ \textcolor{preprocessor}{\ \ \ \ return\ full\_name<GMOCK\_ACTION\_TYPE\_PARAMS\_(params)>(\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01616\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ GMOCK\_ACTION\_GVALUE\_PARAMS\_(params));\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01617\ \textcolor{preprocessor}{\ \ \}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01618\ \textcolor{preprocessor}{\ \ template\ <GMOCK\_ACTION\_TYPENAME\_PARAMS\_(params)>\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01619\ \textcolor{preprocessor}{\ \ template\ <typename\ function\_type,\ typename\ return\_type,\ typename\ args\_type,\ \(\backslash\)}}
+\DoxyCodeLine{01620\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ GMOCK\_ACTION\_TEMPLATE\_ARGS\_NAMES\_>\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01621\ \textcolor{preprocessor}{\ \ return\_type\ full\_name<GMOCK\_ACTION\_TYPE\_PARAMS\_(params)>::gmock\_Impl::\ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01622\ \textcolor{preprocessor}{\ \ gmock\_PerformImpl(GMOCK\_ACTION\_ARG\_TYPES\_AND\_NAMES\_UNUSED\_)\ const}}
+\DoxyCodeLine{01623\ }
+\DoxyCodeLine{01624\ \}\ \ \textcolor{comment}{//\ namespace\ internal}}
+\DoxyCodeLine{01625\ }
+\DoxyCodeLine{01626\ \textcolor{comment}{//\ Similar\ to\ GMOCK\_INTERNAL\_ACTION,\ but\ no\ bound\ parameters\ are\ stored.}}
+\DoxyCodeLine{01627\ \textcolor{preprocessor}{\#define\ ACTION(name)\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01628\ \textcolor{preprocessor}{\ \ class\ name\#\#Action\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01629\ \textcolor{preprocessor}{\ \ \ public:\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01630\ \textcolor{preprocessor}{\ \ \ explicit\ name\#\#Action()\ noexcept\ \{\}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01631\ \textcolor{preprocessor}{\ \ \ name\#\#Action(const\ name\#\#Action\&)\ noexcept\ \{\}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01632\ \textcolor{preprocessor}{\ \ \ \ template\ <typename\ F>\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01633\ \textcolor{preprocessor}{\ \ \ \ operator\ ::testing::Action<F>()\ const\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01634\ \textcolor{preprocessor}{\ \ \ \ \ \ return\ ::testing::internal::MakeAction<F,\ gmock\_Impl>();\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01635\ \textcolor{preprocessor}{\ \ \ \ \}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01636\ \textcolor{preprocessor}{\ \ \ private:\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01637\ \textcolor{preprocessor}{\ \ \ \ class\ gmock\_Impl\ \{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01638\ \textcolor{preprocessor}{\ \ \ \ \ public:\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01639\ \textcolor{preprocessor}{\ \ \ \ \ \ template\ <typename\ function\_type,\ typename\ return\_type,\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01640\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ typename\ args\_type,\ GMOCK\_ACTION\_TEMPLATE\_ARGS\_NAMES\_>\ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01641\ \textcolor{preprocessor}{\ \ \ \ \ \ return\_type\ gmock\_PerformImpl(GMOCK\_ACTION\_ARG\_TYPES\_AND\_NAMES\_)\ const;\ \(\backslash\)}}
+\DoxyCodeLine{01642\ \textcolor{preprocessor}{\ \ \ \ \};\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01643\ \textcolor{preprocessor}{\ \ \};\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01644\ \textcolor{preprocessor}{\ \ inline\ name\#\#Action\ name()\ GTEST\_MUST\_USE\_RESULT\_;\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01645\ \textcolor{preprocessor}{\ \ inline\ name\#\#Action\ name()\ \{\ return\ name\#\#Action();\ \}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01646\ \textcolor{preprocessor}{\ \ template\ <typename\ function\_type,\ typename\ return\_type,\ typename\ args\_type,\ \(\backslash\)}}
+\DoxyCodeLine{01647\ \textcolor{preprocessor}{\ \ \ \ \ \ \ \ \ \ \ \ GMOCK\_ACTION\_TEMPLATE\_ARGS\_NAMES\_>\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01648\ \textcolor{preprocessor}{\ \ return\_type\ name\#\#Action::gmock\_Impl::gmock\_PerformImpl(\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \(\backslash\)}}
+\DoxyCodeLine{01649\ \textcolor{preprocessor}{\ \ \ \ \ \ GMOCK\_ACTION\_ARG\_TYPES\_AND\_NAMES\_UNUSED\_)\ const}}
+\DoxyCodeLine{01650\ }
+\DoxyCodeLine{01651\ \textcolor{preprocessor}{\#define\ ACTION\_P(name,\ ...)\ \(\backslash\)}}
+\DoxyCodeLine{01652\ \textcolor{preprocessor}{\ \ GMOCK\_INTERNAL\_ACTION(name,\ name\#\#ActionP,\ (\_\_VA\_ARGS\_\_))}}
+\DoxyCodeLine{01653\ }
+\DoxyCodeLine{01654\ \textcolor{preprocessor}{\#define\ ACTION\_P2(name,\ ...)\ \(\backslash\)}}
+\DoxyCodeLine{01655\ \textcolor{preprocessor}{\ \ GMOCK\_INTERNAL\_ACTION(name,\ name\#\#ActionP2,\ (\_\_VA\_ARGS\_\_))}}
+\DoxyCodeLine{01656\ }
+\DoxyCodeLine{01657\ \textcolor{preprocessor}{\#define\ ACTION\_P3(name,\ ...)\ \(\backslash\)}}
+\DoxyCodeLine{01658\ \textcolor{preprocessor}{\ \ GMOCK\_INTERNAL\_ACTION(name,\ name\#\#ActionP3,\ (\_\_VA\_ARGS\_\_))}}
+\DoxyCodeLine{01659\ }
+\DoxyCodeLine{01660\ \textcolor{preprocessor}{\#define\ ACTION\_P4(name,\ ...)\ \(\backslash\)}}
+\DoxyCodeLine{01661\ \textcolor{preprocessor}{\ \ GMOCK\_INTERNAL\_ACTION(name,\ name\#\#ActionP4,\ (\_\_VA\_ARGS\_\_))}}
+\DoxyCodeLine{01662\ }
+\DoxyCodeLine{01663\ \textcolor{preprocessor}{\#define\ ACTION\_P5(name,\ ...)\ \(\backslash\)}}
+\DoxyCodeLine{01664\ \textcolor{preprocessor}{\ \ GMOCK\_INTERNAL\_ACTION(name,\ name\#\#ActionP5,\ (\_\_VA\_ARGS\_\_))}}
+\DoxyCodeLine{01665\ }
+\DoxyCodeLine{01666\ \textcolor{preprocessor}{\#define\ ACTION\_P6(name,\ ...)\ \(\backslash\)}}
+\DoxyCodeLine{01667\ \textcolor{preprocessor}{\ \ GMOCK\_INTERNAL\_ACTION(name,\ name\#\#ActionP6,\ (\_\_VA\_ARGS\_\_))}}
+\DoxyCodeLine{01668\ }
+\DoxyCodeLine{01669\ \textcolor{preprocessor}{\#define\ ACTION\_P7(name,\ ...)\ \(\backslash\)}}
+\DoxyCodeLine{01670\ \textcolor{preprocessor}{\ \ GMOCK\_INTERNAL\_ACTION(name,\ name\#\#ActionP7,\ (\_\_VA\_ARGS\_\_))}}
+\DoxyCodeLine{01671\ }
+\DoxyCodeLine{01672\ \textcolor{preprocessor}{\#define\ ACTION\_P8(name,\ ...)\ \(\backslash\)}}
+\DoxyCodeLine{01673\ \textcolor{preprocessor}{\ \ GMOCK\_INTERNAL\_ACTION(name,\ name\#\#ActionP8,\ (\_\_VA\_ARGS\_\_))}}
+\DoxyCodeLine{01674\ }
+\DoxyCodeLine{01675\ \textcolor{preprocessor}{\#define\ ACTION\_P9(name,\ ...)\ \(\backslash\)}}
+\DoxyCodeLine{01676\ \textcolor{preprocessor}{\ \ GMOCK\_INTERNAL\_ACTION(name,\ name\#\#ActionP9,\ (\_\_VA\_ARGS\_\_))}}
+\DoxyCodeLine{01677\ }
+\DoxyCodeLine{01678\ \textcolor{preprocessor}{\#define\ ACTION\_P10(name,\ ...)\ \(\backslash\)}}
+\DoxyCodeLine{01679\ \textcolor{preprocessor}{\ \ GMOCK\_INTERNAL\_ACTION(name,\ name\#\#ActionP10,\ (\_\_VA\_ARGS\_\_))}}
+\DoxyCodeLine{01680\ }
+\DoxyCodeLine{01681\ \}\ \ \textcolor{comment}{//\ namespace\ testing}}
+\DoxyCodeLine{01682\ }
+\DoxyCodeLine{01683\ \textcolor{preprocessor}{\#ifdef\ \_MSC\_VER}}
+\DoxyCodeLine{01684\ \textcolor{preprocessor}{\#\ pragma\ warning(pop)}}
+\DoxyCodeLine{01685\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{01686\ }
+\DoxyCodeLine{01687\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ GOOGLEMOCK\_INCLUDE\_GMOCK\_GMOCK\_ACTIONS\_H\_}}
+
+\end{DoxyCode}

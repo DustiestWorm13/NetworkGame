@@ -1,0 +1,182 @@
+\doxysection{Rock\+Client Class Reference}
+\hypertarget{class_rock_client}{}\label{class_rock_client}\index{RockClient@{RockClient}}
+Inheritance diagram for Rock\+Client\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.000000cm]{class_rock_client}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+virtual void \mbox{\hyperlink{class_rock_client_a4964b3e01e268e3f77a207a653936dec}{Update}} ()
+\item 
+virtual void \mbox{\hyperlink{class_rock_client_adf1513d82b399984ae693394f3f8db32}{Handle\+Dying}} () override
+\item 
+virtual void \mbox{\hyperlink{class_rock_client_aa3534c67679f8d3fc1dd5a5364968ac1}{Read}} (\mbox{\hyperlink{class_input_memory_bit_stream}{Input\+Memory\+Bit\+Stream}} \&in\+Input\+Stream) override
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \mbox{\hyperlink{class_rock}{Rock}}}
+\begin{DoxyCompactItemize}
+\item 
+virtual uint32\+\_\+t \mbox{\hyperlink{class_rock_a95bd17379463862e815458ab661ac400}{Get\+All\+State\+Mask}} () const override
+\item 
+virtual bool \mbox{\hyperlink{class_rock_a4cb37c4ed0c6ea52cee60bda191c3e5b}{Handle\+Collision\+With\+Player}} (\mbox{\hyperlink{class_player}{Player}} \texorpdfstring{$\ast$}{*}in\+Player)
+\item 
+virtual bool \mbox{\hyperlink{class_rock_af981ead1560297d1223101fb9568d4a0}{Handle\+Collision\+With\+Rock}} (\mbox{\hyperlink{class_rock}{Rock}} \texorpdfstring{$\ast$}{*}in\+Rock)
+\item 
+virtual bool \mbox{\hyperlink{class_rock_a2c8ddb492fda90987db8e21769dd947e}{Handle\+Collision\+With\+Bullet}} (\mbox{\hyperlink{class_bullet}{Bullet}} \texorpdfstring{$\ast$}{*}in\+Bullet)
+\item 
+void {\bfseries Process\+Input} (float in\+Delta\+Time, const \mbox{\hyperlink{class_input_state}{Input\+State}} \&in\+Input\+State)
+\item 
+void {\bfseries Simulate\+Movement} (float in\+Delta\+Time)
+\item 
+void {\bfseries Process\+Collisions} ()
+\item 
+void {\bfseries Process\+Collisions\+With\+Screen\+Walls} ()
+\item 
+void {\bfseries Set\+Rock\+Id} (uint32\+\_\+t in\+Rock\+Id)
+\item 
+uint32\+\_\+t {\bfseries Get\+Rock\+Id} () const
+\item 
+void {\bfseries Set\+Velocity} (const \mbox{\hyperlink{class_vector3}{Vector3}} \&in\+Velocity)
+\item 
+const \mbox{\hyperlink{class_vector3}{Vector3}} \& {\bfseries Get\+Velocity} () const
+\item 
+uint32\+\_\+t \mbox{\hyperlink{class_rock_a685ef35e5629c6c62150c060b2815c74}{Write}} (\mbox{\hyperlink{class_output_memory_bit_stream}{Output\+Memory\+Bit\+Stream}} \&in\+Output\+Stream, uint32\+\_\+t in\+Dirty\+State) const override
+\item 
+float {\bfseries Get\+Max\+Linear\+Speed} ()
+\item 
+float {\bfseries Get\+Max\+Rotation\+Speed} ()
+\item 
+float {\bfseries Get\+Wall\+Restitution} ()
+\item 
+float {\bfseries Get\+NPCRestitution} ()
+\item 
+float {\bfseries Get\+Last\+Move\+Timestamp} ()
+\item 
+float {\bfseries Get\+Thrust\+Dir} ()
+\item 
+bool {\bfseries Is\+Shooting} ()
+\item 
+void {\bfseries Set\+Health} (int Health)
+\item 
+int {\bfseries Get\+Health} ()
+\item 
+bool {\bfseries operator==} (\mbox{\hyperlink{class_rock}{Rock}} \&other)
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \mbox{\hyperlink{class_game_object}{Game\+Object}}}
+\begin{DoxyCompactItemize}
+\item 
+void {\bfseries Set\+Index\+In\+World} (int in\+Index)
+\item 
+int {\bfseries Get\+Index\+In\+World} () const
+\item 
+void {\bfseries Set\+Rotation} (float in\+Rotation)
+\item 
+float {\bfseries Get\+Rotation} () const
+\item 
+void {\bfseries Set\+Scale} (float in\+Scale)
+\item 
+float {\bfseries Get\+Scale} () const
+\item 
+const \mbox{\hyperlink{class_vector3}{Vector3}} \& {\bfseries Get\+Location} () const
+\item 
+void {\bfseries Set\+Location} (const \mbox{\hyperlink{class_vector3}{Vector3}} \&in\+Location)
+\item 
+float {\bfseries Get\+Collision\+Radius} () const
+\item 
+void {\bfseries Set\+Collision\+Radius} (float in\+Radius)
+\item 
+\mbox{\hyperlink{class_vector3}{Vector3}} {\bfseries Get\+Forward\+Vector} () const
+\item 
+void {\bfseries Set\+Color} (const \mbox{\hyperlink{class_vector3}{Vector3}} \&in\+Color)
+\item 
+const \mbox{\hyperlink{class_vector3}{Vector3}} \& {\bfseries Get\+Color} () const
+\item 
+bool {\bfseries Does\+Want\+To\+Die} () const
+\item 
+void {\bfseries Set\+Does\+Want\+To\+Die} (bool in\+Wants)
+\item 
+int {\bfseries Get\+Network\+Id} () const
+\item 
+void {\bfseries Set\+Network\+Id} (int in\+Network\+Id)
+\item 
+bool {\bfseries operator==} (\mbox{\hyperlink{class_game_object}{Game\+Object}} \&other)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_rock_client_a8526885f4c3537ffb2ee2b169cd6777f}\label{class_rock_client_a8526885f4c3537ffb2ee2b169cd6777f} 
+static Game\+Object\+Ptr {\bfseries Static\+Create} ()
+\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Member Functions inherited from \mbox{\hyperlink{class_rock}{Rock}}}
+\begin{DoxyCompactItemize}
+\item 
+static \mbox{\hyperlink{class_game_object}{Game\+Object}} \texorpdfstring{$\ast$}{*} {\bfseries Static\+Create} ()
+\item 
+static Game\+Object\+Ptr {\bfseries Static\+Create\+Ptr} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Additional Inherited Members}
+\doxysubsection*{Public Types inherited from \mbox{\hyperlink{class_rock}{Rock}}}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_rock_aedc1bb34cca8b9c339d0649bb05a9ca0}\label{class_rock_aedc1bb34cca8b9c339d0649bb05a9ca0} 
+enum {\bfseries ERock\+Replication\+State} \{ \newline
+{\bfseries ECRS\+\_\+\+Pose} = 1 \texorpdfstring{$<$}{<}\texorpdfstring{$<$}{<} 0
+, {\bfseries ECRS\+\_\+\+Color} = 1 \texorpdfstring{$<$}{<}\texorpdfstring{$<$}{<} 1
+, {\bfseries ECRS\+\_\+\+Player\+Id} = 1 \texorpdfstring{$<$}{<}\texorpdfstring{$<$}{<} 2
+, {\bfseries ECRS\+\_\+\+Health} = 1 \texorpdfstring{$<$}{<}\texorpdfstring{$<$}{<} 3
+, \newline
+{\bfseries ECRS\+\_\+\+All\+State} = ECRS\+\_\+\+Pose \texorpdfstring{$\vert$}{|} ECRS\+\_\+\+Color \texorpdfstring{$\vert$}{|} ECRS\+\_\+\+Player\+Id \texorpdfstring{$\vert$}{|} ECRS\+\_\+\+Health
+ \}
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Attributes inherited from \mbox{\hyperlink{class_rock}{Rock}}}
+\begin{DoxyCompactItemize}
+\item 
+float {\bfseries m\+Last\+Move\+Timestamp}
+\begin{DoxyCompactList}\small\item\em move down here for padding reasons... \end{DoxyCompactList}\item 
+float {\bfseries m\+Thrust\+Dir}
+\item 
+int {\bfseries m\+Health}
+\item 
+bool {\bfseries m\+Is\+Shooting}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_rock_client_adf1513d82b399984ae693394f3f8db32}\label{class_rock_client_adf1513d82b399984ae693394f3f8db32} 
+\index{RockClient@{RockClient}!HandleDying@{HandleDying}}
+\index{HandleDying@{HandleDying}!RockClient@{RockClient}}
+\doxysubsubsection{\texorpdfstring{HandleDying()}{HandleDying()}}
+{\footnotesize\ttfamily void Rock\+Client\+::\+Handle\+Dying (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Reimplemented from \mbox{\hyperlink{class_game_object}{Game\+Object}}.
+
+\Hypertarget{class_rock_client_aa3534c67679f8d3fc1dd5a5364968ac1}\label{class_rock_client_aa3534c67679f8d3fc1dd5a5364968ac1} 
+\index{RockClient@{RockClient}!Read@{Read}}
+\index{Read@{Read}!RockClient@{RockClient}}
+\doxysubsubsection{\texorpdfstring{Read()}{Read()}}
+{\footnotesize\ttfamily void Rock\+Client\+::\+Read (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_input_memory_bit_stream}{Input\+Memory\+Bit\+Stream}} \&}]{in\+Input\+Stream }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Reimplemented from \mbox{\hyperlink{class_game_object}{Game\+Object}}.
+
+\Hypertarget{class_rock_client_a4964b3e01e268e3f77a207a653936dec}\label{class_rock_client_a4964b3e01e268e3f77a207a653936dec} 
+\index{RockClient@{RockClient}!Update@{Update}}
+\index{Update@{Update}!RockClient@{RockClient}}
+\doxysubsubsection{\texorpdfstring{Update()}{Update()}}
+{\footnotesize\ttfamily void Rock\+Client\+::\+Update (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Reimplemented from \mbox{\hyperlink{class_rock}{Rock}}.
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+src/client/Rock\+Client.\+h\item 
+src/client/Rock\+Client.\+cpp\end{DoxyCompactItemize}

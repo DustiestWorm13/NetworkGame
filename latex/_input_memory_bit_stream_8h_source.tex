@@ -1,0 +1,102 @@
+\doxysection{Input\+Memory\+Bit\+Stream.\+h}
+\hypertarget{_input_memory_bit_stream_8h_source}{}\label{_input_memory_bit_stream_8h_source}\index{src/serialisation/InputMemoryBitStream.h@{src/serialisation/InputMemoryBitStream.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#ifndef\ INPUT\_MEMORY\_BIT\_STREAM\_H\_}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#define\ INPUT\_MEMORY\_BIT\_STREAM\_H\_}}
+\DoxyCodeLine{00003\ }
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ <cstdint>}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ <cstdlib>}}
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ <string>}}
+\DoxyCodeLine{00007\ }
+\DoxyCodeLine{00008\ \textcolor{preprocessor}{\#include\ "{}SerialisationCommon.h"{}}}
+\DoxyCodeLine{00009\ \textcolor{preprocessor}{\#include\ "{}Fixed.h"{}}}
+\DoxyCodeLine{00010\ \textcolor{preprocessor}{\#include\ "{}BitMan.h"{}}}
+\DoxyCodeLine{00011\ }
+\DoxyCodeLine{00012\ \textcolor{preprocessor}{\#include\ <cstring>}}
+\DoxyCodeLine{00013\ \textcolor{preprocessor}{\#include\ <cmath>}}
+\DoxyCodeLine{00014\ }
+\DoxyCodeLine{00015\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_game_object}{GameObject}};}
+\DoxyCodeLine{00016\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_vector3}{Vector3}};}
+\DoxyCodeLine{00017\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_quaternion}{Quaternion}};}
+\DoxyCodeLine{00018\ }
+\DoxyCodeLine{00019\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_input_memory_bit_stream}{InputMemoryBitStream}}}
+\DoxyCodeLine{00020\ \{}
+\DoxyCodeLine{00021\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00022\ \ \ \ \ \textcolor{keywordtype}{char}*\ \ \ \ \ \ \ mBuffer;}
+\DoxyCodeLine{00023\ \ \ \ \ uint32\_t\ \ \ \ mBitHead;}
+\DoxyCodeLine{00024\ \ \ \ \ uint32\_t\ \ \ \ mBitCapacity;}
+\DoxyCodeLine{00025\ \ \ \ \ \textcolor{keywordtype}{bool}\ \ \ \ \ \ \ \ mIsBufferOwner;}
+\DoxyCodeLine{00026\ }
+\DoxyCodeLine{00027\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00028\ }
+\DoxyCodeLine{00029\ \ \ \ \ \mbox{\hyperlink{class_input_memory_bit_stream}{InputMemoryBitStream}}(\ \textcolor{keywordtype}{char}*\ inBuffer,\ uint32\_t\ inBitCount\ )\ :}
+\DoxyCodeLine{00030\ \ \ \ \ mBuffer(\ inBuffer\ ),}
+\DoxyCodeLine{00031\ \ \ \ \ mBitHead(\ 0\ ),}
+\DoxyCodeLine{00032\ \ \ \ \ mBitCapacity(\ inBitCount\ ),}
+\DoxyCodeLine{00033\ \ \ \ \ mIsBufferOwner(\ \textcolor{keyword}{false}\ )\ \{\}}
+\DoxyCodeLine{00034\ }
+\DoxyCodeLine{00035\ \ \ \ \ \mbox{\hyperlink{class_input_memory_bit_stream}{InputMemoryBitStream}}(\ \textcolor{keyword}{const}\ \mbox{\hyperlink{class_input_memory_bit_stream}{InputMemoryBitStream}}\&\ inOther\ )\ :}
+\DoxyCodeLine{00036\ \ \ mBitHead(\ inOther.mBitHead\ ),}
+\DoxyCodeLine{00037\ \ \ \ \ mBitCapacity(\ inOther.mBitCapacity\ ),}
+\DoxyCodeLine{00038\ \ \ \ \ mIsBufferOwner(\ \textcolor{keyword}{true}\ )}
+\DoxyCodeLine{00039\ \ \ \ \ \{}
+\DoxyCodeLine{00040\ \ \ \ \ \ \ \ \ \textcolor{comment}{//allocate\ buffer\ of\ right\ size}}
+\DoxyCodeLine{00041\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ byteCount\ =\ (\ mBitCapacity\ +\ 7\ )\ /\ 8;}
+\DoxyCodeLine{00042\ \ \ \ \ \ \ \ \ mBuffer\ =\ \textcolor{keyword}{static\_cast<}\ \textcolor{keywordtype}{char}*\ \textcolor{keyword}{>}(\ malloc(\ byteCount\ )\ );}
+\DoxyCodeLine{00043\ \ \ \ \ \ \ \ \ \textcolor{comment}{//copy}}
+\DoxyCodeLine{00044\ \ \ \ \ \ \ \ \ memcpy(\ mBuffer,\ inOther.mBuffer,\ byteCount\ );}
+\DoxyCodeLine{00045\ \ \ \ \ \}}
+\DoxyCodeLine{00046\ }
+\DoxyCodeLine{00047\ \ \ \ \ \mbox{\hyperlink{class_input_memory_bit_stream}{\string~InputMemoryBitStream}}();}
+\DoxyCodeLine{00048\ }
+\DoxyCodeLine{00049\ \ \ \ \ \textcolor{keyword}{const}\ \ \ \textcolor{keywordtype}{char}*\ \ \ GetBufferPtr()\textcolor{keyword}{\ \ \ \ \ \ const\ \ \ }\{\ \textcolor{keywordflow}{return}\ mBuffer;\ \}}
+\DoxyCodeLine{00050\ \ \ \ \ uint32\_t\ \ \ \ GetRemainingBitCount()\textcolor{keyword}{\ \ const\ }\{\ \textcolor{keywordflow}{return}\ mBitCapacity\ -\/\ mBitHead;\ \}}
+\DoxyCodeLine{00051\ }
+\DoxyCodeLine{00052\ \ \ \ \ \textcolor{keywordtype}{void}\ \ \ \ \ \ \ \ ReadBits(\ uint8\_t\&\ outData,\ uint32\_t\ inBitCount\ );}
+\DoxyCodeLine{00053\ \ \ \ \ \textcolor{keywordtype}{void}\ \ \ \ \ \ \ \ ReadBits(\ \textcolor{keywordtype}{void}*\ outData,\ uint32\_t\ inBitCount\ );}
+\DoxyCodeLine{00054\ }
+\DoxyCodeLine{00055\ \ \ \ \ \textcolor{keywordtype}{void}\ \ \ \ \ \ \ \ ReadBytes(\ \textcolor{keywordtype}{void}*\ outData,\ uint32\_t\ inByteCount\ )\ \ \ \ \ \ \ \ \{\ ReadBits(\ outData,\ inByteCount\ <<\ 3\ );\ \}}
+\DoxyCodeLine{00056\ }
+\DoxyCodeLine{00057\ \ \ \ \ \textcolor{keyword}{template}<\ \textcolor{keyword}{typename}\ T\ >}
+\DoxyCodeLine{00058\ \ \ \ \ \textcolor{keywordtype}{void}\ Read(\ T\&\ inData,\ uint32\_t\ inBitCount\ =\ \textcolor{keyword}{sizeof}(\ T\ )\ *\ 8\ )}
+\DoxyCodeLine{00059\ \ \ \ \ \{}
+\DoxyCodeLine{00060\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static\_assert}(\ std::is\_arithmetic<\ T\ >::value\ ||}
+\DoxyCodeLine{00061\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::is\_enum<\ T\ >::value,}
+\DoxyCodeLine{00062\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}Generic\ Read\ only\ supports\ primitive\ data\ types"{}}\ );}
+\DoxyCodeLine{00063\ \ \ \ \ \ \ \ \ ReadBits(\ \&inData,\ inBitCount\ );}
+\DoxyCodeLine{00064\ \ \ \ \ \}}
+\DoxyCodeLine{00065\ }
+\DoxyCodeLine{00066\ \ \ \ \ \textcolor{keywordtype}{void}\ \ \ \ \ \ \ \ Read(\ uint32\_t\&\ outData,\ uint32\_t\ inBitCount\ =\ 32\ )\ \ \ \ \ \{\ ReadBits(\ \&outData,\ inBitCount\ );\ \}}
+\DoxyCodeLine{00067\ \ \ \ \ \textcolor{keywordtype}{void}\ \ \ \ \ \ \ \ Read(\ \textcolor{keywordtype}{int}\&\ outData,\ uint32\_t\ inBitCount\ =\ 32\ )\ \ \ \ \ \ \ \ \ \ \{\ ReadBits(\ \&outData,\ inBitCount\ );\ \}}
+\DoxyCodeLine{00068\ \ \ \ \ \textcolor{keywordtype}{void}\ \ \ \ \ \ \ \ Read(\ \textcolor{keywordtype}{float}\&\ outData\ )\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{\ ReadBits(\ \&outData,\ 32\ );\ \}}
+\DoxyCodeLine{00069\ }
+\DoxyCodeLine{00070\ \ \ \ \ \textcolor{keywordtype}{void}\ \ \ \ \ \ \ \ Read(\ uint16\_t\&\ outData,\ uint32\_t\ inBitCount\ =\ 16\ )\ \ \ \ \ \{\ ReadBits(\ \&outData,\ inBitCount\ );\ \}}
+\DoxyCodeLine{00071\ \ \ \ \ \textcolor{keywordtype}{void}\ \ \ \ \ \ \ \ Read(\ int16\_t\&\ outData,\ uint32\_t\ inBitCount\ =\ 16\ )\ \ \ \ \ \ \{\ ReadBits(\ \&outData,\ inBitCount\ );\ \}}
+\DoxyCodeLine{00072\ }
+\DoxyCodeLine{00073\ \ \ \ \ \textcolor{keywordtype}{void}\ \ \ \ \ \ \ \ Read(\ uint8\_t\&\ outData,\ uint32\_t\ inBitCount\ =\ 8\ )\ \ \ \ \ \ \ \{\ ReadBits(\ \&outData,\ inBitCount\ );\ \}}
+\DoxyCodeLine{00074\ \ \ \ \ \textcolor{keywordtype}{void}\ \ \ \ \ \ \ \ Read(\ \textcolor{keywordtype}{bool}\&\ outData\ )\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{\ ReadBits(\ \&outData,\ 1\ );\ \}}
+\DoxyCodeLine{00075\ }
+\DoxyCodeLine{00076\ \ \ \ \ \textcolor{keywordtype}{void}\ \ \ \ \ \ \ \ Read(\ \mbox{\hyperlink{class_quaternion}{Quaternion}}\&\ outQuat\ );}
+\DoxyCodeLine{00077\ }
+\DoxyCodeLine{00078\ \ \ \ \ \textcolor{keywordtype}{void}\ \ \ \ \ \ \ \ ResetToCapacity(\ uint32\_t\ inByteCapacity\ )\ \ \ \ \ \ \ \ \ \ \ \ \ \ \{\ mBitCapacity\ =\ inByteCapacity\ <<\ 3;\ mBitHead\ =\ 0;\ \}}
+\DoxyCodeLine{00079\ }
+\DoxyCodeLine{00080\ }
+\DoxyCodeLine{00081\ \ \ \ \ \textcolor{keywordtype}{void}\ Read(\ std::string\&\ inString\ )}
+\DoxyCodeLine{00082\ \ \ \ \ \{}
+\DoxyCodeLine{00083\ \ \ \ \ \ \ \ \ uint32\_t\ elementCount;}
+\DoxyCodeLine{00084\ \ \ \ \ \ \ \ \ Read(\ elementCount\ );}
+\DoxyCodeLine{00085\ \ \ \ \ \ \ \ \ inString.resize(\ elementCount\ );}
+\DoxyCodeLine{00086\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}(\ \textcolor{keyword}{auto}\&\ element\ :\ inString\ )}
+\DoxyCodeLine{00087\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00088\ \ \ \ \ \ \ \ \ \ \ \ \ Read(\ element\ );}
+\DoxyCodeLine{00089\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00090\ \ \ \ \ \}}
+\DoxyCodeLine{00091\ }
+\DoxyCodeLine{00092\ \ \ \ \ \textcolor{keywordtype}{void}\ Read(\ \mbox{\hyperlink{class_vector3}{Vector3}}\&\ inVector\ );}
+\DoxyCodeLine{00093\ }
+\DoxyCodeLine{00094\ \};}
+\DoxyCodeLine{00095\ }
+\DoxyCodeLine{00096\ \textcolor{preprocessor}{\#endif}}
+
+\end{DoxyCode}

@@ -1,0 +1,110 @@
+\doxysection{Network\+Manager\+Client Class Reference}
+\hypertarget{class_network_manager_client}{}\label{class_network_manager_client}\index{NetworkManagerClient@{NetworkManagerClient}}
+Inheritance diagram for Network\+Manager\+Client\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_network_manager_client}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_network_manager_client_a87ab7e10c2e78675ffc248a0ab3bcf68}\label{class_network_manager_client_a87ab7e10c2e78675ffc248a0ab3bcf68} 
+void {\bfseries Send\+Outgoing\+Packets} ()
+\item 
+virtual void \mbox{\hyperlink{class_network_manager_client_af2bb017e7e33b1c85ef1313b3e2cbb8d}{Process\+Packet}} (\mbox{\hyperlink{class_input_memory_bit_stream}{Input\+Memory\+Bit\+Stream}} \&in\+Input\+Stream, const \mbox{\hyperlink{class_socket_address}{Socket\+Address}} \&in\+From\+Address) override
+\item 
+\Hypertarget{class_network_manager_client_a4eadae4fac31830855372e6c9ca7b7e4}\label{class_network_manager_client_a4eadae4fac31830855372e6c9ca7b7e4} 
+const \mbox{\hyperlink{class_weighted_timed_moving_average}{Weighted\+Timed\+Moving\+Average}} \& {\bfseries Get\+Avg\+Round\+Trip\+Time} () const
+\item 
+\Hypertarget{class_network_manager_client_aa575448841a851857f8d1d2573b62dfc}\label{class_network_manager_client_aa575448841a851857f8d1d2573b62dfc} 
+float {\bfseries Get\+Round\+Trip\+Time} () const
+\item 
+\Hypertarget{class_network_manager_client_a937a4c804cadbf3e23e18ed50266ca2a}\label{class_network_manager_client_a937a4c804cadbf3e23e18ed50266ca2a} 
+int {\bfseries Get\+Player\+Id} () const
+\item 
+\Hypertarget{class_network_manager_client_abedb3c12bc6bb0935b4fcae18b7669d9}\label{class_network_manager_client_abedb3c12bc6bb0935b4fcae18b7669d9} 
+int {\bfseries Get\+Bullet\+Id} () const
+\item 
+\Hypertarget{class_network_manager_client_a28c8bb630ad5c78f295b0571874b83a6}\label{class_network_manager_client_a28c8bb630ad5c78f295b0571874b83a6} 
+float {\bfseries Get\+Last\+Move\+Processed\+By\+Server\+Timestamp} () const
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \mbox{\hyperlink{class_network_manager}{Network\+Manager}}}
+\begin{DoxyCompactItemize}
+\item 
+bool {\bfseries Init} (uint16\+\_\+t in\+Port)
+\item 
+void {\bfseries Process\+Incoming\+Packets} ()
+\item 
+virtual void {\bfseries Handle\+Connection\+Reset} (const \mbox{\hyperlink{class_socket_address}{Socket\+Address}} \&in\+From\+Address)
+\item 
+void {\bfseries Send\+Packet} (const \mbox{\hyperlink{class_output_memory_bit_stream}{Output\+Memory\+Bit\+Stream}} \&in\+Output\+Stream, const \mbox{\hyperlink{class_socket_address}{Socket\+Address}} \&in\+From\+Address)
+\item 
+const \mbox{\hyperlink{class_weighted_timed_moving_average}{Weighted\+Timed\+Moving\+Average}} \& {\bfseries Get\+Bytes\+Received\+Per\+Second} () const
+\item 
+const \mbox{\hyperlink{class_weighted_timed_moving_average}{Weighted\+Timed\+Moving\+Average}} \& {\bfseries Get\+Bytes\+Sent\+Per\+Second} () const
+\item 
+void {\bfseries Set\+Drop\+Packet\+Chance} (float in\+Chance)
+\item 
+float {\bfseries Get\+Drop\+Packet\+Chance} () const
+\item 
+void {\bfseries Set\+Simulated\+Latency} (float in\+Latency)
+\item 
+float {\bfseries Get\+Simulated\+Latency} () const
+\item 
+Game\+Object\+Ptr {\bfseries Get\+Game\+Object} (int in\+Network\+Id) const
+\item 
+void {\bfseries Add\+To\+Network\+Id\+To\+Game\+Object\+Map} (Game\+Object\+Ptr in\+Game\+Object)
+\item 
+void {\bfseries Remove\+From\+Network\+Id\+To\+Game\+Object\+Map} (Game\+Object\+Ptr in\+Game\+Object)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_network_manager_client_ac30b29015ea38cc124937a407769f799}\label{class_network_manager_client_ac30b29015ea38cc124937a407769f799} 
+static void {\bfseries Static\+Init} (const \mbox{\hyperlink{class_socket_address}{Socket\+Address}} \&in\+Server\+Address, const string \&in\+Name)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_network_manager_client_a515f9ea0be25810ba2d38ad6a207f496}\label{class_network_manager_client_a515f9ea0be25810ba2d38ad6a207f496} 
+static \mbox{\hyperlink{class_network_manager_client}{Network\+Manager\+Client}} \texorpdfstring{$\ast$}{*} {\bfseries s\+Instance}
+\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Attributes inherited from \mbox{\hyperlink{class_network_manager}{Network\+Manager}}}
+\begin{DoxyCompactItemize}
+\item 
+static const uint32\+\_\+t {\bfseries k\+Hello\+CC} = \textquotesingle{}HELO\textquotesingle{}
+\item 
+static const uint32\+\_\+t {\bfseries k\+Welcome\+CC} = \textquotesingle{}WLCM\textquotesingle{}
+\item 
+static const uint32\+\_\+t {\bfseries k\+State\+CC} = \textquotesingle{}STAT\textquotesingle{}
+\item 
+static const uint32\+\_\+t {\bfseries k\+Input\+CC} = \textquotesingle{}INPT\textquotesingle{}
+\item 
+static const int {\bfseries k\+Max\+Packets\+Per\+Frame\+Count} = 10
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Additional Inherited Members}
+\doxysubsection*{Protected Attributes inherited from \mbox{\hyperlink{class_network_manager}{Network\+Manager}}}
+\begin{DoxyCompactItemize}
+\item 
+Int\+To\+Game\+Object\+Map {\bfseries m\+Network\+Id\+To\+Game\+Object\+Map}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_network_manager_client_af2bb017e7e33b1c85ef1313b3e2cbb8d}\label{class_network_manager_client_af2bb017e7e33b1c85ef1313b3e2cbb8d} 
+\index{NetworkManagerClient@{NetworkManagerClient}!ProcessPacket@{ProcessPacket}}
+\index{ProcessPacket@{ProcessPacket}!NetworkManagerClient@{NetworkManagerClient}}
+\doxysubsubsection{\texorpdfstring{ProcessPacket()}{ProcessPacket()}}
+{\footnotesize\ttfamily void Network\+Manager\+Client\+::\+Process\+Packet (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_input_memory_bit_stream}{Input\+Memory\+Bit\+Stream}} \&}]{in\+Input\+Stream,  }\item[{const \mbox{\hyperlink{class_socket_address}{Socket\+Address}} \&}]{in\+From\+Address }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Implements \mbox{\hyperlink{class_network_manager}{Network\+Manager}}.
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+src/client/Network\+Manager\+Client.\+h\item 
+src/client/Network\+Manager\+Client.\+cpp\end{DoxyCompactItemize}

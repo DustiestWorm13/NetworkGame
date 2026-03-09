@@ -1,0 +1,86 @@
+\doxysection{Network\+Manager\+Server.\+h}
+\hypertarget{_network_manager_server_8h_source}{}\label{_network_manager_server_8h_source}\index{src/server/NetworkManagerServer.h@{src/server/NetworkManagerServer.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#ifndef\ NETWORK\_MANAGER\_H}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#define\ NETWORK\_MANAGER\_H}}
+\DoxyCodeLine{00003\ }
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ <unordered\_map>}}
+\DoxyCodeLine{00005\ \textcolor{keyword}{using\ }std::unordered\_map;}
+\DoxyCodeLine{00006\ }
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#include\ "{}NetworkManager.h"{}}}
+\DoxyCodeLine{00008\ \textcolor{preprocessor}{\#include\ "{}SocketAddress.h"{}}}
+\DoxyCodeLine{00009\ \textcolor{preprocessor}{\#include\ "{}InputMemoryBitStream.h"{}}}
+\DoxyCodeLine{00010\ \textcolor{preprocessor}{\#include\ "{}OutputMemoryBitStream.h"{}}}
+\DoxyCodeLine{00011\ }
+\DoxyCodeLine{00012\ \textcolor{preprocessor}{\#include\ "{}GameObject.h"{}}}
+\DoxyCodeLine{00013\ \textcolor{preprocessor}{\#include\ "{}ClientProxy.h"{}}}
+\DoxyCodeLine{00014\ }
+\DoxyCodeLine{00015\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_network_manager_server}{NetworkManagerServer}}\ :\ \textcolor{keyword}{public}\ \mbox{\hyperlink{class_network_manager}{NetworkManager}}}
+\DoxyCodeLine{00016\ \{}
+\DoxyCodeLine{00017\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00018\ \ \ \ \ \textcolor{keyword}{static}\ \mbox{\hyperlink{class_network_manager_server}{NetworkManagerServer}}*\ \ \ \ sInstance;}
+\DoxyCodeLine{00019\ }
+\DoxyCodeLine{00020\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ \ \ \ \ \ \ \ \ \ \ \ \ StaticInit(\ uint16\_t\ inPort\ );}
+\DoxyCodeLine{00021\ }
+\DoxyCodeLine{00022\ \ \ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{void}\ \ \ \ \ \ \ \ \ \ \ \ ProcessPacket(\ \mbox{\hyperlink{class_input_memory_bit_stream}{InputMemoryBitStream}}\&\ inInputStream,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{class_socket_address}{SocketAddress}}\&\ inFromAddress\ )\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00023\ \ \ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{void}\ \ \ \ \ \ \ \ \ \ \ \ HandleConnectionReset(\ \textcolor{keyword}{const}\ \mbox{\hyperlink{class_socket_address}{SocketAddress}}\&\ inFromAddress\ )\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00024\ }
+\DoxyCodeLine{00025\ \ \ \ \ \textcolor{keywordtype}{void}\ \ \ \ \ \ \ \ \ \ \ \ SendOutgoingPackets();}
+\DoxyCodeLine{00026\ \ \ \ \ \textcolor{keywordtype}{void}\ \ \ \ \ \ \ \ \ \ \ \ CheckForDisconnects();}
+\DoxyCodeLine{00027\ }
+\DoxyCodeLine{00028\ \ \ \ \ \textcolor{keywordtype}{void}\ \ \ \ \ \ \ \ \ \ \ \ RegisterGameObject(\ GameObjectPtr\ inGameObject\ );}
+\DoxyCodeLine{00029\ \ \ \ \ \textcolor{keyword}{inline}\ \ GameObjectPtr\ \ \ RegisterAndReturn(\ \mbox{\hyperlink{class_game_object}{GameObject}}*\ inGameObject\ );}
+\DoxyCodeLine{00030\ \ \ \ \ \textcolor{keywordtype}{void}\ \ \ \ \ \ \ \ \ \ \ \ UnregisterGameObject(\ \mbox{\hyperlink{class_game_object}{GameObject}}*\ inGameObject\ );}
+\DoxyCodeLine{00031\ \ \ \ \ \textcolor{keywordtype}{void}\ \ \ \ \ \ \ \ \ \ \ \ SetStateDirty(\ \textcolor{keywordtype}{int}\ inNetworkId,\ uint32\_t\ inDirtyState\ );}
+\DoxyCodeLine{00032\ }
+\DoxyCodeLine{00033\ \ \ \ \ \textcolor{keywordtype}{void}\ \ \ \ \ \ \ \ \ \ \ \ RespawnPlayers();}
+\DoxyCodeLine{00034\ }
+\DoxyCodeLine{00035\ \ \ \ \ ClientProxyPtr\ \ GetClientProxy(\ \textcolor{keywordtype}{int}\ inPlayerId\ )\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00036\ }
+\DoxyCodeLine{00037\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00038\ \ \ \ \ \mbox{\hyperlink{class_network_manager_server}{NetworkManagerServer}}();}
+\DoxyCodeLine{00039\ }
+\DoxyCodeLine{00040\ \ \ \ \ \textcolor{keywordtype}{void}\ \ \ \ HandlePacketFromNewClient(\ \mbox{\hyperlink{class_input_memory_bit_stream}{InputMemoryBitStream}}\&\ inInputStream,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{class_socket_address}{SocketAddress}}\&\ inFromAddress\ );}
+\DoxyCodeLine{00041\ \ \ \ \ \textcolor{keywordtype}{void}\ \ \ \ ProcessPacket(\ ClientProxyPtr\ inClientProxy,\ \mbox{\hyperlink{class_input_memory_bit_stream}{InputMemoryBitStream}}\&\ inInputStream\ );}
+\DoxyCodeLine{00042\ }
+\DoxyCodeLine{00043\ \ \ \ \ \textcolor{keywordtype}{void}\ \ \ \ SendWelcomePacket(\ ClientProxyPtr\ inClientProxy\ );}
+\DoxyCodeLine{00044\ \ \ \ \ \textcolor{keywordtype}{void}\ \ \ \ UpdateAllClients();}
+\DoxyCodeLine{00045\ }
+\DoxyCodeLine{00046\ \ \ \ \ \textcolor{keywordtype}{void}\ \ \ \ AddWorldStateToPacket(\ \mbox{\hyperlink{class_output_memory_bit_stream}{OutputMemoryBitStream}}\&\ inOutputStream\ );}
+\DoxyCodeLine{00047\ \ \ \ \ \textcolor{keywordtype}{void}\ \ \ \ AddScoreBoardStateToPacket(\ \mbox{\hyperlink{class_output_memory_bit_stream}{OutputMemoryBitStream}}\&\ inOutputStream\ );}
+\DoxyCodeLine{00048\ }
+\DoxyCodeLine{00049\ \ \ \ \ \textcolor{keywordtype}{void}\ \ \ \ SendStatePacketToClient(\ ClientProxyPtr\ inClientProxy\ );}
+\DoxyCodeLine{00050\ \ \ \ \ \textcolor{keywordtype}{void}\ \ \ \ WriteLastMoveTimestampIfDirty(\ \mbox{\hyperlink{class_output_memory_bit_stream}{OutputMemoryBitStream}}\&\ inOutputStream,\ ClientProxyPtr\ inClientProxy\ );}
+\DoxyCodeLine{00051\ }
+\DoxyCodeLine{00052\ \ \ \ \ \textcolor{keywordtype}{void}\ \ \ \ HandleInputPacket(\ ClientProxyPtr\ inClientProxy,\ \mbox{\hyperlink{class_input_memory_bit_stream}{InputMemoryBitStream}}\&\ inInputStream\ );}
+\DoxyCodeLine{00053\ }
+\DoxyCodeLine{00054\ \ \ \ \ \textcolor{keywordtype}{void}\ \ \ \ HandleClientDisconnected(\ ClientProxyPtr\ inClientProxy\ );}
+\DoxyCodeLine{00055\ }
+\DoxyCodeLine{00056\ \ \ \ \ \textcolor{keywordtype}{int}\ \ \ \ \ GetNewNetworkId();}
+\DoxyCodeLine{00057\ }
+\DoxyCodeLine{00058\ \ \ \ \ \textcolor{keyword}{typedef}\ unordered\_map<\ int,\ ClientProxyPtr\ >\ \ \ \ IntToClientMap;}
+\DoxyCodeLine{00059\ \ \ \ \ \textcolor{keyword}{typedef}\ unordered\_map<\ SocketAddress,\ ClientProxyPtr\ >\ \ AddressToClientMap;}
+\DoxyCodeLine{00060\ }
+\DoxyCodeLine{00061\ \ \ \ \ AddressToClientMap\ \ \ \ \ \ mAddressToClientMap;}
+\DoxyCodeLine{00062\ \ \ \ \ IntToClientMap\ \ \ \ \ \ \ \ \ \ mPlayerIdToClientMap;}
+\DoxyCodeLine{00063\ }
+\DoxyCodeLine{00064\ \ \ \ \ \textcolor{keywordtype}{int}\ \ \ \ \ \ \ \ \ \ \ \ \ mNewPlayerId;}
+\DoxyCodeLine{00065\ \ \ \ \ \textcolor{keywordtype}{int}\ \ \ \ \ \ \ \ \ \ \ \ \ mNewNetworkId;}
+\DoxyCodeLine{00066\ }
+\DoxyCodeLine{00067\ \ \ \ \ \textcolor{keywordtype}{float}\ \ \ \ \ \ \ \ \ \ \ mTimeOfLastSatePacket;}
+\DoxyCodeLine{00068\ \ \ \ \ \textcolor{keywordtype}{float}\ \ \ \ \ \ \ \ \ \ \ mTimeBetweenStatePackets;}
+\DoxyCodeLine{00069\ \ \ \ \ \textcolor{keywordtype}{float}\ \ \ \ \ \ \ \ \ \ \ mClientDisconnectTimeout;}
+\DoxyCodeLine{00070\ \};}
+\DoxyCodeLine{00071\ }
+\DoxyCodeLine{00072\ }
+\DoxyCodeLine{00073\ \textcolor{keyword}{inline}\ GameObjectPtr\ NetworkManagerServer::RegisterAndReturn(\ \mbox{\hyperlink{class_game_object}{GameObject}}*\ inGameObject\ )}
+\DoxyCodeLine{00074\ \{}
+\DoxyCodeLine{00075\ \ \ \ \ GameObjectPtr\ toRet(\ inGameObject\ );}
+\DoxyCodeLine{00076\ \ \ \ \ RegisterGameObject(\ toRet\ );}
+\DoxyCodeLine{00077\ \ \ \ \ \textcolor{keywordflow}{return}\ toRet;}
+\DoxyCodeLine{00078\ \}}
+\DoxyCodeLine{00079\ }
+\DoxyCodeLine{00080\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{//NETWORK\_MANAGER\_H}}
+
+\end{DoxyCode}

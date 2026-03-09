@@ -1,0 +1,185 @@
+\doxysection{gen\+\_\+gtest\+\_\+pred\+\_\+impl Namespace Reference}
+\hypertarget{namespacegen__gtest__pred__impl}{}\label{namespacegen__gtest__pred__impl}\index{gen\_gtest\_pred\_impl@{gen\_gtest\_pred\_impl}}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{namespacegen__gtest__pred__impl_a26a617172bc7412012c5a6e7574baaab}{Header\+Preamble}} (n)
+\item 
+\mbox{\hyperlink{namespacegen__gtest__pred__impl_aaa26f18fffb078c09bb5a2009b7e088a}{Arity}} (n)
+\item 
+\mbox{\hyperlink{namespacegen__gtest__pred__impl_a69f1f79fdb0720b4ebe3b30e2f19608a}{Title}} (word)
+\item 
+\mbox{\hyperlink{namespacegen__gtest__pred__impl_ae5bdeaf46789198017dd17875da8b2fe}{One\+To}} (n)
+\item 
+\mbox{\hyperlink{namespacegen__gtest__pred__impl_a620e5c968b63ea75d4c278eee04de8ad}{Iter}} (n, format, sep=\textquotesingle{}\textquotesingle{})
+\item 
+\mbox{\hyperlink{namespacegen__gtest__pred__impl_a59c2ac0f700b0bdcb36171e53004dd6c}{Implementation\+For\+Arity}} (n)
+\item 
+\mbox{\hyperlink{namespacegen__gtest__pred__impl_ae30b42a0decd3177dc0a76c9a4de3b9d}{Header\+Postamble}} ()
+\item 
+\mbox{\hyperlink{namespacegen__gtest__pred__impl_a335f5aafc7f7c967723f20da7bd752ba}{Generate\+File}} (path, content)
+\item 
+\mbox{\hyperlink{namespacegen__gtest__pred__impl_a07e481d5eb0906b378f4a82d48431558}{Generate\+Header}} (n)
+\item 
+\mbox{\hyperlink{namespacegen__gtest__pred__impl_a9e8ac01c257544c4d497ec7e01e9c971}{Unit\+Test\+Preamble}} ()
+\item 
+\mbox{\hyperlink{namespacegen__gtest__pred__impl_a73c83807b2eb6a42a647488730c71aea}{Tests\+For\+Arity}} (n)
+\item 
+\mbox{\hyperlink{namespacegen__gtest__pred__impl_a6766ef4e3c9e872a48a3815f8290db0e}{Unit\+Test\+Postamble}} ()
+\item 
+\mbox{\hyperlink{namespacegen__gtest__pred__impl_a6e715890b6a133ff193e9449e05e3625}{Generate\+Unit\+Test}} (n)
+\item 
+\mbox{\hyperlink{namespacegen__gtest__pred__impl_abc033bc5a5865ac655bf60afba95a270}{\+\_\+\+Main}} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{namespacegen__gtest__pred__impl_aed087c7fc787a064f0a9fd5f5f9f6487}\label{namespacegen__gtest__pred__impl_aed087c7fc787a064f0a9fd5f5f9f6487} 
+{\bfseries SCRIPT\+\_\+\+DIR} = os.\+path.\+dirname(sys.\+argv\mbox{[}0\mbox{]})
+\item 
+\Hypertarget{namespacegen__gtest__pred__impl_ab96c63705e2cb7619876ba592dab4c8e}\label{namespacegen__gtest__pred__impl_ab96c63705e2cb7619876ba592dab4c8e} 
+{\bfseries HEADER} = os.\+path.\+join(SCRIPT\+\_\+\+DIR, \textquotesingle{}../include/gtest/gtest\+\_\+pred\+\_\+impl.\+h\textquotesingle{})
+\item 
+\Hypertarget{namespacegen__gtest__pred__impl_a8c1cb8e87c4bd84edbb958f73b7df200}\label{namespacegen__gtest__pred__impl_a8c1cb8e87c4bd84edbb958f73b7df200} 
+{\bfseries UNIT\+\_\+\+TEST} = os.\+path.\+join(SCRIPT\+\_\+\+DIR, \textquotesingle{}../test/gtest\+\_\+pred\+\_\+impl\+\_\+unittest.\+cc\textquotesingle{})
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyVerb}gen_gtest_pred_impl.py v0.1
+
+Generates the implementation of Google Test predicate assertions and
+accompanying tests.
+
+Usage:
+
+  gen_gtest_pred_impl.py MAX_ARITY
+
+where MAX_ARITY is a positive integer.
+
+The command generates the implementation of up-to MAX_ARITY-ary
+predicate assertions, and writes it to file gtest_pred_impl.h in the
+directory where the script is.  It also generates the accompanying
+unit test in file gtest_pred_impl_unittest.cc.
+\end{DoxyVerb}
+ 
+
+\doxysubsection{Function Documentation}
+\Hypertarget{namespacegen__gtest__pred__impl_abc033bc5a5865ac655bf60afba95a270}\label{namespacegen__gtest__pred__impl_abc033bc5a5865ac655bf60afba95a270} 
+\index{gen\_gtest\_pred\_impl@{gen\_gtest\_pred\_impl}!\_Main@{\_Main}}
+\index{\_Main@{\_Main}!gen\_gtest\_pred\_impl@{gen\_gtest\_pred\_impl}}
+\doxysubsubsection{\texorpdfstring{\_Main()}{\_Main()}}
+{\footnotesize\ttfamily gen\+\_\+gtest\+\_\+pred\+\_\+impl.\+\_\+\+Main (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+\begin{DoxyVerb}The entry point of the script.  Generates the header file and its
+unit test.\end{DoxyVerb}
+ \Hypertarget{namespacegen__gtest__pred__impl_aaa26f18fffb078c09bb5a2009b7e088a}\label{namespacegen__gtest__pred__impl_aaa26f18fffb078c09bb5a2009b7e088a} 
+\index{gen\_gtest\_pred\_impl@{gen\_gtest\_pred\_impl}!Arity@{Arity}}
+\index{Arity@{Arity}!gen\_gtest\_pred\_impl@{gen\_gtest\_pred\_impl}}
+\doxysubsubsection{\texorpdfstring{Arity()}{Arity()}}
+{\footnotesize\ttfamily gen\+\_\+gtest\+\_\+pred\+\_\+impl.\+Arity (\begin{DoxyParamCaption}\item[{}]{n }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Returns the English name of the given arity.\end{DoxyVerb}
+ \Hypertarget{namespacegen__gtest__pred__impl_a335f5aafc7f7c967723f20da7bd752ba}\label{namespacegen__gtest__pred__impl_a335f5aafc7f7c967723f20da7bd752ba} 
+\index{gen\_gtest\_pred\_impl@{gen\_gtest\_pred\_impl}!GenerateFile@{GenerateFile}}
+\index{GenerateFile@{GenerateFile}!gen\_gtest\_pred\_impl@{gen\_gtest\_pred\_impl}}
+\doxysubsubsection{\texorpdfstring{GenerateFile()}{GenerateFile()}}
+{\footnotesize\ttfamily gen\+\_\+gtest\+\_\+pred\+\_\+impl.\+Generate\+File (\begin{DoxyParamCaption}\item[{}]{path,  }\item[{}]{content }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Given a file path and a content string
+   overwrites it with the given content.
+\end{DoxyVerb}
+ \Hypertarget{namespacegen__gtest__pred__impl_a07e481d5eb0906b378f4a82d48431558}\label{namespacegen__gtest__pred__impl_a07e481d5eb0906b378f4a82d48431558} 
+\index{gen\_gtest\_pred\_impl@{gen\_gtest\_pred\_impl}!GenerateHeader@{GenerateHeader}}
+\index{GenerateHeader@{GenerateHeader}!gen\_gtest\_pred\_impl@{gen\_gtest\_pred\_impl}}
+\doxysubsubsection{\texorpdfstring{GenerateHeader()}{GenerateHeader()}}
+{\footnotesize\ttfamily gen\+\_\+gtest\+\_\+pred\+\_\+impl.\+Generate\+Header (\begin{DoxyParamCaption}\item[{}]{n }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Given the maximum arity n, updates the header file that implements
+the predicate assertions.
+\end{DoxyVerb}
+ \Hypertarget{namespacegen__gtest__pred__impl_a6e715890b6a133ff193e9449e05e3625}\label{namespacegen__gtest__pred__impl_a6e715890b6a133ff193e9449e05e3625} 
+\index{gen\_gtest\_pred\_impl@{gen\_gtest\_pred\_impl}!GenerateUnitTest@{GenerateUnitTest}}
+\index{GenerateUnitTest@{GenerateUnitTest}!gen\_gtest\_pred\_impl@{gen\_gtest\_pred\_impl}}
+\doxysubsubsection{\texorpdfstring{GenerateUnitTest()}{GenerateUnitTest()}}
+{\footnotesize\ttfamily gen\+\_\+gtest\+\_\+pred\+\_\+impl.\+Generate\+Unit\+Test (\begin{DoxyParamCaption}\item[{}]{n }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Returns the tests for up-to n-ary predicate assertions.\end{DoxyVerb}
+ \Hypertarget{namespacegen__gtest__pred__impl_ae30b42a0decd3177dc0a76c9a4de3b9d}\label{namespacegen__gtest__pred__impl_ae30b42a0decd3177dc0a76c9a4de3b9d} 
+\index{gen\_gtest\_pred\_impl@{gen\_gtest\_pred\_impl}!HeaderPostamble@{HeaderPostamble}}
+\index{HeaderPostamble@{HeaderPostamble}!gen\_gtest\_pred\_impl@{gen\_gtest\_pred\_impl}}
+\doxysubsubsection{\texorpdfstring{HeaderPostamble()}{HeaderPostamble()}}
+{\footnotesize\ttfamily gen\+\_\+gtest\+\_\+pred\+\_\+impl.\+Header\+Postamble (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Returns the postamble for the header file.\end{DoxyVerb}
+ \Hypertarget{namespacegen__gtest__pred__impl_a26a617172bc7412012c5a6e7574baaab}\label{namespacegen__gtest__pred__impl_a26a617172bc7412012c5a6e7574baaab} 
+\index{gen\_gtest\_pred\_impl@{gen\_gtest\_pred\_impl}!HeaderPreamble@{HeaderPreamble}}
+\index{HeaderPreamble@{HeaderPreamble}!gen\_gtest\_pred\_impl@{gen\_gtest\_pred\_impl}}
+\doxysubsubsection{\texorpdfstring{HeaderPreamble()}{HeaderPreamble()}}
+{\footnotesize\ttfamily gen\+\_\+gtest\+\_\+pred\+\_\+impl.\+Header\+Preamble (\begin{DoxyParamCaption}\item[{}]{n }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Returns the preamble for the header file.
+
+Args:
+  n:  the maximum arity of the predicate macros to be generated.
+\end{DoxyVerb}
+ \Hypertarget{namespacegen__gtest__pred__impl_a59c2ac0f700b0bdcb36171e53004dd6c}\label{namespacegen__gtest__pred__impl_a59c2ac0f700b0bdcb36171e53004dd6c} 
+\index{gen\_gtest\_pred\_impl@{gen\_gtest\_pred\_impl}!ImplementationForArity@{ImplementationForArity}}
+\index{ImplementationForArity@{ImplementationForArity}!gen\_gtest\_pred\_impl@{gen\_gtest\_pred\_impl}}
+\doxysubsubsection{\texorpdfstring{ImplementationForArity()}{ImplementationForArity()}}
+{\footnotesize\ttfamily gen\+\_\+gtest\+\_\+pred\+\_\+impl.\+Implementation\+For\+Arity (\begin{DoxyParamCaption}\item[{}]{n }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Returns the implementation of n-ary predicate assertions.\end{DoxyVerb}
+ \Hypertarget{namespacegen__gtest__pred__impl_a620e5c968b63ea75d4c278eee04de8ad}\label{namespacegen__gtest__pred__impl_a620e5c968b63ea75d4c278eee04de8ad} 
+\index{gen\_gtest\_pred\_impl@{gen\_gtest\_pred\_impl}!Iter@{Iter}}
+\index{Iter@{Iter}!gen\_gtest\_pred\_impl@{gen\_gtest\_pred\_impl}}
+\doxysubsubsection{\texorpdfstring{Iter()}{Iter()}}
+{\footnotesize\ttfamily gen\+\_\+gtest\+\_\+pred\+\_\+impl.\+Iter (\begin{DoxyParamCaption}\item[{}]{n,  }\item[{}]{format,  }\item[{}]{sep = {\ttfamily \textquotesingle{}\textquotesingle{}} }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Given a positive integer n, a format string that contains 0 or
+more '%s' format specs, and optionally a separator string, returns
+the join of n strings, each formatted with the format string on an
+iterator ranged from 1 to n.
+
+Example:
+
+Iter(3, 'v%s', sep=', ') returns 'v1, v2, v3'.
+\end{DoxyVerb}
+ \Hypertarget{namespacegen__gtest__pred__impl_ae5bdeaf46789198017dd17875da8b2fe}\label{namespacegen__gtest__pred__impl_ae5bdeaf46789198017dd17875da8b2fe} 
+\index{gen\_gtest\_pred\_impl@{gen\_gtest\_pred\_impl}!OneTo@{OneTo}}
+\index{OneTo@{OneTo}!gen\_gtest\_pred\_impl@{gen\_gtest\_pred\_impl}}
+\doxysubsubsection{\texorpdfstring{OneTo()}{OneTo()}}
+{\footnotesize\ttfamily gen\+\_\+gtest\+\_\+pred\+\_\+impl.\+One\+To (\begin{DoxyParamCaption}\item[{}]{n }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Returns the list [1, 2, 3, ..., n].\end{DoxyVerb}
+ \Hypertarget{namespacegen__gtest__pred__impl_a73c83807b2eb6a42a647488730c71aea}\label{namespacegen__gtest__pred__impl_a73c83807b2eb6a42a647488730c71aea} 
+\index{gen\_gtest\_pred\_impl@{gen\_gtest\_pred\_impl}!TestsForArity@{TestsForArity}}
+\index{TestsForArity@{TestsForArity}!gen\_gtest\_pred\_impl@{gen\_gtest\_pred\_impl}}
+\doxysubsubsection{\texorpdfstring{TestsForArity()}{TestsForArity()}}
+{\footnotesize\ttfamily gen\+\_\+gtest\+\_\+pred\+\_\+impl.\+Tests\+For\+Arity (\begin{DoxyParamCaption}\item[{}]{n }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Returns the tests for n-ary predicate assertions.\end{DoxyVerb}
+ \Hypertarget{namespacegen__gtest__pred__impl_a69f1f79fdb0720b4ebe3b30e2f19608a}\label{namespacegen__gtest__pred__impl_a69f1f79fdb0720b4ebe3b30e2f19608a} 
+\index{gen\_gtest\_pred\_impl@{gen\_gtest\_pred\_impl}!Title@{Title}}
+\index{Title@{Title}!gen\_gtest\_pred\_impl@{gen\_gtest\_pred\_impl}}
+\doxysubsubsection{\texorpdfstring{Title()}{Title()}}
+{\footnotesize\ttfamily gen\+\_\+gtest\+\_\+pred\+\_\+impl.\+Title (\begin{DoxyParamCaption}\item[{}]{word }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Returns the given word in title case.  The difference between
+this and string's title() method is that Title('4-ary') is '4-ary'
+while '4-ary'.title() is '4-Ary'.\end{DoxyVerb}
+ \Hypertarget{namespacegen__gtest__pred__impl_a6766ef4e3c9e872a48a3815f8290db0e}\label{namespacegen__gtest__pred__impl_a6766ef4e3c9e872a48a3815f8290db0e} 
+\index{gen\_gtest\_pred\_impl@{gen\_gtest\_pred\_impl}!UnitTestPostamble@{UnitTestPostamble}}
+\index{UnitTestPostamble@{UnitTestPostamble}!gen\_gtest\_pred\_impl@{gen\_gtest\_pred\_impl}}
+\doxysubsubsection{\texorpdfstring{UnitTestPostamble()}{UnitTestPostamble()}}
+{\footnotesize\ttfamily gen\+\_\+gtest\+\_\+pred\+\_\+impl.\+Unit\+Test\+Postamble (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Returns the postamble for the tests.\end{DoxyVerb}
+ \Hypertarget{namespacegen__gtest__pred__impl_a9e8ac01c257544c4d497ec7e01e9c971}\label{namespacegen__gtest__pred__impl_a9e8ac01c257544c4d497ec7e01e9c971} 
+\index{gen\_gtest\_pred\_impl@{gen\_gtest\_pred\_impl}!UnitTestPreamble@{UnitTestPreamble}}
+\index{UnitTestPreamble@{UnitTestPreamble}!gen\_gtest\_pred\_impl@{gen\_gtest\_pred\_impl}}
+\doxysubsubsection{\texorpdfstring{UnitTestPreamble()}{UnitTestPreamble()}}
+{\footnotesize\ttfamily gen\+\_\+gtest\+\_\+pred\+\_\+impl.\+Unit\+Test\+Preamble (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Returns the preamble for the unit test file.\end{DoxyVerb}
+ 

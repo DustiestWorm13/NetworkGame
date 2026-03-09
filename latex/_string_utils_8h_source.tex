@@ -1,0 +1,25 @@
+\doxysection{String\+Utils.\+h}
+\hypertarget{_string_utils_8h_source}{}\label{_string_utils_8h_source}\index{src/strings/StringUtils.h@{src/strings/StringUtils.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#ifndef\ STRING\_UTILS}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#define\ STRING\_UTILS}}
+\DoxyCodeLine{00003\ }
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ <string>}}
+\DoxyCodeLine{00005\ \textcolor{keyword}{using\ }std::string;}
+\DoxyCodeLine{00006\ }
+\DoxyCodeLine{00007\ \textcolor{keyword}{namespace\ }StringUtils}
+\DoxyCodeLine{00008\ \{}
+\DoxyCodeLine{00009\ \ \ \ \ \textcolor{keywordtype}{string}\ GetCommandLineArg(\ \textcolor{keywordtype}{int}\ inIndex\ );}
+\DoxyCodeLine{00010\ }
+\DoxyCodeLine{00011\ \ \ \ \ \textcolor{keywordtype}{string}\ Sprintf(\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ inFormat,\ ...\ );}
+\DoxyCodeLine{00012\ }
+\DoxyCodeLine{00013\ \ \ \ \ \textcolor{keywordtype}{void}\ \ \ \ Log(\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ inFormat\ );}
+\DoxyCodeLine{00014\ \ \ \ \ \textcolor{keywordtype}{void}\ \ \ \ Log(\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ inFormat,\ ...\ );}
+\DoxyCodeLine{00015\ \}}
+\DoxyCodeLine{00016\ }
+\DoxyCodeLine{00017\ \textcolor{preprocessor}{\#define\ LOG(\ ...\ )\ StringUtils::Log(\ \_\_VA\_ARGS\_\_\ );}}
+\DoxyCodeLine{00018\ }
+\DoxyCodeLine{00019\ \textcolor{preprocessor}{\#endif}}
+
+\end{DoxyCode}

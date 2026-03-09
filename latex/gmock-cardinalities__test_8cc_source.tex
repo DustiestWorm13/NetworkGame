@@ -1,0 +1,435 @@
+\doxysection{gmock-\/cardinalities\+\_\+test.cc}
+\hypertarget{gmock-cardinalities__test_8cc_source}{}\label{gmock-cardinalities__test_8cc_source}\index{build/\_deps/googletest-\/src/googlemock/test/gmock-\/cardinalities\_test.cc@{build/\_deps/googletest-\/src/googlemock/test/gmock-\/cardinalities\_test.cc}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{//\ Copyright\ 2007,\ Google\ Inc.}}
+\DoxyCodeLine{00002\ \textcolor{comment}{//\ All\ rights\ reserved.}}
+\DoxyCodeLine{00003\ \textcolor{comment}{//}}
+\DoxyCodeLine{00004\ \textcolor{comment}{//\ Redistribution\ and\ use\ in\ source\ and\ binary\ forms,\ with\ or\ without}}
+\DoxyCodeLine{00005\ \textcolor{comment}{//\ modification,\ are\ permitted\ provided\ that\ the\ following\ conditions\ are}}
+\DoxyCodeLine{00006\ \textcolor{comment}{//\ met:}}
+\DoxyCodeLine{00007\ \textcolor{comment}{//}}
+\DoxyCodeLine{00008\ \textcolor{comment}{//\ \ \ \ \ *\ Redistributions\ of\ source\ code\ must\ retain\ the\ above\ copyright}}
+\DoxyCodeLine{00009\ \textcolor{comment}{//\ notice,\ this\ list\ of\ conditions\ and\ the\ following\ disclaimer.}}
+\DoxyCodeLine{00010\ \textcolor{comment}{//\ \ \ \ \ *\ Redistributions\ in\ binary\ form\ must\ reproduce\ the\ above}}
+\DoxyCodeLine{00011\ \textcolor{comment}{//\ copyright\ notice,\ this\ list\ of\ conditions\ and\ the\ following\ disclaimer}}
+\DoxyCodeLine{00012\ \textcolor{comment}{//\ in\ the\ documentation\ and/or\ other\ materials\ provided\ with\ the}}
+\DoxyCodeLine{00013\ \textcolor{comment}{//\ distribution.}}
+\DoxyCodeLine{00014\ \textcolor{comment}{//\ \ \ \ \ *\ Neither\ the\ name\ of\ Google\ Inc.\ nor\ the\ names\ of\ its}}
+\DoxyCodeLine{00015\ \textcolor{comment}{//\ contributors\ may\ be\ used\ to\ endorse\ or\ promote\ products\ derived\ from}}
+\DoxyCodeLine{00016\ \textcolor{comment}{//\ this\ software\ without\ specific\ prior\ written\ permission.}}
+\DoxyCodeLine{00017\ \textcolor{comment}{//}}
+\DoxyCodeLine{00018\ \textcolor{comment}{//\ THIS\ SOFTWARE\ IS\ PROVIDED\ BY\ THE\ COPYRIGHT\ HOLDERS\ AND\ CONTRIBUTORS}}
+\DoxyCodeLine{00019\ \textcolor{comment}{//\ "{}AS\ IS"{}\ AND\ ANY\ EXPRESS\ OR\ IMPLIED\ WARRANTIES,\ INCLUDING,\ BUT\ NOT}}
+\DoxyCodeLine{00020\ \textcolor{comment}{//\ LIMITED\ TO,\ THE\ IMPLIED\ WARRANTIES\ OF\ MERCHANTABILITY\ AND\ FITNESS\ FOR}}
+\DoxyCodeLine{00021\ \textcolor{comment}{//\ A\ PARTICULAR\ PURPOSE\ ARE\ DISCLAIMED.\ IN\ NO\ EVENT\ SHALL\ THE\ COPYRIGHT}}
+\DoxyCodeLine{00022\ \textcolor{comment}{//\ OWNER\ OR\ CONTRIBUTORS\ BE\ LIABLE\ FOR\ ANY\ DIRECT,\ INDIRECT,\ INCIDENTAL,}}
+\DoxyCodeLine{00023\ \textcolor{comment}{//\ SPECIAL,\ EXEMPLARY,\ OR\ CONSEQUENTIAL\ DAMAGES\ (INCLUDING,\ BUT\ NOT}}
+\DoxyCodeLine{00024\ \textcolor{comment}{//\ LIMITED\ TO,\ PROCUREMENT\ OF\ SUBSTITUTE\ GOODS\ OR\ SERVICES;\ LOSS\ OF\ USE,}}
+\DoxyCodeLine{00025\ \textcolor{comment}{//\ DATA,\ OR\ PROFITS;\ OR\ BUSINESS\ INTERRUPTION)\ HOWEVER\ CAUSED\ AND\ ON\ ANY}}
+\DoxyCodeLine{00026\ \textcolor{comment}{//\ THEORY\ OF\ LIABILITY,\ WHETHER\ IN\ CONTRACT,\ STRICT\ LIABILITY,\ OR\ TORT}}
+\DoxyCodeLine{00027\ \textcolor{comment}{//\ (INCLUDING\ NEGLIGENCE\ OR\ OTHERWISE)\ ARISING\ IN\ ANY\ WAY\ OUT\ OF\ THE\ USE}}
+\DoxyCodeLine{00028\ \textcolor{comment}{//\ OF\ THIS\ SOFTWARE,\ EVEN\ IF\ ADVISED\ OF\ THE\ POSSIBILITY\ OF\ SUCH\ DAMAGE.}}
+\DoxyCodeLine{00029\ }
+\DoxyCodeLine{00030\ }
+\DoxyCodeLine{00031\ \textcolor{comment}{//\ Google\ Mock\ -\/\ a\ framework\ for\ writing\ C++\ mock\ classes.}}
+\DoxyCodeLine{00032\ \textcolor{comment}{//}}
+\DoxyCodeLine{00033\ \textcolor{comment}{//\ This\ file\ tests\ the\ built-\/in\ cardinalities.}}
+\DoxyCodeLine{00034\ }
+\DoxyCodeLine{00035\ \textcolor{preprocessor}{\#include\ "{}gmock/gmock.h"{}}}
+\DoxyCodeLine{00036\ \textcolor{preprocessor}{\#include\ "{}gtest/gtest.h"{}}}
+\DoxyCodeLine{00037\ \textcolor{preprocessor}{\#include\ "{}gtest/gtest-\/spi.h"{}}}
+\DoxyCodeLine{00038\ }
+\DoxyCodeLine{00039\ \textcolor{keyword}{namespace\ }\{}
+\DoxyCodeLine{00040\ }
+\DoxyCodeLine{00041\ \textcolor{keyword}{using\ }std::stringstream;}
+\DoxyCodeLine{00042\ \textcolor{keyword}{using\ }testing::AnyNumber;}
+\DoxyCodeLine{00043\ \textcolor{keyword}{using\ }testing::AtLeast;}
+\DoxyCodeLine{00044\ \textcolor{keyword}{using\ }testing::AtMost;}
+\DoxyCodeLine{00045\ \textcolor{keyword}{using\ }testing::Between;}
+\DoxyCodeLine{00046\ \textcolor{keyword}{using\ }testing::Cardinality;}
+\DoxyCodeLine{00047\ \textcolor{keyword}{using\ }testing::CardinalityInterface;}
+\DoxyCodeLine{00048\ \textcolor{keyword}{using\ }testing::Exactly;}
+\DoxyCodeLine{00049\ \textcolor{keyword}{using\ }testing::IsSubstring;}
+\DoxyCodeLine{00050\ \textcolor{keyword}{using\ }testing::MakeCardinality;}
+\DoxyCodeLine{00051\ }
+\DoxyCodeLine{00052\ \textcolor{keyword}{class\ }MockFoo\ \{}
+\DoxyCodeLine{00053\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00054\ \ \ MockFoo()\ \{\}}
+\DoxyCodeLine{00055\ \ \ MOCK\_METHOD0(Bar,\ \textcolor{keywordtype}{int}());\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00056\ }
+\DoxyCodeLine{00057\ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00058\ \ \ GTEST\_DISALLOW\_COPY\_AND\_ASSIGN\_(MockFoo);}
+\DoxyCodeLine{00059\ \};}
+\DoxyCodeLine{00060\ }
+\DoxyCodeLine{00061\ \textcolor{comment}{//\ Tests\ that\ Cardinality\ objects\ can\ be\ default\ constructed.}}
+\DoxyCodeLine{00062\ TEST(CardinalityTest,\ IsDefaultConstructable)\ \{}
+\DoxyCodeLine{00063\ \ \ Cardinality\ c;}
+\DoxyCodeLine{00064\ \}}
+\DoxyCodeLine{00065\ }
+\DoxyCodeLine{00066\ \textcolor{comment}{//\ Tests\ that\ Cardinality\ objects\ are\ copyable.}}
+\DoxyCodeLine{00067\ TEST(CardinalityTest,\ IsCopyable)\ \{}
+\DoxyCodeLine{00068\ \ \ \textcolor{comment}{//\ Tests\ the\ copy\ constructor.}}
+\DoxyCodeLine{00069\ \ \ Cardinality\ c\ =\ Exactly(1);}
+\DoxyCodeLine{00070\ \ \ EXPECT\_FALSE(c.IsSatisfiedByCallCount(0));}
+\DoxyCodeLine{00071\ \ \ EXPECT\_TRUE(c.IsSatisfiedByCallCount(1));}
+\DoxyCodeLine{00072\ \ \ EXPECT\_TRUE(c.IsSaturatedByCallCount(1));}
+\DoxyCodeLine{00073\ }
+\DoxyCodeLine{00074\ \ \ \textcolor{comment}{//\ Tests\ the\ assignment\ operator.}}
+\DoxyCodeLine{00075\ \ \ c\ =\ Exactly(2);}
+\DoxyCodeLine{00076\ \ \ EXPECT\_FALSE(c.IsSatisfiedByCallCount(1));}
+\DoxyCodeLine{00077\ \ \ EXPECT\_TRUE(c.IsSatisfiedByCallCount(2));}
+\DoxyCodeLine{00078\ \ \ EXPECT\_TRUE(c.IsSaturatedByCallCount(2));}
+\DoxyCodeLine{00079\ \}}
+\DoxyCodeLine{00080\ }
+\DoxyCodeLine{00081\ TEST(CardinalityTest,\ IsOverSaturatedByCallCountWorks)\ \{}
+\DoxyCodeLine{00082\ \ \ \textcolor{keyword}{const}\ Cardinality\ c\ =\ AtMost(5);}
+\DoxyCodeLine{00083\ \ \ EXPECT\_FALSE(c.IsOverSaturatedByCallCount(4));}
+\DoxyCodeLine{00084\ \ \ EXPECT\_FALSE(c.IsOverSaturatedByCallCount(5));}
+\DoxyCodeLine{00085\ \ \ EXPECT\_TRUE(c.IsOverSaturatedByCallCount(6));}
+\DoxyCodeLine{00086\ \}}
+\DoxyCodeLine{00087\ }
+\DoxyCodeLine{00088\ \textcolor{comment}{//\ Tests\ that\ Cardinality::DescribeActualCallCountTo()\ creates\ the}}
+\DoxyCodeLine{00089\ \textcolor{comment}{//\ correct\ description.}}
+\DoxyCodeLine{00090\ TEST(CardinalityTest,\ CanDescribeActualCallCount)\ \{}
+\DoxyCodeLine{00091\ \ \ stringstream\ ss0;}
+\DoxyCodeLine{00092\ \ \ Cardinality::DescribeActualCallCountTo(0,\ \&ss0);}
+\DoxyCodeLine{00093\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}never\ called"{}},\ ss0.str());}
+\DoxyCodeLine{00094\ }
+\DoxyCodeLine{00095\ \ \ stringstream\ ss1;}
+\DoxyCodeLine{00096\ \ \ Cardinality::DescribeActualCallCountTo(1,\ \&ss1);}
+\DoxyCodeLine{00097\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}called\ once"{}},\ ss1.str());}
+\DoxyCodeLine{00098\ }
+\DoxyCodeLine{00099\ \ \ stringstream\ ss2;}
+\DoxyCodeLine{00100\ \ \ Cardinality::DescribeActualCallCountTo(2,\ \&ss2);}
+\DoxyCodeLine{00101\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}called\ twice"{}},\ ss2.str());}
+\DoxyCodeLine{00102\ }
+\DoxyCodeLine{00103\ \ \ stringstream\ ss3;}
+\DoxyCodeLine{00104\ \ \ Cardinality::DescribeActualCallCountTo(3,\ \&ss3);}
+\DoxyCodeLine{00105\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}called\ 3\ times"{}},\ ss3.str());}
+\DoxyCodeLine{00106\ \}}
+\DoxyCodeLine{00107\ }
+\DoxyCodeLine{00108\ \textcolor{comment}{//\ Tests\ AnyNumber()}}
+\DoxyCodeLine{00109\ TEST(AnyNumber,\ Works)\ \{}
+\DoxyCodeLine{00110\ \ \ \textcolor{keyword}{const}\ Cardinality\ c\ =\ AnyNumber();}
+\DoxyCodeLine{00111\ \ \ EXPECT\_TRUE(c.IsSatisfiedByCallCount(0));}
+\DoxyCodeLine{00112\ \ \ EXPECT\_FALSE(c.IsSaturatedByCallCount(0));}
+\DoxyCodeLine{00113\ }
+\DoxyCodeLine{00114\ \ \ EXPECT\_TRUE(c.IsSatisfiedByCallCount(1));}
+\DoxyCodeLine{00115\ \ \ EXPECT\_FALSE(c.IsSaturatedByCallCount(1));}
+\DoxyCodeLine{00116\ }
+\DoxyCodeLine{00117\ \ \ EXPECT\_TRUE(c.IsSatisfiedByCallCount(9));}
+\DoxyCodeLine{00118\ \ \ EXPECT\_FALSE(c.IsSaturatedByCallCount(9));}
+\DoxyCodeLine{00119\ }
+\DoxyCodeLine{00120\ \ \ stringstream\ ss;}
+\DoxyCodeLine{00121\ \ \ c.DescribeTo(\&ss);}
+\DoxyCodeLine{00122\ \ \ EXPECT\_PRED\_FORMAT2(IsSubstring,\ \textcolor{stringliteral}{"{}called\ any\ number\ of\ times"{}},}
+\DoxyCodeLine{00123\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ss.str());}
+\DoxyCodeLine{00124\ \}}
+\DoxyCodeLine{00125\ }
+\DoxyCodeLine{00126\ TEST(AnyNumberTest,\ HasCorrectBounds)\ \{}
+\DoxyCodeLine{00127\ \ \ \textcolor{keyword}{const}\ Cardinality\ c\ =\ AnyNumber();}
+\DoxyCodeLine{00128\ \ \ EXPECT\_EQ(0,\ c.ConservativeLowerBound());}
+\DoxyCodeLine{00129\ \ \ EXPECT\_EQ(INT\_MAX,\ c.ConservativeUpperBound());}
+\DoxyCodeLine{00130\ \}}
+\DoxyCodeLine{00131\ }
+\DoxyCodeLine{00132\ \textcolor{comment}{//\ Tests\ AtLeast(n).}}
+\DoxyCodeLine{00133\ }
+\DoxyCodeLine{00134\ TEST(AtLeastTest,\ OnNegativeNumber)\ \{}
+\DoxyCodeLine{00135\ \ \ EXPECT\_NONFATAL\_FAILURE(\{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00136\ \ \ \ \ AtLeast(-\/1);}
+\DoxyCodeLine{00137\ \ \ \},\ \textcolor{stringliteral}{"{}The\ invocation\ lower\ bound\ must\ be\ >=\ 0"{}});}
+\DoxyCodeLine{00138\ \}}
+\DoxyCodeLine{00139\ }
+\DoxyCodeLine{00140\ TEST(AtLeastTest,\ OnZero)\ \{}
+\DoxyCodeLine{00141\ \ \ \textcolor{keyword}{const}\ Cardinality\ c\ =\ AtLeast(0);}
+\DoxyCodeLine{00142\ \ \ EXPECT\_TRUE(c.IsSatisfiedByCallCount(0));}
+\DoxyCodeLine{00143\ \ \ EXPECT\_FALSE(c.IsSaturatedByCallCount(0));}
+\DoxyCodeLine{00144\ }
+\DoxyCodeLine{00145\ \ \ EXPECT\_TRUE(c.IsSatisfiedByCallCount(1));}
+\DoxyCodeLine{00146\ \ \ EXPECT\_FALSE(c.IsSaturatedByCallCount(1));}
+\DoxyCodeLine{00147\ }
+\DoxyCodeLine{00148\ \ \ stringstream\ ss;}
+\DoxyCodeLine{00149\ \ \ c.DescribeTo(\&ss);}
+\DoxyCodeLine{00150\ \ \ EXPECT\_PRED\_FORMAT2(IsSubstring,\ \textcolor{stringliteral}{"{}any\ number\ of\ times"{}},}
+\DoxyCodeLine{00151\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ss.str());}
+\DoxyCodeLine{00152\ \}}
+\DoxyCodeLine{00153\ }
+\DoxyCodeLine{00154\ TEST(AtLeastTest,\ OnPositiveNumber)\ \{}
+\DoxyCodeLine{00155\ \ \ \textcolor{keyword}{const}\ Cardinality\ c\ =\ AtLeast(2);}
+\DoxyCodeLine{00156\ \ \ EXPECT\_FALSE(c.IsSatisfiedByCallCount(0));}
+\DoxyCodeLine{00157\ \ \ EXPECT\_FALSE(c.IsSaturatedByCallCount(0));}
+\DoxyCodeLine{00158\ }
+\DoxyCodeLine{00159\ \ \ EXPECT\_FALSE(c.IsSatisfiedByCallCount(1));}
+\DoxyCodeLine{00160\ \ \ EXPECT\_FALSE(c.IsSaturatedByCallCount(1));}
+\DoxyCodeLine{00161\ }
+\DoxyCodeLine{00162\ \ \ EXPECT\_TRUE(c.IsSatisfiedByCallCount(2));}
+\DoxyCodeLine{00163\ \ \ EXPECT\_FALSE(c.IsSaturatedByCallCount(2));}
+\DoxyCodeLine{00164\ }
+\DoxyCodeLine{00165\ \ \ stringstream\ ss1;}
+\DoxyCodeLine{00166\ \ \ AtLeast(1).DescribeTo(\&ss1);}
+\DoxyCodeLine{00167\ \ \ EXPECT\_PRED\_FORMAT2(IsSubstring,\ \textcolor{stringliteral}{"{}at\ least\ once"{}},}
+\DoxyCodeLine{00168\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ss1.str());}
+\DoxyCodeLine{00169\ }
+\DoxyCodeLine{00170\ \ \ stringstream\ ss2;}
+\DoxyCodeLine{00171\ \ \ c.DescribeTo(\&ss2);}
+\DoxyCodeLine{00172\ \ \ EXPECT\_PRED\_FORMAT2(IsSubstring,\ \textcolor{stringliteral}{"{}at\ least\ twice"{}},}
+\DoxyCodeLine{00173\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ss2.str());}
+\DoxyCodeLine{00174\ }
+\DoxyCodeLine{00175\ \ \ stringstream\ ss3;}
+\DoxyCodeLine{00176\ \ \ AtLeast(3).DescribeTo(\&ss3);}
+\DoxyCodeLine{00177\ \ \ EXPECT\_PRED\_FORMAT2(IsSubstring,\ \textcolor{stringliteral}{"{}at\ least\ 3\ times"{}},}
+\DoxyCodeLine{00178\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ss3.str());}
+\DoxyCodeLine{00179\ \}}
+\DoxyCodeLine{00180\ }
+\DoxyCodeLine{00181\ TEST(AtLeastTest,\ HasCorrectBounds)\ \{}
+\DoxyCodeLine{00182\ \ \ \textcolor{keyword}{const}\ Cardinality\ c\ =\ AtLeast(2);}
+\DoxyCodeLine{00183\ \ \ EXPECT\_EQ(2,\ c.ConservativeLowerBound());}
+\DoxyCodeLine{00184\ \ \ EXPECT\_EQ(INT\_MAX,\ c.ConservativeUpperBound());}
+\DoxyCodeLine{00185\ \}}
+\DoxyCodeLine{00186\ }
+\DoxyCodeLine{00187\ \textcolor{comment}{//\ Tests\ AtMost(n).}}
+\DoxyCodeLine{00188\ }
+\DoxyCodeLine{00189\ TEST(AtMostTest,\ OnNegativeNumber)\ \{}
+\DoxyCodeLine{00190\ \ \ EXPECT\_NONFATAL\_FAILURE(\{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00191\ \ \ \ \ AtMost(-\/1);}
+\DoxyCodeLine{00192\ \ \ \},\ \textcolor{stringliteral}{"{}The\ invocation\ upper\ bound\ must\ be\ >=\ 0"{}});}
+\DoxyCodeLine{00193\ \}}
+\DoxyCodeLine{00194\ }
+\DoxyCodeLine{00195\ TEST(AtMostTest,\ OnZero)\ \{}
+\DoxyCodeLine{00196\ \ \ \textcolor{keyword}{const}\ Cardinality\ c\ =\ AtMost(0);}
+\DoxyCodeLine{00197\ \ \ EXPECT\_TRUE(c.IsSatisfiedByCallCount(0));}
+\DoxyCodeLine{00198\ \ \ EXPECT\_TRUE(c.IsSaturatedByCallCount(0));}
+\DoxyCodeLine{00199\ }
+\DoxyCodeLine{00200\ \ \ EXPECT\_FALSE(c.IsSatisfiedByCallCount(1));}
+\DoxyCodeLine{00201\ \ \ EXPECT\_TRUE(c.IsSaturatedByCallCount(1));}
+\DoxyCodeLine{00202\ }
+\DoxyCodeLine{00203\ \ \ stringstream\ ss;}
+\DoxyCodeLine{00204\ \ \ c.DescribeTo(\&ss);}
+\DoxyCodeLine{00205\ \ \ EXPECT\_PRED\_FORMAT2(IsSubstring,\ \textcolor{stringliteral}{"{}never\ called"{}},}
+\DoxyCodeLine{00206\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ss.str());}
+\DoxyCodeLine{00207\ \}}
+\DoxyCodeLine{00208\ }
+\DoxyCodeLine{00209\ TEST(AtMostTest,\ OnPositiveNumber)\ \{}
+\DoxyCodeLine{00210\ \ \ \textcolor{keyword}{const}\ Cardinality\ c\ =\ AtMost(2);}
+\DoxyCodeLine{00211\ \ \ EXPECT\_TRUE(c.IsSatisfiedByCallCount(0));}
+\DoxyCodeLine{00212\ \ \ EXPECT\_FALSE(c.IsSaturatedByCallCount(0));}
+\DoxyCodeLine{00213\ }
+\DoxyCodeLine{00214\ \ \ EXPECT\_TRUE(c.IsSatisfiedByCallCount(1));}
+\DoxyCodeLine{00215\ \ \ EXPECT\_FALSE(c.IsSaturatedByCallCount(1));}
+\DoxyCodeLine{00216\ }
+\DoxyCodeLine{00217\ \ \ EXPECT\_TRUE(c.IsSatisfiedByCallCount(2));}
+\DoxyCodeLine{00218\ \ \ EXPECT\_TRUE(c.IsSaturatedByCallCount(2));}
+\DoxyCodeLine{00219\ }
+\DoxyCodeLine{00220\ \ \ stringstream\ ss1;}
+\DoxyCodeLine{00221\ \ \ AtMost(1).DescribeTo(\&ss1);}
+\DoxyCodeLine{00222\ \ \ EXPECT\_PRED\_FORMAT2(IsSubstring,\ \textcolor{stringliteral}{"{}called\ at\ most\ once"{}},}
+\DoxyCodeLine{00223\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ss1.str());}
+\DoxyCodeLine{00224\ }
+\DoxyCodeLine{00225\ \ \ stringstream\ ss2;}
+\DoxyCodeLine{00226\ \ \ c.DescribeTo(\&ss2);}
+\DoxyCodeLine{00227\ \ \ EXPECT\_PRED\_FORMAT2(IsSubstring,\ \textcolor{stringliteral}{"{}called\ at\ most\ twice"{}},}
+\DoxyCodeLine{00228\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ss2.str());}
+\DoxyCodeLine{00229\ }
+\DoxyCodeLine{00230\ \ \ stringstream\ ss3;}
+\DoxyCodeLine{00231\ \ \ AtMost(3).DescribeTo(\&ss3);}
+\DoxyCodeLine{00232\ \ \ EXPECT\_PRED\_FORMAT2(IsSubstring,\ \textcolor{stringliteral}{"{}called\ at\ most\ 3\ times"{}},}
+\DoxyCodeLine{00233\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ss3.str());}
+\DoxyCodeLine{00234\ \}}
+\DoxyCodeLine{00235\ }
+\DoxyCodeLine{00236\ TEST(AtMostTest,\ HasCorrectBounds)\ \{}
+\DoxyCodeLine{00237\ \ \ \textcolor{keyword}{const}\ Cardinality\ c\ =\ AtMost(2);}
+\DoxyCodeLine{00238\ \ \ EXPECT\_EQ(0,\ c.ConservativeLowerBound());}
+\DoxyCodeLine{00239\ \ \ EXPECT\_EQ(2,\ c.ConservativeUpperBound());}
+\DoxyCodeLine{00240\ \}}
+\DoxyCodeLine{00241\ }
+\DoxyCodeLine{00242\ \textcolor{comment}{//\ Tests\ Between(m,\ n).}}
+\DoxyCodeLine{00243\ }
+\DoxyCodeLine{00244\ TEST(BetweenTest,\ OnNegativeStart)\ \{}
+\DoxyCodeLine{00245\ \ \ EXPECT\_NONFATAL\_FAILURE(\{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00246\ \ \ \ \ Between(-\/1,\ 2);}
+\DoxyCodeLine{00247\ \ \ \},\ \textcolor{stringliteral}{"{}The\ invocation\ lower\ bound\ must\ be\ >=\ 0,\ but\ is\ actually\ -\/1"{}});}
+\DoxyCodeLine{00248\ \}}
+\DoxyCodeLine{00249\ }
+\DoxyCodeLine{00250\ TEST(BetweenTest,\ OnNegativeEnd)\ \{}
+\DoxyCodeLine{00251\ \ \ EXPECT\_NONFATAL\_FAILURE(\{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00252\ \ \ \ \ Between(1,\ -\/2);}
+\DoxyCodeLine{00253\ \ \ \},\ \textcolor{stringliteral}{"{}The\ invocation\ upper\ bound\ must\ be\ >=\ 0,\ but\ is\ actually\ -\/2"{}});}
+\DoxyCodeLine{00254\ \}}
+\DoxyCodeLine{00255\ }
+\DoxyCodeLine{00256\ TEST(BetweenTest,\ OnStartBiggerThanEnd)\ \{}
+\DoxyCodeLine{00257\ \ \ EXPECT\_NONFATAL\_FAILURE(\{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00258\ \ \ \ \ Between(2,\ 1);}
+\DoxyCodeLine{00259\ \ \ \},\ \textcolor{stringliteral}{"{}The\ invocation\ upper\ bound\ (1)\ must\ be\ >=\ "{}}}
+\DoxyCodeLine{00260\ \ \ \ \ \ \textcolor{stringliteral}{"{}the\ invocation\ lower\ bound\ (2)"{}});}
+\DoxyCodeLine{00261\ \}}
+\DoxyCodeLine{00262\ }
+\DoxyCodeLine{00263\ TEST(BetweenTest,\ OnZeroStartAndZeroEnd)\ \{}
+\DoxyCodeLine{00264\ \ \ \textcolor{keyword}{const}\ Cardinality\ c\ =\ Between(0,\ 0);}
+\DoxyCodeLine{00265\ }
+\DoxyCodeLine{00266\ \ \ EXPECT\_TRUE(c.IsSatisfiedByCallCount(0));}
+\DoxyCodeLine{00267\ \ \ EXPECT\_TRUE(c.IsSaturatedByCallCount(0));}
+\DoxyCodeLine{00268\ }
+\DoxyCodeLine{00269\ \ \ EXPECT\_FALSE(c.IsSatisfiedByCallCount(1));}
+\DoxyCodeLine{00270\ \ \ EXPECT\_TRUE(c.IsSaturatedByCallCount(1));}
+\DoxyCodeLine{00271\ }
+\DoxyCodeLine{00272\ \ \ stringstream\ ss;}
+\DoxyCodeLine{00273\ \ \ c.DescribeTo(\&ss);}
+\DoxyCodeLine{00274\ \ \ EXPECT\_PRED\_FORMAT2(IsSubstring,\ \textcolor{stringliteral}{"{}never\ called"{}},}
+\DoxyCodeLine{00275\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ss.str());}
+\DoxyCodeLine{00276\ \}}
+\DoxyCodeLine{00277\ }
+\DoxyCodeLine{00278\ TEST(BetweenTest,\ OnZeroStartAndNonZeroEnd)\ \{}
+\DoxyCodeLine{00279\ \ \ \textcolor{keyword}{const}\ Cardinality\ c\ =\ Between(0,\ 2);}
+\DoxyCodeLine{00280\ }
+\DoxyCodeLine{00281\ \ \ EXPECT\_TRUE(c.IsSatisfiedByCallCount(0));}
+\DoxyCodeLine{00282\ \ \ EXPECT\_FALSE(c.IsSaturatedByCallCount(0));}
+\DoxyCodeLine{00283\ }
+\DoxyCodeLine{00284\ \ \ EXPECT\_TRUE(c.IsSatisfiedByCallCount(2));}
+\DoxyCodeLine{00285\ \ \ EXPECT\_TRUE(c.IsSaturatedByCallCount(2));}
+\DoxyCodeLine{00286\ }
+\DoxyCodeLine{00287\ \ \ EXPECT\_FALSE(c.IsSatisfiedByCallCount(4));}
+\DoxyCodeLine{00288\ \ \ EXPECT\_TRUE(c.IsSaturatedByCallCount(4));}
+\DoxyCodeLine{00289\ }
+\DoxyCodeLine{00290\ \ \ stringstream\ ss;}
+\DoxyCodeLine{00291\ \ \ c.DescribeTo(\&ss);}
+\DoxyCodeLine{00292\ \ \ EXPECT\_PRED\_FORMAT2(IsSubstring,\ \textcolor{stringliteral}{"{}called\ at\ most\ twice"{}},}
+\DoxyCodeLine{00293\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ss.str());}
+\DoxyCodeLine{00294\ \}}
+\DoxyCodeLine{00295\ }
+\DoxyCodeLine{00296\ TEST(BetweenTest,\ OnSameStartAndEnd)\ \{}
+\DoxyCodeLine{00297\ \ \ \textcolor{keyword}{const}\ Cardinality\ c\ =\ Between(3,\ 3);}
+\DoxyCodeLine{00298\ }
+\DoxyCodeLine{00299\ \ \ EXPECT\_FALSE(c.IsSatisfiedByCallCount(2));}
+\DoxyCodeLine{00300\ \ \ EXPECT\_FALSE(c.IsSaturatedByCallCount(2));}
+\DoxyCodeLine{00301\ }
+\DoxyCodeLine{00302\ \ \ EXPECT\_TRUE(c.IsSatisfiedByCallCount(3));}
+\DoxyCodeLine{00303\ \ \ EXPECT\_TRUE(c.IsSaturatedByCallCount(3));}
+\DoxyCodeLine{00304\ }
+\DoxyCodeLine{00305\ \ \ EXPECT\_FALSE(c.IsSatisfiedByCallCount(4));}
+\DoxyCodeLine{00306\ \ \ EXPECT\_TRUE(c.IsSaturatedByCallCount(4));}
+\DoxyCodeLine{00307\ }
+\DoxyCodeLine{00308\ \ \ stringstream\ ss;}
+\DoxyCodeLine{00309\ \ \ c.DescribeTo(\&ss);}
+\DoxyCodeLine{00310\ \ \ EXPECT\_PRED\_FORMAT2(IsSubstring,\ \textcolor{stringliteral}{"{}called\ 3\ times"{}},}
+\DoxyCodeLine{00311\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ss.str());}
+\DoxyCodeLine{00312\ \}}
+\DoxyCodeLine{00313\ }
+\DoxyCodeLine{00314\ TEST(BetweenTest,\ OnDifferentStartAndEnd)\ \{}
+\DoxyCodeLine{00315\ \ \ \textcolor{keyword}{const}\ Cardinality\ c\ =\ Between(3,\ 5);}
+\DoxyCodeLine{00316\ }
+\DoxyCodeLine{00317\ \ \ EXPECT\_FALSE(c.IsSatisfiedByCallCount(2));}
+\DoxyCodeLine{00318\ \ \ EXPECT\_FALSE(c.IsSaturatedByCallCount(2));}
+\DoxyCodeLine{00319\ }
+\DoxyCodeLine{00320\ \ \ EXPECT\_TRUE(c.IsSatisfiedByCallCount(3));}
+\DoxyCodeLine{00321\ \ \ EXPECT\_FALSE(c.IsSaturatedByCallCount(3));}
+\DoxyCodeLine{00322\ }
+\DoxyCodeLine{00323\ \ \ EXPECT\_TRUE(c.IsSatisfiedByCallCount(5));}
+\DoxyCodeLine{00324\ \ \ EXPECT\_TRUE(c.IsSaturatedByCallCount(5));}
+\DoxyCodeLine{00325\ }
+\DoxyCodeLine{00326\ \ \ EXPECT\_FALSE(c.IsSatisfiedByCallCount(6));}
+\DoxyCodeLine{00327\ \ \ EXPECT\_TRUE(c.IsSaturatedByCallCount(6));}
+\DoxyCodeLine{00328\ }
+\DoxyCodeLine{00329\ \ \ stringstream\ ss;}
+\DoxyCodeLine{00330\ \ \ c.DescribeTo(\&ss);}
+\DoxyCodeLine{00331\ \ \ EXPECT\_PRED\_FORMAT2(IsSubstring,\ \textcolor{stringliteral}{"{}called\ between\ 3\ and\ 5\ times"{}},}
+\DoxyCodeLine{00332\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ss.str());}
+\DoxyCodeLine{00333\ \}}
+\DoxyCodeLine{00334\ }
+\DoxyCodeLine{00335\ TEST(BetweenTest,\ HasCorrectBounds)\ \{}
+\DoxyCodeLine{00336\ \ \ \textcolor{keyword}{const}\ Cardinality\ c\ =\ Between(3,\ 5);}
+\DoxyCodeLine{00337\ \ \ EXPECT\_EQ(3,\ c.ConservativeLowerBound());}
+\DoxyCodeLine{00338\ \ \ EXPECT\_EQ(5,\ c.ConservativeUpperBound());}
+\DoxyCodeLine{00339\ \}}
+\DoxyCodeLine{00340\ }
+\DoxyCodeLine{00341\ \textcolor{comment}{//\ Tests\ Exactly(n).}}
+\DoxyCodeLine{00342\ }
+\DoxyCodeLine{00343\ TEST(ExactlyTest,\ OnNegativeNumber)\ \{}
+\DoxyCodeLine{00344\ \ \ EXPECT\_NONFATAL\_FAILURE(\{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00345\ \ \ \ \ Exactly(-\/1);}
+\DoxyCodeLine{00346\ \ \ \},\ \textcolor{stringliteral}{"{}The\ invocation\ lower\ bound\ must\ be\ >=\ 0"{}});}
+\DoxyCodeLine{00347\ \}}
+\DoxyCodeLine{00348\ }
+\DoxyCodeLine{00349\ TEST(ExactlyTest,\ OnZero)\ \{}
+\DoxyCodeLine{00350\ \ \ \textcolor{keyword}{const}\ Cardinality\ c\ =\ Exactly(0);}
+\DoxyCodeLine{00351\ \ \ EXPECT\_TRUE(c.IsSatisfiedByCallCount(0));}
+\DoxyCodeLine{00352\ \ \ EXPECT\_TRUE(c.IsSaturatedByCallCount(0));}
+\DoxyCodeLine{00353\ }
+\DoxyCodeLine{00354\ \ \ EXPECT\_FALSE(c.IsSatisfiedByCallCount(1));}
+\DoxyCodeLine{00355\ \ \ EXPECT\_TRUE(c.IsSaturatedByCallCount(1));}
+\DoxyCodeLine{00356\ }
+\DoxyCodeLine{00357\ \ \ stringstream\ ss;}
+\DoxyCodeLine{00358\ \ \ c.DescribeTo(\&ss);}
+\DoxyCodeLine{00359\ \ \ EXPECT\_PRED\_FORMAT2(IsSubstring,\ \textcolor{stringliteral}{"{}never\ called"{}},}
+\DoxyCodeLine{00360\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ss.str());}
+\DoxyCodeLine{00361\ \}}
+\DoxyCodeLine{00362\ }
+\DoxyCodeLine{00363\ TEST(ExactlyTest,\ OnPositiveNumber)\ \{}
+\DoxyCodeLine{00364\ \ \ \textcolor{keyword}{const}\ Cardinality\ c\ =\ Exactly(2);}
+\DoxyCodeLine{00365\ \ \ EXPECT\_FALSE(c.IsSatisfiedByCallCount(0));}
+\DoxyCodeLine{00366\ \ \ EXPECT\_FALSE(c.IsSaturatedByCallCount(0));}
+\DoxyCodeLine{00367\ }
+\DoxyCodeLine{00368\ \ \ EXPECT\_TRUE(c.IsSatisfiedByCallCount(2));}
+\DoxyCodeLine{00369\ \ \ EXPECT\_TRUE(c.IsSaturatedByCallCount(2));}
+\DoxyCodeLine{00370\ }
+\DoxyCodeLine{00371\ \ \ stringstream\ ss1;}
+\DoxyCodeLine{00372\ \ \ Exactly(1).DescribeTo(\&ss1);}
+\DoxyCodeLine{00373\ \ \ EXPECT\_PRED\_FORMAT2(IsSubstring,\ \textcolor{stringliteral}{"{}called\ once"{}},}
+\DoxyCodeLine{00374\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ss1.str());}
+\DoxyCodeLine{00375\ }
+\DoxyCodeLine{00376\ \ \ stringstream\ ss2;}
+\DoxyCodeLine{00377\ \ \ c.DescribeTo(\&ss2);}
+\DoxyCodeLine{00378\ \ \ EXPECT\_PRED\_FORMAT2(IsSubstring,\ \textcolor{stringliteral}{"{}called\ twice"{}},}
+\DoxyCodeLine{00379\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ss2.str());}
+\DoxyCodeLine{00380\ }
+\DoxyCodeLine{00381\ \ \ stringstream\ ss3;}
+\DoxyCodeLine{00382\ \ \ Exactly(3).DescribeTo(\&ss3);}
+\DoxyCodeLine{00383\ \ \ EXPECT\_PRED\_FORMAT2(IsSubstring,\ \textcolor{stringliteral}{"{}called\ 3\ times"{}},}
+\DoxyCodeLine{00384\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ss3.str());}
+\DoxyCodeLine{00385\ \}}
+\DoxyCodeLine{00386\ }
+\DoxyCodeLine{00387\ TEST(ExactlyTest,\ HasCorrectBounds)\ \{}
+\DoxyCodeLine{00388\ \ \ \textcolor{keyword}{const}\ Cardinality\ c\ =\ Exactly(3);}
+\DoxyCodeLine{00389\ \ \ EXPECT\_EQ(3,\ c.ConservativeLowerBound());}
+\DoxyCodeLine{00390\ \ \ EXPECT\_EQ(3,\ c.ConservativeUpperBound());}
+\DoxyCodeLine{00391\ \}}
+\DoxyCodeLine{00392\ }
+\DoxyCodeLine{00393\ \textcolor{comment}{//\ Tests\ that\ a\ user\ can\ make\ their\ own\ cardinality\ by\ implementing}}
+\DoxyCodeLine{00394\ \textcolor{comment}{//\ CardinalityInterface\ and\ calling\ MakeCardinality().}}
+\DoxyCodeLine{00395\ }
+\DoxyCodeLine{00396\ \textcolor{keyword}{class\ }EvenCardinality\ :\ \textcolor{keyword}{public}\ CardinalityInterface\ \{}
+\DoxyCodeLine{00397\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00398\ \ \ \textcolor{comment}{//\ Returns\ true\ if\ and\ only\ if\ call\_count\ calls\ will\ satisfy\ this}}
+\DoxyCodeLine{00399\ \ \ \textcolor{comment}{//\ cardinality.}}
+\DoxyCodeLine{00400\ \ \ \textcolor{keywordtype}{bool}\ IsSatisfiedByCallCount(\textcolor{keywordtype}{int}\ call\_count)\textcolor{keyword}{\ const\ override\ }\{}
+\DoxyCodeLine{00401\ \ \ \ \ \textcolor{keywordflow}{return}\ (call\_count\ \%\ 2\ ==\ 0);}
+\DoxyCodeLine{00402\ \ \ \}}
+\DoxyCodeLine{00403\ }
+\DoxyCodeLine{00404\ \ \ \textcolor{comment}{//\ Returns\ true\ if\ and\ only\ if\ call\_count\ calls\ will\ saturate\ this}}
+\DoxyCodeLine{00405\ \ \ \textcolor{comment}{//\ cardinality.}}
+\DoxyCodeLine{00406\ \ \ \textcolor{keywordtype}{bool}\ IsSaturatedByCallCount(\textcolor{keywordtype}{int}\ \textcolor{comment}{/*\ call\_count\ */})\textcolor{keyword}{\ const\ override\ }\{}
+\DoxyCodeLine{00407\ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00408\ \ \ \}}
+\DoxyCodeLine{00409\ }
+\DoxyCodeLine{00410\ \ \ \textcolor{comment}{//\ Describes\ self\ to\ an\ ostream.}}
+\DoxyCodeLine{00411\ \ \ \textcolor{keywordtype}{void}\ DescribeTo(::std::ostream*\ ss)\textcolor{keyword}{\ const\ override\ }\{}
+\DoxyCodeLine{00412\ \ \ \ \ *ss\ <<\ \textcolor{stringliteral}{"{}called\ even\ number\ of\ times"{}};}
+\DoxyCodeLine{00413\ \ \ \}}
+\DoxyCodeLine{00414\ \};}
+\DoxyCodeLine{00415\ }
+\DoxyCodeLine{00416\ TEST(MakeCardinalityTest,\ ConstructsCardinalityFromInterface)\ \{}
+\DoxyCodeLine{00417\ \ \ \textcolor{keyword}{const}\ Cardinality\ c\ =\ MakeCardinality(\textcolor{keyword}{new}\ EvenCardinality);}
+\DoxyCodeLine{00418\ }
+\DoxyCodeLine{00419\ \ \ EXPECT\_TRUE(c.IsSatisfiedByCallCount(2));}
+\DoxyCodeLine{00420\ \ \ EXPECT\_FALSE(c.IsSatisfiedByCallCount(3));}
+\DoxyCodeLine{00421\ }
+\DoxyCodeLine{00422\ \ \ EXPECT\_FALSE(c.IsSaturatedByCallCount(10000));}
+\DoxyCodeLine{00423\ }
+\DoxyCodeLine{00424\ \ \ stringstream\ ss;}
+\DoxyCodeLine{00425\ \ \ c.DescribeTo(\&ss);}
+\DoxyCodeLine{00426\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}called\ even\ number\ of\ times"{}},\ ss.str());}
+\DoxyCodeLine{00427\ \}}
+\DoxyCodeLine{00428\ }
+\DoxyCodeLine{00429\ \}\ \ \textcolor{comment}{//\ Unnamed\ namespace}}
+
+\end{DoxyCode}

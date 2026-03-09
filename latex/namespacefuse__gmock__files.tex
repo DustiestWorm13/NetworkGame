@@ -1,0 +1,145 @@
+\doxysection{fuse\+\_\+gmock\+\_\+files Namespace Reference}
+\hypertarget{namespacefuse__gmock__files}{}\label{namespacefuse__gmock__files}\index{fuse\_gmock\_files@{fuse\_gmock\_files}}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{namespacefuse__gmock__files_a5dbe055d6af58d0d95d8f12312c7091f}{Get\+GTest\+Root\+Dir}} (gmock\+\_\+root)
+\item 
+\mbox{\hyperlink{namespacefuse__gmock__files_ab911d1f96b031f57e7d28c4025fb0505}{Validate\+GMock\+Root\+Dir}} (gmock\+\_\+root)
+\item 
+\mbox{\hyperlink{namespacefuse__gmock__files_a97ab00d3faec16c6574a8f548001294e}{Validate\+Output\+Dir}} (output\+\_\+dir)
+\item 
+\mbox{\hyperlink{namespacefuse__gmock__files_a8ecbbf6248e41609d85b32776508f419}{Fuse\+GMockH}} (gmock\+\_\+root, output\+\_\+dir)
+\item 
+\mbox{\hyperlink{namespacefuse__gmock__files_a17d95bfd0ac56b67262de63d085ab503}{Fuse\+GMock\+All\+Cc\+To\+File}} (gmock\+\_\+root, output\+\_\+file)
+\item 
+\mbox{\hyperlink{namespacefuse__gmock__files_aca6794aa64f1e2a30e5f2fbb05e37083}{Fuse\+GMock\+GTest\+All\+Cc}} (gmock\+\_\+root, output\+\_\+dir)
+\item 
+\mbox{\hyperlink{namespacefuse__gmock__files_aeab42ce30edaf4f4bdffec3a6ae74c33}{Fuse\+GMock}} (gmock\+\_\+root, output\+\_\+dir)
+\item 
+\Hypertarget{namespacefuse__gmock__files_a040a956c1856db183cc64326a5391e5d}\label{namespacefuse__gmock__files_a040a956c1856db183cc64326a5391e5d} 
+{\bfseries main} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{namespacefuse__gmock__files_a900b64b34e20c7430b72252192a3c7ed}\label{namespacefuse__gmock__files_a900b64b34e20c7430b72252192a3c7ed} 
+{\bfseries DEFAULT\+\_\+\+GMOCK\+\_\+\+ROOT\+\_\+\+DIR} = os.\+path.\+join(os.\+path.\+dirname(\+\_\+\+\_\+file\+\_\+\+\_\+), \textquotesingle{}..\textquotesingle{})
+\item 
+\Hypertarget{namespacefuse__gmock__files_aeb4457451f878d6bc8a42f7ff3e5f6cf}\label{namespacefuse__gmock__files_aeb4457451f878d6bc8a42f7ff3e5f6cf} 
+{\bfseries INCLUDE\+\_\+\+GMOCK\+\_\+\+FILE\+\_\+\+REGEX} = re.\+compile(r\textquotesingle{}\texorpdfstring{$^\wedge$}{\string^}\textbackslash{}s\texorpdfstring{$\ast$}{*}\#\textbackslash{}s\texorpdfstring{$\ast$}{*}include\textbackslash{}s\texorpdfstring{$\ast$}{*}"{}(gmock/.+)"{}\textquotesingle{})
+\item 
+\Hypertarget{namespacefuse__gmock__files_a97ee2dfa0e0df8426b1dcadcba74060b}\label{namespacefuse__gmock__files_a97ee2dfa0e0df8426b1dcadcba74060b} 
+str {\bfseries GMOCK\+\_\+\+H\+\_\+\+SEED} = \textquotesingle{}include/gmock/gmock.\+h\textquotesingle{}
+\item 
+\Hypertarget{namespacefuse__gmock__files_afe8e67a915b4f19d7f9b69b4c109403f}\label{namespacefuse__gmock__files_afe8e67a915b4f19d7f9b69b4c109403f} 
+str {\bfseries GMOCK\+\_\+\+ALL\+\_\+\+CC\+\_\+\+SEED} = \textquotesingle{}src/gmock-\/all.\+cc\textquotesingle{}
+\item 
+\Hypertarget{namespacefuse__gmock__files_a47742af71dda33b3da2f1fc6da90ac48}\label{namespacefuse__gmock__files_a47742af71dda33b3da2f1fc6da90ac48} 
+str {\bfseries GTEST\+\_\+\+H\+\_\+\+OUTPUT} = \textquotesingle{}gtest/gtest.\+h\textquotesingle{}
+\item 
+\Hypertarget{namespacefuse__gmock__files_a94c0785996934b48537f271a3e9031a3}\label{namespacefuse__gmock__files_a94c0785996934b48537f271a3e9031a3} 
+str {\bfseries GMOCK\+\_\+\+H\+\_\+\+OUTPUT} = \textquotesingle{}gmock/gmock.\+h\textquotesingle{}
+\item 
+\Hypertarget{namespacefuse__gmock__files_a26c573e973fe80ab03a7dc3ff5093f78}\label{namespacefuse__gmock__files_a26c573e973fe80ab03a7dc3ff5093f78} 
+str {\bfseries GMOCK\+\_\+\+GTEST\+\_\+\+ALL\+\_\+\+CC\+\_\+\+OUTPUT} = \textquotesingle{}gmock-\/gtest-\/all.\+cc\textquotesingle{}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyVerb}fuse_gmock_files.py v0.1.0.
+
+Fuses Google Mock and Google Test source code into two .h files and a .cc file.
+
+SYNOPSIS
+       fuse_gmock_files.py [GMOCK_ROOT_DIR] OUTPUT_DIR
+
+       Scans GMOCK_ROOT_DIR for Google Mock and Google Test source
+       code, assuming Google Test is in the GMOCK_ROOT_DIR/../googletest
+       directory, and generates three files:
+       OUTPUT_DIR/gtest/gtest.h, OUTPUT_DIR/gmock/gmock.h, and
+       OUTPUT_DIR/gmock-gtest-all.cc.  Then you can build your tests
+       by adding OUTPUT_DIR to the include search path and linking
+       with OUTPUT_DIR/gmock-gtest-all.cc.  These three files contain
+       everything you need to use Google Mock.  Hence you can
+       "install" Google Mock by copying them to wherever you want.
+
+       GMOCK_ROOT_DIR can be omitted and defaults to the parent
+       directory of the directory holding this script.
+
+EXAMPLES
+       ./fuse_gmock_files.py fused_gmock
+       ./fuse_gmock_files.py path/to/unpacked/gmock fused_gmock
+
+This tool is experimental.  In particular, it assumes that there is no
+conditional inclusion of Google Mock or Google Test headers.  Please
+report any problems to googlemock@googlegroups.com.  You can read
+https://github.com/google/googletest/blob/master/docs/gmock_cook_book.md
+for more
+information.
+\end{DoxyVerb}
+ 
+
+\doxysubsection{Function Documentation}
+\Hypertarget{namespacefuse__gmock__files_aeab42ce30edaf4f4bdffec3a6ae74c33}\label{namespacefuse__gmock__files_aeab42ce30edaf4f4bdffec3a6ae74c33} 
+\index{fuse\_gmock\_files@{fuse\_gmock\_files}!FuseGMock@{FuseGMock}}
+\index{FuseGMock@{FuseGMock}!fuse\_gmock\_files@{fuse\_gmock\_files}}
+\doxysubsubsection{\texorpdfstring{FuseGMock()}{FuseGMock()}}
+{\footnotesize\ttfamily fuse\+\_\+gmock\+\_\+files.\+Fuse\+GMock (\begin{DoxyParamCaption}\item[{}]{gmock\+\_\+root,  }\item[{}]{output\+\_\+dir }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Fuses gtest.h, gmock.h, and gmock-gtest-all.h.\end{DoxyVerb}
+ \Hypertarget{namespacefuse__gmock__files_a17d95bfd0ac56b67262de63d085ab503}\label{namespacefuse__gmock__files_a17d95bfd0ac56b67262de63d085ab503} 
+\index{fuse\_gmock\_files@{fuse\_gmock\_files}!FuseGMockAllCcToFile@{FuseGMockAllCcToFile}}
+\index{FuseGMockAllCcToFile@{FuseGMockAllCcToFile}!fuse\_gmock\_files@{fuse\_gmock\_files}}
+\doxysubsubsection{\texorpdfstring{FuseGMockAllCcToFile()}{FuseGMockAllCcToFile()}}
+{\footnotesize\ttfamily fuse\+\_\+gmock\+\_\+files.\+Fuse\+GMock\+All\+Cc\+To\+File (\begin{DoxyParamCaption}\item[{}]{gmock\+\_\+root,  }\item[{}]{output\+\_\+file }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Scans folder gmock_root to fuse gmock-all.cc into output_file.\end{DoxyVerb}
+ \Hypertarget{namespacefuse__gmock__files_aca6794aa64f1e2a30e5f2fbb05e37083}\label{namespacefuse__gmock__files_aca6794aa64f1e2a30e5f2fbb05e37083} 
+\index{fuse\_gmock\_files@{fuse\_gmock\_files}!FuseGMockGTestAllCc@{FuseGMockGTestAllCc}}
+\index{FuseGMockGTestAllCc@{FuseGMockGTestAllCc}!fuse\_gmock\_files@{fuse\_gmock\_files}}
+\doxysubsubsection{\texorpdfstring{FuseGMockGTestAllCc()}{FuseGMockGTestAllCc()}}
+{\footnotesize\ttfamily fuse\+\_\+gmock\+\_\+files.\+Fuse\+GMock\+GTest\+All\+Cc (\begin{DoxyParamCaption}\item[{}]{gmock\+\_\+root,  }\item[{}]{output\+\_\+dir }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Scans folder gmock_root to generate gmock-gtest-all.cc in output_dir.\end{DoxyVerb}
+ \Hypertarget{namespacefuse__gmock__files_a8ecbbf6248e41609d85b32776508f419}\label{namespacefuse__gmock__files_a8ecbbf6248e41609d85b32776508f419} 
+\index{fuse\_gmock\_files@{fuse\_gmock\_files}!FuseGMockH@{FuseGMockH}}
+\index{FuseGMockH@{FuseGMockH}!fuse\_gmock\_files@{fuse\_gmock\_files}}
+\doxysubsubsection{\texorpdfstring{FuseGMockH()}{FuseGMockH()}}
+{\footnotesize\ttfamily fuse\+\_\+gmock\+\_\+files.\+Fuse\+GMockH (\begin{DoxyParamCaption}\item[{}]{gmock\+\_\+root,  }\item[{}]{output\+\_\+dir }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Scans folder gmock_root to generate gmock/gmock.h in output_dir.\end{DoxyVerb}
+ \Hypertarget{namespacefuse__gmock__files_a5dbe055d6af58d0d95d8f12312c7091f}\label{namespacefuse__gmock__files_a5dbe055d6af58d0d95d8f12312c7091f} 
+\index{fuse\_gmock\_files@{fuse\_gmock\_files}!GetGTestRootDir@{GetGTestRootDir}}
+\index{GetGTestRootDir@{GetGTestRootDir}!fuse\_gmock\_files@{fuse\_gmock\_files}}
+\doxysubsubsection{\texorpdfstring{GetGTestRootDir()}{GetGTestRootDir()}}
+{\footnotesize\ttfamily fuse\+\_\+gmock\+\_\+files.\+Get\+GTest\+Root\+Dir (\begin{DoxyParamCaption}\item[{}]{gmock\+\_\+root }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Returns the root directory of Google Test.\end{DoxyVerb}
+ \Hypertarget{namespacefuse__gmock__files_ab911d1f96b031f57e7d28c4025fb0505}\label{namespacefuse__gmock__files_ab911d1f96b031f57e7d28c4025fb0505} 
+\index{fuse\_gmock\_files@{fuse\_gmock\_files}!ValidateGMockRootDir@{ValidateGMockRootDir}}
+\index{ValidateGMockRootDir@{ValidateGMockRootDir}!fuse\_gmock\_files@{fuse\_gmock\_files}}
+\doxysubsubsection{\texorpdfstring{ValidateGMockRootDir()}{ValidateGMockRootDir()}}
+{\footnotesize\ttfamily fuse\+\_\+gmock\+\_\+files.\+Validate\+GMock\+Root\+Dir (\begin{DoxyParamCaption}\item[{}]{gmock\+\_\+root }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Makes sure gmock_root points to a valid gmock root directory.
+
+The function aborts the program on failure.
+
+Args:
+  gmock_root: A string with the mock root directory.
+\end{DoxyVerb}
+ \Hypertarget{namespacefuse__gmock__files_a97ab00d3faec16c6574a8f548001294e}\label{namespacefuse__gmock__files_a97ab00d3faec16c6574a8f548001294e} 
+\index{fuse\_gmock\_files@{fuse\_gmock\_files}!ValidateOutputDir@{ValidateOutputDir}}
+\index{ValidateOutputDir@{ValidateOutputDir}!fuse\_gmock\_files@{fuse\_gmock\_files}}
+\doxysubsubsection{\texorpdfstring{ValidateOutputDir()}{ValidateOutputDir()}}
+{\footnotesize\ttfamily fuse\+\_\+gmock\+\_\+files.\+Validate\+Output\+Dir (\begin{DoxyParamCaption}\item[{}]{output\+\_\+dir }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Makes sure output_dir points to a valid output directory.
+
+The function aborts the program on failure.
+
+Args:
+  output_dir: A string representing the output directory.
+\end{DoxyVerb}
+ 

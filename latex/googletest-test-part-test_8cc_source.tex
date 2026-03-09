@@ -1,0 +1,236 @@
+\doxysection{googletest-\/test-\/part-\/test.cc}
+\hypertarget{googletest-test-part-test_8cc_source}{}\label{googletest-test-part-test_8cc_source}\index{build/\_deps/googletest-\/src/googletest/test/googletest-\/test-\/part-\/test.cc@{build/\_deps/googletest-\/src/googletest/test/googletest-\/test-\/part-\/test.cc}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{//\ Copyright\ 2008\ Google\ Inc.}}
+\DoxyCodeLine{00002\ \textcolor{comment}{//\ All\ Rights\ Reserved.}}
+\DoxyCodeLine{00003\ \textcolor{comment}{//}}
+\DoxyCodeLine{00004\ \textcolor{comment}{//\ Redistribution\ and\ use\ in\ source\ and\ binary\ forms,\ with\ or\ without}}
+\DoxyCodeLine{00005\ \textcolor{comment}{//\ modification,\ are\ permitted\ provided\ that\ the\ following\ conditions\ are}}
+\DoxyCodeLine{00006\ \textcolor{comment}{//\ met:}}
+\DoxyCodeLine{00007\ \textcolor{comment}{//}}
+\DoxyCodeLine{00008\ \textcolor{comment}{//\ \ \ \ \ *\ Redistributions\ of\ source\ code\ must\ retain\ the\ above\ copyright}}
+\DoxyCodeLine{00009\ \textcolor{comment}{//\ notice,\ this\ list\ of\ conditions\ and\ the\ following\ disclaimer.}}
+\DoxyCodeLine{00010\ \textcolor{comment}{//\ \ \ \ \ *\ Redistributions\ in\ binary\ form\ must\ reproduce\ the\ above}}
+\DoxyCodeLine{00011\ \textcolor{comment}{//\ copyright\ notice,\ this\ list\ of\ conditions\ and\ the\ following\ disclaimer}}
+\DoxyCodeLine{00012\ \textcolor{comment}{//\ in\ the\ documentation\ and/or\ other\ materials\ provided\ with\ the}}
+\DoxyCodeLine{00013\ \textcolor{comment}{//\ distribution.}}
+\DoxyCodeLine{00014\ \textcolor{comment}{//\ \ \ \ \ *\ Neither\ the\ name\ of\ Google\ Inc.\ nor\ the\ names\ of\ its}}
+\DoxyCodeLine{00015\ \textcolor{comment}{//\ contributors\ may\ be\ used\ to\ endorse\ or\ promote\ products\ derived\ from}}
+\DoxyCodeLine{00016\ \textcolor{comment}{//\ this\ software\ without\ specific\ prior\ written\ permission.}}
+\DoxyCodeLine{00017\ \textcolor{comment}{//}}
+\DoxyCodeLine{00018\ \textcolor{comment}{//\ THIS\ SOFTWARE\ IS\ PROVIDED\ BY\ THE\ COPYRIGHT\ HOLDERS\ AND\ CONTRIBUTORS}}
+\DoxyCodeLine{00019\ \textcolor{comment}{//\ "{}AS\ IS"{}\ AND\ ANY\ EXPRESS\ OR\ IMPLIED\ WARRANTIES,\ INCLUDING,\ BUT\ NOT}}
+\DoxyCodeLine{00020\ \textcolor{comment}{//\ LIMITED\ TO,\ THE\ IMPLIED\ WARRANTIES\ OF\ MERCHANTABILITY\ AND\ FITNESS\ FOR}}
+\DoxyCodeLine{00021\ \textcolor{comment}{//\ A\ PARTICULAR\ PURPOSE\ ARE\ DISCLAIMED.\ IN\ NO\ EVENT\ SHALL\ THE\ COPYRIGHT}}
+\DoxyCodeLine{00022\ \textcolor{comment}{//\ OWNER\ OR\ CONTRIBUTORS\ BE\ LIABLE\ FOR\ ANY\ DIRECT,\ INDIRECT,\ INCIDENTAL,}}
+\DoxyCodeLine{00023\ \textcolor{comment}{//\ SPECIAL,\ EXEMPLARY,\ OR\ CONSEQUENTIAL\ DAMAGES\ (INCLUDING,\ BUT\ NOT}}
+\DoxyCodeLine{00024\ \textcolor{comment}{//\ LIMITED\ TO,\ PROCUREMENT\ OF\ SUBSTITUTE\ GOODS\ OR\ SERVICES;\ LOSS\ OF\ USE,}}
+\DoxyCodeLine{00025\ \textcolor{comment}{//\ DATA,\ OR\ PROFITS;\ OR\ BUSINESS\ INTERRUPTION)\ HOWEVER\ CAUSED\ AND\ ON\ ANY}}
+\DoxyCodeLine{00026\ \textcolor{comment}{//\ THEORY\ OF\ LIABILITY,\ WHETHER\ IN\ CONTRACT,\ STRICT\ LIABILITY,\ OR\ TORT}}
+\DoxyCodeLine{00027\ \textcolor{comment}{//\ (INCLUDING\ NEGLIGENCE\ OR\ OTHERWISE)\ ARISING\ IN\ ANY\ WAY\ OUT\ OF\ THE\ USE}}
+\DoxyCodeLine{00028\ \textcolor{comment}{//\ OF\ THIS\ SOFTWARE,\ EVEN\ IF\ ADVISED\ OF\ THE\ POSSIBILITY\ OF\ SUCH\ DAMAGE.}}
+\DoxyCodeLine{00029\ }
+\DoxyCodeLine{00030\ \textcolor{preprocessor}{\#include\ "{}gtest/gtest-\/test-\/part.h"{}}}
+\DoxyCodeLine{00031\ }
+\DoxyCodeLine{00032\ \textcolor{preprocessor}{\#include\ "{}gtest/gtest.h"{}}}
+\DoxyCodeLine{00033\ }
+\DoxyCodeLine{00034\ \textcolor{keyword}{using\ }\mbox{\hyperlink{classtesting_1_1_message}{testing::Message}};}
+\DoxyCodeLine{00035\ \textcolor{keyword}{using\ }\mbox{\hyperlink{classtesting_1_1_test}{testing::Test}};}
+\DoxyCodeLine{00036\ \textcolor{keyword}{using\ }testing::TestPartResult;}
+\DoxyCodeLine{00037\ \textcolor{keyword}{using\ }testing::TestPartResultArray;}
+\DoxyCodeLine{00038\ }
+\DoxyCodeLine{00039\ \textcolor{keyword}{namespace\ }\{}
+\DoxyCodeLine{00040\ }
+\DoxyCodeLine{00041\ \textcolor{comment}{//\ Tests\ the\ TestPartResult\ class.}}
+\DoxyCodeLine{00042\ }
+\DoxyCodeLine{00043\ \textcolor{comment}{//\ The\ test\ fixture\ for\ testing\ TestPartResult.}}
+\DoxyCodeLine{00044\ \textcolor{keyword}{class\ }TestPartResultTest\ :\ \textcolor{keyword}{public}\ \mbox{\hyperlink{classtesting_1_1_test}{Test}}\ \{}
+\DoxyCodeLine{00045\ \ \textcolor{keyword}{protected}:}
+\DoxyCodeLine{00046\ \ \ TestPartResultTest()}
+\DoxyCodeLine{00047\ \ \ \ \ \ \ :\ r1\_(TestPartResult::kSuccess,\ \textcolor{stringliteral}{"{}foo/bar.cc"{}},\ 10,\ \textcolor{stringliteral}{"{}Success!"{}}),}
+\DoxyCodeLine{00048\ \ \ \ \ \ \ \ \ r2\_(TestPartResult::kNonFatalFailure,\ \textcolor{stringliteral}{"{}foo/bar.cc"{}},\ -\/1,\ \textcolor{stringliteral}{"{}Failure!"{}}),}
+\DoxyCodeLine{00049\ \ \ \ \ \ \ \ \ r3\_(TestPartResult::kFatalFailure,\ nullptr,\ -\/1,\ \textcolor{stringliteral}{"{}Failure!"{}}),}
+\DoxyCodeLine{00050\ \ \ \ \ \ \ \ \ r4\_(TestPartResult::kSkip,\ \textcolor{stringliteral}{"{}foo/bar.cc"{}},\ 2,\ \textcolor{stringliteral}{"{}Skipped!"{}})\ \{\}}
+\DoxyCodeLine{00051\ }
+\DoxyCodeLine{00052\ \ \ TestPartResult\ r1\_,\ r2\_,\ r3\_,\ r4\_;}
+\DoxyCodeLine{00053\ \};}
+\DoxyCodeLine{00054\ }
+\DoxyCodeLine{00055\ }
+\DoxyCodeLine{00056\ TEST\_F(TestPartResultTest,\ ConstructorWorks)\ \{}
+\DoxyCodeLine{00057\ \ \ \mbox{\hyperlink{classtesting_1_1_message}{Message}}\ message;}
+\DoxyCodeLine{00058\ \ \ message\ <<\ \textcolor{stringliteral}{"{}something\ is\ terribly\ wrong"{}};}
+\DoxyCodeLine{00059\ \ \ message\ <<\ static\_cast<const\ char*>(testing::internal::kStackTraceMarker);}
+\DoxyCodeLine{00060\ \ \ message\ <<\ \textcolor{stringliteral}{"{}some\ unimportant\ stack\ trace"{}};}
+\DoxyCodeLine{00061\ }
+\DoxyCodeLine{00062\ \ \ \textcolor{keyword}{const}\ TestPartResult\ result(TestPartResult::kNonFatalFailure,}
+\DoxyCodeLine{00063\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}some\_file.cc"{}},}
+\DoxyCodeLine{00064\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 42,}
+\DoxyCodeLine{00065\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ message.GetString().c\_str());}
+\DoxyCodeLine{00066\ }
+\DoxyCodeLine{00067\ \ \ EXPECT\_EQ(TestPartResult::kNonFatalFailure,\ result.type());}
+\DoxyCodeLine{00068\ \ \ EXPECT\_STREQ(\textcolor{stringliteral}{"{}some\_file.cc"{}},\ result.file\_name());}
+\DoxyCodeLine{00069\ \ \ EXPECT\_EQ(42,\ result.line\_number());}
+\DoxyCodeLine{00070\ \ \ EXPECT\_STREQ(message.GetString().c\_str(),\ result.message());}
+\DoxyCodeLine{00071\ \ \ EXPECT\_STREQ(\textcolor{stringliteral}{"{}something\ is\ terribly\ wrong"{}},\ result.summary());}
+\DoxyCodeLine{00072\ \}}
+\DoxyCodeLine{00073\ }
+\DoxyCodeLine{00074\ TEST\_F(TestPartResultTest,\ ResultAccessorsWork)\ \{}
+\DoxyCodeLine{00075\ \ \ \textcolor{keyword}{const}\ TestPartResult\ success(TestPartResult::kSuccess,}
+\DoxyCodeLine{00076\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}file.cc"{}},}
+\DoxyCodeLine{00077\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 42,}
+\DoxyCodeLine{00078\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}message"{}});}
+\DoxyCodeLine{00079\ \ \ EXPECT\_TRUE(success.passed());}
+\DoxyCodeLine{00080\ \ \ EXPECT\_FALSE(success.failed());}
+\DoxyCodeLine{00081\ \ \ EXPECT\_FALSE(success.nonfatally\_failed());}
+\DoxyCodeLine{00082\ \ \ EXPECT\_FALSE(success.fatally\_failed());}
+\DoxyCodeLine{00083\ \ \ EXPECT\_FALSE(success.skipped());}
+\DoxyCodeLine{00084\ }
+\DoxyCodeLine{00085\ \ \ \textcolor{keyword}{const}\ TestPartResult\ nonfatal\_failure(TestPartResult::kNonFatalFailure,}
+\DoxyCodeLine{00086\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}file.cc"{}},}
+\DoxyCodeLine{00087\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 42,}
+\DoxyCodeLine{00088\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}message"{}});}
+\DoxyCodeLine{00089\ \ \ EXPECT\_FALSE(nonfatal\_failure.passed());}
+\DoxyCodeLine{00090\ \ \ EXPECT\_TRUE(nonfatal\_failure.failed());}
+\DoxyCodeLine{00091\ \ \ EXPECT\_TRUE(nonfatal\_failure.nonfatally\_failed());}
+\DoxyCodeLine{00092\ \ \ EXPECT\_FALSE(nonfatal\_failure.fatally\_failed());}
+\DoxyCodeLine{00093\ \ \ EXPECT\_FALSE(nonfatal\_failure.skipped());}
+\DoxyCodeLine{00094\ }
+\DoxyCodeLine{00095\ \ \ \textcolor{keyword}{const}\ TestPartResult\ fatal\_failure(TestPartResult::kFatalFailure,}
+\DoxyCodeLine{00096\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}file.cc"{}},}
+\DoxyCodeLine{00097\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 42,}
+\DoxyCodeLine{00098\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}message"{}});}
+\DoxyCodeLine{00099\ \ \ EXPECT\_FALSE(fatal\_failure.passed());}
+\DoxyCodeLine{00100\ \ \ EXPECT\_TRUE(fatal\_failure.failed());}
+\DoxyCodeLine{00101\ \ \ EXPECT\_FALSE(fatal\_failure.nonfatally\_failed());}
+\DoxyCodeLine{00102\ \ \ EXPECT\_TRUE(fatal\_failure.fatally\_failed());}
+\DoxyCodeLine{00103\ \ \ EXPECT\_FALSE(fatal\_failure.skipped());}
+\DoxyCodeLine{00104\ }
+\DoxyCodeLine{00105\ \ \ \textcolor{keyword}{const}\ TestPartResult\ skip(TestPartResult::kSkip,\ \textcolor{stringliteral}{"{}file.cc"{}},\ 42,\ \textcolor{stringliteral}{"{}message"{}});}
+\DoxyCodeLine{00106\ \ \ EXPECT\_FALSE(skip.passed());}
+\DoxyCodeLine{00107\ \ \ EXPECT\_FALSE(skip.failed());}
+\DoxyCodeLine{00108\ \ \ EXPECT\_FALSE(skip.nonfatally\_failed());}
+\DoxyCodeLine{00109\ \ \ EXPECT\_FALSE(skip.fatally\_failed());}
+\DoxyCodeLine{00110\ \ \ EXPECT\_TRUE(skip.skipped());}
+\DoxyCodeLine{00111\ \}}
+\DoxyCodeLine{00112\ }
+\DoxyCodeLine{00113\ \textcolor{comment}{//\ Tests\ TestPartResult::type().}}
+\DoxyCodeLine{00114\ TEST\_F(TestPartResultTest,\ type)\ \{}
+\DoxyCodeLine{00115\ \ \ EXPECT\_EQ(TestPartResult::kSuccess,\ r1\_.type());}
+\DoxyCodeLine{00116\ \ \ EXPECT\_EQ(TestPartResult::kNonFatalFailure,\ r2\_.type());}
+\DoxyCodeLine{00117\ \ \ EXPECT\_EQ(TestPartResult::kFatalFailure,\ r3\_.type());}
+\DoxyCodeLine{00118\ \ \ EXPECT\_EQ(TestPartResult::kSkip,\ r4\_.type());}
+\DoxyCodeLine{00119\ \}}
+\DoxyCodeLine{00120\ }
+\DoxyCodeLine{00121\ \textcolor{comment}{//\ Tests\ TestPartResult::file\_name().}}
+\DoxyCodeLine{00122\ TEST\_F(TestPartResultTest,\ file\_name)\ \{}
+\DoxyCodeLine{00123\ \ \ EXPECT\_STREQ(\textcolor{stringliteral}{"{}foo/bar.cc"{}},\ r1\_.file\_name());}
+\DoxyCodeLine{00124\ \ \ EXPECT\_STREQ(\textcolor{keyword}{nullptr},\ r3\_.file\_name());}
+\DoxyCodeLine{00125\ \ \ EXPECT\_STREQ(\textcolor{stringliteral}{"{}foo/bar.cc"{}},\ r4\_.file\_name());}
+\DoxyCodeLine{00126\ \}}
+\DoxyCodeLine{00127\ }
+\DoxyCodeLine{00128\ \textcolor{comment}{//\ Tests\ TestPartResult::line\_number().}}
+\DoxyCodeLine{00129\ TEST\_F(TestPartResultTest,\ line\_number)\ \{}
+\DoxyCodeLine{00130\ \ \ EXPECT\_EQ(10,\ r1\_.line\_number());}
+\DoxyCodeLine{00131\ \ \ EXPECT\_EQ(-\/1,\ r2\_.line\_number());}
+\DoxyCodeLine{00132\ \ \ EXPECT\_EQ(2,\ r4\_.line\_number());}
+\DoxyCodeLine{00133\ \}}
+\DoxyCodeLine{00134\ }
+\DoxyCodeLine{00135\ \textcolor{comment}{//\ Tests\ TestPartResult::message().}}
+\DoxyCodeLine{00136\ TEST\_F(TestPartResultTest,\ message)\ \{}
+\DoxyCodeLine{00137\ \ \ EXPECT\_STREQ(\textcolor{stringliteral}{"{}Success!"{}},\ r1\_.message());}
+\DoxyCodeLine{00138\ \ \ EXPECT\_STREQ(\textcolor{stringliteral}{"{}Skipped!"{}},\ r4\_.message());}
+\DoxyCodeLine{00139\ \}}
+\DoxyCodeLine{00140\ }
+\DoxyCodeLine{00141\ \textcolor{comment}{//\ Tests\ TestPartResult::passed().}}
+\DoxyCodeLine{00142\ TEST\_F(TestPartResultTest,\ Passed)\ \{}
+\DoxyCodeLine{00143\ \ \ EXPECT\_TRUE(r1\_.passed());}
+\DoxyCodeLine{00144\ \ \ EXPECT\_FALSE(r2\_.passed());}
+\DoxyCodeLine{00145\ \ \ EXPECT\_FALSE(r3\_.passed());}
+\DoxyCodeLine{00146\ \ \ EXPECT\_FALSE(r4\_.passed());}
+\DoxyCodeLine{00147\ \}}
+\DoxyCodeLine{00148\ }
+\DoxyCodeLine{00149\ \textcolor{comment}{//\ Tests\ TestPartResult::failed().}}
+\DoxyCodeLine{00150\ TEST\_F(TestPartResultTest,\ Failed)\ \{}
+\DoxyCodeLine{00151\ \ \ EXPECT\_FALSE(r1\_.failed());}
+\DoxyCodeLine{00152\ \ \ EXPECT\_TRUE(r2\_.failed());}
+\DoxyCodeLine{00153\ \ \ EXPECT\_TRUE(r3\_.failed());}
+\DoxyCodeLine{00154\ \ \ EXPECT\_FALSE(r4\_.failed());}
+\DoxyCodeLine{00155\ \}}
+\DoxyCodeLine{00156\ }
+\DoxyCodeLine{00157\ \textcolor{comment}{//\ Tests\ TestPartResult::failed().}}
+\DoxyCodeLine{00158\ TEST\_F(TestPartResultTest,\ Skipped)\ \{}
+\DoxyCodeLine{00159\ \ \ EXPECT\_FALSE(r1\_.skipped());}
+\DoxyCodeLine{00160\ \ \ EXPECT\_FALSE(r2\_.skipped());}
+\DoxyCodeLine{00161\ \ \ EXPECT\_FALSE(r3\_.skipped());}
+\DoxyCodeLine{00162\ \ \ EXPECT\_TRUE(r4\_.skipped());}
+\DoxyCodeLine{00163\ \}}
+\DoxyCodeLine{00164\ }
+\DoxyCodeLine{00165\ \textcolor{comment}{//\ Tests\ TestPartResult::fatally\_failed().}}
+\DoxyCodeLine{00166\ TEST\_F(TestPartResultTest,\ FatallyFailed)\ \{}
+\DoxyCodeLine{00167\ \ \ EXPECT\_FALSE(r1\_.fatally\_failed());}
+\DoxyCodeLine{00168\ \ \ EXPECT\_FALSE(r2\_.fatally\_failed());}
+\DoxyCodeLine{00169\ \ \ EXPECT\_TRUE(r3\_.fatally\_failed());}
+\DoxyCodeLine{00170\ \ \ EXPECT\_FALSE(r4\_.fatally\_failed());}
+\DoxyCodeLine{00171\ \}}
+\DoxyCodeLine{00172\ }
+\DoxyCodeLine{00173\ \textcolor{comment}{//\ Tests\ TestPartResult::nonfatally\_failed().}}
+\DoxyCodeLine{00174\ TEST\_F(TestPartResultTest,\ NonfatallyFailed)\ \{}
+\DoxyCodeLine{00175\ \ \ EXPECT\_FALSE(r1\_.nonfatally\_failed());}
+\DoxyCodeLine{00176\ \ \ EXPECT\_TRUE(r2\_.nonfatally\_failed());}
+\DoxyCodeLine{00177\ \ \ EXPECT\_FALSE(r3\_.nonfatally\_failed());}
+\DoxyCodeLine{00178\ \ \ EXPECT\_FALSE(r4\_.nonfatally\_failed());}
+\DoxyCodeLine{00179\ \}}
+\DoxyCodeLine{00180\ }
+\DoxyCodeLine{00181\ \textcolor{comment}{//\ Tests\ the\ TestPartResultArray\ class.}}
+\DoxyCodeLine{00182\ }
+\DoxyCodeLine{00183\ \textcolor{keyword}{class\ }TestPartResultArrayTest\ :\ \textcolor{keyword}{public}\ \mbox{\hyperlink{classtesting_1_1_test}{Test}}\ \{}
+\DoxyCodeLine{00184\ \ \textcolor{keyword}{protected}:}
+\DoxyCodeLine{00185\ \ \ TestPartResultArrayTest()}
+\DoxyCodeLine{00186\ \ \ \ \ \ \ :\ r1\_(TestPartResult::kNonFatalFailure,\ \textcolor{stringliteral}{"{}foo/bar.cc"{}},\ -\/1,\ \textcolor{stringliteral}{"{}Failure\ 1"{}}),}
+\DoxyCodeLine{00187\ \ \ \ \ \ \ \ \ r2\_(TestPartResult::kFatalFailure,\ \textcolor{stringliteral}{"{}foo/bar.cc"{}},\ -\/1,\ \textcolor{stringliteral}{"{}Failure\ 2"{}})\ \{\}}
+\DoxyCodeLine{00188\ }
+\DoxyCodeLine{00189\ \ \ \textcolor{keyword}{const}\ TestPartResult\ r1\_,\ r2\_;}
+\DoxyCodeLine{00190\ \};}
+\DoxyCodeLine{00191\ }
+\DoxyCodeLine{00192\ \textcolor{comment}{//\ Tests\ that\ TestPartResultArray\ initially\ has\ size\ 0.}}
+\DoxyCodeLine{00193\ TEST\_F(TestPartResultArrayTest,\ InitialSizeIsZero)\ \{}
+\DoxyCodeLine{00194\ \ \ TestPartResultArray\ results;}
+\DoxyCodeLine{00195\ \ \ EXPECT\_EQ(0,\ results.size());}
+\DoxyCodeLine{00196\ \}}
+\DoxyCodeLine{00197\ }
+\DoxyCodeLine{00198\ \textcolor{comment}{//\ Tests\ that\ TestPartResultArray\ contains\ the\ given\ TestPartResult}}
+\DoxyCodeLine{00199\ \textcolor{comment}{//\ after\ one\ Append()\ operation.}}
+\DoxyCodeLine{00200\ TEST\_F(TestPartResultArrayTest,\ ContainsGivenResultAfterAppend)\ \{}
+\DoxyCodeLine{00201\ \ \ TestPartResultArray\ results;}
+\DoxyCodeLine{00202\ \ \ results.Append(r1\_);}
+\DoxyCodeLine{00203\ \ \ EXPECT\_EQ(1,\ results.size());}
+\DoxyCodeLine{00204\ \ \ EXPECT\_STREQ(\textcolor{stringliteral}{"{}Failure\ 1"{}},\ results.GetTestPartResult(0).message());}
+\DoxyCodeLine{00205\ \}}
+\DoxyCodeLine{00206\ }
+\DoxyCodeLine{00207\ \textcolor{comment}{//\ Tests\ that\ TestPartResultArray\ contains\ the\ given\ TestPartResults}}
+\DoxyCodeLine{00208\ \textcolor{comment}{//\ after\ two\ Append()\ operations.}}
+\DoxyCodeLine{00209\ TEST\_F(TestPartResultArrayTest,\ ContainsGivenResultsAfterTwoAppends)\ \{}
+\DoxyCodeLine{00210\ \ \ TestPartResultArray\ results;}
+\DoxyCodeLine{00211\ \ \ results.Append(r1\_);}
+\DoxyCodeLine{00212\ \ \ results.Append(r2\_);}
+\DoxyCodeLine{00213\ \ \ EXPECT\_EQ(2,\ results.size());}
+\DoxyCodeLine{00214\ \ \ EXPECT\_STREQ(\textcolor{stringliteral}{"{}Failure\ 1"{}},\ results.GetTestPartResult(0).message());}
+\DoxyCodeLine{00215\ \ \ EXPECT\_STREQ(\textcolor{stringliteral}{"{}Failure\ 2"{}},\ results.GetTestPartResult(1).message());}
+\DoxyCodeLine{00216\ \}}
+\DoxyCodeLine{00217\ }
+\DoxyCodeLine{00218\ \textcolor{keyword}{typedef}\ TestPartResultArrayTest\ TestPartResultArrayDeathTest;}
+\DoxyCodeLine{00219\ }
+\DoxyCodeLine{00220\ \textcolor{comment}{//\ Tests\ that\ the\ program\ dies\ when\ GetTestPartResult()\ is\ called\ with}}
+\DoxyCodeLine{00221\ \textcolor{comment}{//\ an\ invalid\ index.}}
+\DoxyCodeLine{00222\ TEST\_F(TestPartResultArrayDeathTest,\ DiesWhenIndexIsOutOfBound)\ \{}
+\DoxyCodeLine{00223\ \ \ TestPartResultArray\ results;}
+\DoxyCodeLine{00224\ \ \ results.Append(r1\_);}
+\DoxyCodeLine{00225\ }
+\DoxyCodeLine{00226\ \ \ EXPECT\_DEATH\_IF\_SUPPORTED(results.GetTestPartResult(-\/1),\ \textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{00227\ \ \ EXPECT\_DEATH\_IF\_SUPPORTED(results.GetTestPartResult(1),\ \textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{00228\ \}}
+\DoxyCodeLine{00229\ }
+\DoxyCodeLine{00230\ \}\ \ \textcolor{comment}{//\ namespace}}
+
+\end{DoxyCode}

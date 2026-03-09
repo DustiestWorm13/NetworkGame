@@ -1,0 +1,41 @@
+\doxysection{Test\+Object.\+h}
+\hypertarget{_test_object_8h_source}{}\label{_test_object_8h_source}\index{src/gtest/TestObject.h@{src/gtest/TestObject.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#ifndef\ \_TEST\_OBJECT\_H\_}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#define\ \_TEST\_OBJECT\_H\_}}
+\DoxyCodeLine{00003\ }
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ <string>}}
+\DoxyCodeLine{00005\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_input_memory_stream}{InputMemoryStream}};}
+\DoxyCodeLine{00006\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_output_memory_stream}{OutputMemoryStream}};}
+\DoxyCodeLine{00007\ }
+\DoxyCodeLine{00008\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_test_object}{TestObject}}}
+\DoxyCodeLine{00009\ \{}
+\DoxyCodeLine{00010\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00011\ \ \ \textcolor{keywordtype}{int}\ a;}
+\DoxyCodeLine{00012\ \ \ \textcolor{keywordtype}{float}\ b;}
+\DoxyCodeLine{00013\ }
+\DoxyCodeLine{00014\ \ \ std::string\ name;}
+\DoxyCodeLine{00015\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00016\ \ \ \mbox{\hyperlink{class_test_object}{TestObject}}();}
+\DoxyCodeLine{00017\ \ \ \mbox{\hyperlink{class_test_object}{TestObject}}(\textcolor{keywordtype}{int}\ inA,\ \textcolor{keywordtype}{float}\ inB,\ std::string\ inName);}
+\DoxyCodeLine{00018\ \ \ \mbox{\hyperlink{class_test_object}{\string~TestObject}}();}
+\DoxyCodeLine{00019\ }
+\DoxyCodeLine{00020\ \ \ \textcolor{keywordtype}{void}\ setA(\textcolor{keywordtype}{int}\ a);}
+\DoxyCodeLine{00021\ \ \ \textcolor{keywordtype}{int}\ getA();}
+\DoxyCodeLine{00022\ }
+\DoxyCodeLine{00023\ \ \ \textcolor{keywordtype}{void}\ setB(\textcolor{keywordtype}{float}\ b);}
+\DoxyCodeLine{00024\ \ \ \textcolor{keywordtype}{float}\ getB(\textcolor{keywordtype}{void});}
+\DoxyCodeLine{00025\ }
+\DoxyCodeLine{00026\ \ \ \textcolor{keywordtype}{void}\ setName(std::string\ name);}
+\DoxyCodeLine{00027\ \ \ std::string\ getName();}
+\DoxyCodeLine{00028\ }
+\DoxyCodeLine{00029\ \ \ \textcolor{keywordtype}{bool}\ operator==(\mbox{\hyperlink{class_test_object}{TestObject}}\&\ other);}
+\DoxyCodeLine{00030\ }
+\DoxyCodeLine{00031\ \ \ \textcolor{keywordtype}{void}\ Read(\mbox{\hyperlink{class_input_memory_stream}{InputMemoryStream}}\&\ in);}
+\DoxyCodeLine{00032\ \ \ \textcolor{keywordtype}{void}\ Write(\mbox{\hyperlink{class_output_memory_stream}{OutputMemoryStream}}\&\ out);}
+\DoxyCodeLine{00033\ }
+\DoxyCodeLine{00034\ \};}
+\DoxyCodeLine{00035\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{//\_TEST\_OBJECT\_H\_}}
+
+\end{DoxyCode}

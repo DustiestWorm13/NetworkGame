@@ -1,0 +1,1282 @@
+\doxysection{googletest-\/port-\/test.cc}
+\hypertarget{googletest-port-test_8cc_source}{}\label{googletest-port-test_8cc_source}\index{build/\_deps/googletest-\/src/googletest/test/googletest-\/port-\/test.cc@{build/\_deps/googletest-\/src/googletest/test/googletest-\/port-\/test.cc}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{//\ Copyright\ 2008,\ Google\ Inc.}}
+\DoxyCodeLine{00002\ \textcolor{comment}{//\ All\ rights\ reserved.}}
+\DoxyCodeLine{00003\ \textcolor{comment}{//}}
+\DoxyCodeLine{00004\ \textcolor{comment}{//\ Redistribution\ and\ use\ in\ source\ and\ binary\ forms,\ with\ or\ without}}
+\DoxyCodeLine{00005\ \textcolor{comment}{//\ modification,\ are\ permitted\ provided\ that\ the\ following\ conditions\ are}}
+\DoxyCodeLine{00006\ \textcolor{comment}{//\ met:}}
+\DoxyCodeLine{00007\ \textcolor{comment}{//}}
+\DoxyCodeLine{00008\ \textcolor{comment}{//\ \ \ \ \ *\ Redistributions\ of\ source\ code\ must\ retain\ the\ above\ copyright}}
+\DoxyCodeLine{00009\ \textcolor{comment}{//\ notice,\ this\ list\ of\ conditions\ and\ the\ following\ disclaimer.}}
+\DoxyCodeLine{00010\ \textcolor{comment}{//\ \ \ \ \ *\ Redistributions\ in\ binary\ form\ must\ reproduce\ the\ above}}
+\DoxyCodeLine{00011\ \textcolor{comment}{//\ copyright\ notice,\ this\ list\ of\ conditions\ and\ the\ following\ disclaimer}}
+\DoxyCodeLine{00012\ \textcolor{comment}{//\ in\ the\ documentation\ and/or\ other\ materials\ provided\ with\ the}}
+\DoxyCodeLine{00013\ \textcolor{comment}{//\ distribution.}}
+\DoxyCodeLine{00014\ \textcolor{comment}{//\ \ \ \ \ *\ Neither\ the\ name\ of\ Google\ Inc.\ nor\ the\ names\ of\ its}}
+\DoxyCodeLine{00015\ \textcolor{comment}{//\ contributors\ may\ be\ used\ to\ endorse\ or\ promote\ products\ derived\ from}}
+\DoxyCodeLine{00016\ \textcolor{comment}{//\ this\ software\ without\ specific\ prior\ written\ permission.}}
+\DoxyCodeLine{00017\ \textcolor{comment}{//}}
+\DoxyCodeLine{00018\ \textcolor{comment}{//\ THIS\ SOFTWARE\ IS\ PROVIDED\ BY\ THE\ COPYRIGHT\ HOLDERS\ AND\ CONTRIBUTORS}}
+\DoxyCodeLine{00019\ \textcolor{comment}{//\ "{}AS\ IS"{}\ AND\ ANY\ EXPRESS\ OR\ IMPLIED\ WARRANTIES,\ INCLUDING,\ BUT\ NOT}}
+\DoxyCodeLine{00020\ \textcolor{comment}{//\ LIMITED\ TO,\ THE\ IMPLIED\ WARRANTIES\ OF\ MERCHANTABILITY\ AND\ FITNESS\ FOR}}
+\DoxyCodeLine{00021\ \textcolor{comment}{//\ A\ PARTICULAR\ PURPOSE\ ARE\ DISCLAIMED.\ IN\ NO\ EVENT\ SHALL\ THE\ COPYRIGHT}}
+\DoxyCodeLine{00022\ \textcolor{comment}{//\ OWNER\ OR\ CONTRIBUTORS\ BE\ LIABLE\ FOR\ ANY\ DIRECT,\ INDIRECT,\ INCIDENTAL,}}
+\DoxyCodeLine{00023\ \textcolor{comment}{//\ SPECIAL,\ EXEMPLARY,\ OR\ CONSEQUENTIAL\ DAMAGES\ (INCLUDING,\ BUT\ NOT}}
+\DoxyCodeLine{00024\ \textcolor{comment}{//\ LIMITED\ TO,\ PROCUREMENT\ OF\ SUBSTITUTE\ GOODS\ OR\ SERVICES;\ LOSS\ OF\ USE,}}
+\DoxyCodeLine{00025\ \textcolor{comment}{//\ DATA,\ OR\ PROFITS;\ OR\ BUSINESS\ INTERRUPTION)\ HOWEVER\ CAUSED\ AND\ ON\ ANY}}
+\DoxyCodeLine{00026\ \textcolor{comment}{//\ THEORY\ OF\ LIABILITY,\ WHETHER\ IN\ CONTRACT,\ STRICT\ LIABILITY,\ OR\ TORT}}
+\DoxyCodeLine{00027\ \textcolor{comment}{//\ (INCLUDING\ NEGLIGENCE\ OR\ OTHERWISE)\ ARISING\ IN\ ANY\ WAY\ OUT\ OF\ THE\ USE}}
+\DoxyCodeLine{00028\ \textcolor{comment}{//\ OF\ THIS\ SOFTWARE,\ EVEN\ IF\ ADVISED\ OF\ THE\ POSSIBILITY\ OF\ SUCH\ DAMAGE.}}
+\DoxyCodeLine{00029\ \textcolor{comment}{//}}
+\DoxyCodeLine{00030\ \textcolor{comment}{//\ This\ file\ tests\ the\ internal\ cross-\/platform\ support\ utilities.}}
+\DoxyCodeLine{00031\ \textcolor{preprocessor}{\#include\ <stdio.h>}}
+\DoxyCodeLine{00032\ }
+\DoxyCodeLine{00033\ \textcolor{preprocessor}{\#include\ "{}gtest/internal/gtest-\/port.h"{}}}
+\DoxyCodeLine{00034\ }
+\DoxyCodeLine{00035\ \textcolor{preprocessor}{\#if\ GTEST\_OS\_MAC}}
+\DoxyCodeLine{00036\ \textcolor{preprocessor}{\#\ include\ <time.h>}}
+\DoxyCodeLine{00037\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ GTEST\_OS\_MAC}}
+\DoxyCodeLine{00038\ }
+\DoxyCodeLine{00039\ \textcolor{preprocessor}{\#include\ <list>}}
+\DoxyCodeLine{00040\ \textcolor{preprocessor}{\#include\ <memory>}}
+\DoxyCodeLine{00041\ \textcolor{preprocessor}{\#include\ <utility>}\ \ \textcolor{comment}{//\ For\ std::pair\ and\ std::make\_pair.}}
+\DoxyCodeLine{00042\ \textcolor{preprocessor}{\#include\ <vector>}}
+\DoxyCodeLine{00043\ }
+\DoxyCodeLine{00044\ \textcolor{preprocessor}{\#include\ "{}gtest/gtest.h"{}}}
+\DoxyCodeLine{00045\ \textcolor{preprocessor}{\#include\ "{}gtest/gtest-\/spi.h"{}}}
+\DoxyCodeLine{00046\ \textcolor{preprocessor}{\#include\ "{}src/gtest-\/internal-\/inl.h"{}}}
+\DoxyCodeLine{00047\ }
+\DoxyCodeLine{00048\ \textcolor{keyword}{using\ }std::make\_pair;}
+\DoxyCodeLine{00049\ \textcolor{keyword}{using\ }std::pair;}
+\DoxyCodeLine{00050\ }
+\DoxyCodeLine{00051\ \textcolor{keyword}{namespace\ }testing\ \{}
+\DoxyCodeLine{00052\ \textcolor{keyword}{namespace\ }internal\ \{}
+\DoxyCodeLine{00053\ }
+\DoxyCodeLine{00054\ TEST(IsXDigitTest,\ WorksForNarrowAscii)\ \{}
+\DoxyCodeLine{00055\ \ \ EXPECT\_TRUE(IsXDigit(\textcolor{charliteral}{'0'}));}
+\DoxyCodeLine{00056\ \ \ EXPECT\_TRUE(IsXDigit(\textcolor{charliteral}{'9'}));}
+\DoxyCodeLine{00057\ \ \ EXPECT\_TRUE(IsXDigit(\textcolor{charliteral}{'A'}));}
+\DoxyCodeLine{00058\ \ \ EXPECT\_TRUE(IsXDigit(\textcolor{charliteral}{'F'}));}
+\DoxyCodeLine{00059\ \ \ EXPECT\_TRUE(IsXDigit(\textcolor{charliteral}{'a'}));}
+\DoxyCodeLine{00060\ \ \ EXPECT\_TRUE(IsXDigit(\textcolor{charliteral}{'f'}));}
+\DoxyCodeLine{00061\ }
+\DoxyCodeLine{00062\ \ \ EXPECT\_FALSE(IsXDigit(\textcolor{charliteral}{'-\/'}));}
+\DoxyCodeLine{00063\ \ \ EXPECT\_FALSE(IsXDigit(\textcolor{charliteral}{'g'}));}
+\DoxyCodeLine{00064\ \ \ EXPECT\_FALSE(IsXDigit(\textcolor{charliteral}{'G'}));}
+\DoxyCodeLine{00065\ \}}
+\DoxyCodeLine{00066\ }
+\DoxyCodeLine{00067\ TEST(IsXDigitTest,\ ReturnsFalseForNarrowNonAscii)\ \{}
+\DoxyCodeLine{00068\ \ \ EXPECT\_FALSE(IsXDigit(\textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{char}\textcolor{keyword}{>}(\textcolor{stringliteral}{'\(\backslash\)x80'})));}
+\DoxyCodeLine{00069\ \ \ EXPECT\_FALSE(IsXDigit(\textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{char}\textcolor{keyword}{>}(\textcolor{charliteral}{'0'}\ |\ \textcolor{stringliteral}{'\(\backslash\)x80'})));}
+\DoxyCodeLine{00070\ \}}
+\DoxyCodeLine{00071\ }
+\DoxyCodeLine{00072\ TEST(IsXDigitTest,\ WorksForWideAscii)\ \{}
+\DoxyCodeLine{00073\ \ \ EXPECT\_TRUE(IsXDigit(L\textcolor{charliteral}{'0'}));}
+\DoxyCodeLine{00074\ \ \ EXPECT\_TRUE(IsXDigit(L\textcolor{charliteral}{'9'}));}
+\DoxyCodeLine{00075\ \ \ EXPECT\_TRUE(IsXDigit(L\textcolor{charliteral}{'A'}));}
+\DoxyCodeLine{00076\ \ \ EXPECT\_TRUE(IsXDigit(L\textcolor{charliteral}{'F'}));}
+\DoxyCodeLine{00077\ \ \ EXPECT\_TRUE(IsXDigit(L\textcolor{charliteral}{'a'}));}
+\DoxyCodeLine{00078\ \ \ EXPECT\_TRUE(IsXDigit(L\textcolor{charliteral}{'f'}));}
+\DoxyCodeLine{00079\ }
+\DoxyCodeLine{00080\ \ \ EXPECT\_FALSE(IsXDigit(L\textcolor{charliteral}{'-\/'}));}
+\DoxyCodeLine{00081\ \ \ EXPECT\_FALSE(IsXDigit(L\textcolor{charliteral}{'g'}));}
+\DoxyCodeLine{00082\ \ \ EXPECT\_FALSE(IsXDigit(L\textcolor{charliteral}{'G'}));}
+\DoxyCodeLine{00083\ \}}
+\DoxyCodeLine{00084\ }
+\DoxyCodeLine{00085\ TEST(IsXDigitTest,\ ReturnsFalseForWideNonAscii)\ \{}
+\DoxyCodeLine{00086\ \ \ EXPECT\_FALSE(IsXDigit(\textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{wchar\_t}\textcolor{keyword}{>}(0x80)));}
+\DoxyCodeLine{00087\ \ \ EXPECT\_FALSE(IsXDigit(\textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{wchar\_t}\textcolor{keyword}{>}(L\textcolor{charliteral}{'0'}\ |\ 0x80)));}
+\DoxyCodeLine{00088\ \ \ EXPECT\_FALSE(IsXDigit(\textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{wchar\_t}\textcolor{keyword}{>}(L\textcolor{charliteral}{'0'}\ |\ 0x100)));}
+\DoxyCodeLine{00089\ \}}
+\DoxyCodeLine{00090\ }
+\DoxyCodeLine{00091\ \textcolor{keyword}{class\ }Base\ \{}
+\DoxyCodeLine{00092\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00093\ \ \ Base()\ :\ member\_(0)\ \{\}}
+\DoxyCodeLine{00094\ \ \ \textcolor{keyword}{explicit}\ Base(\textcolor{keywordtype}{int}\ n)\ :\ member\_(n)\ \{\}}
+\DoxyCodeLine{00095\ \ \ Base(\textcolor{keyword}{const}\ Base\&)\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{00096\ \ \ Base\&\ operator=(\textcolor{keyword}{const}\ Base\&)\ =\ \textcolor{keywordflow}{default};}
+\DoxyCodeLine{00097\ \ \ \textcolor{keyword}{virtual}\ \string~Base()\ \{\}}
+\DoxyCodeLine{00098\ \ \ \textcolor{keywordtype}{int}\ member()\ \{\ \textcolor{keywordflow}{return}\ member\_;\ \}}
+\DoxyCodeLine{00099\ }
+\DoxyCodeLine{00100\ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00101\ \ \ \textcolor{keywordtype}{int}\ member\_;}
+\DoxyCodeLine{00102\ \};}
+\DoxyCodeLine{00103\ }
+\DoxyCodeLine{00104\ \textcolor{keyword}{class\ }Derived\ :\ \textcolor{keyword}{public}\ Base\ \{}
+\DoxyCodeLine{00105\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00106\ \ \ \textcolor{keyword}{explicit}\ Derived(\textcolor{keywordtype}{int}\ n)\ :\ Base(n)\ \{\}}
+\DoxyCodeLine{00107\ \};}
+\DoxyCodeLine{00108\ }
+\DoxyCodeLine{00109\ TEST(ImplicitCastTest,\ ConvertsPointers)\ \{}
+\DoxyCodeLine{00110\ \ \ Derived\ derived(0);}
+\DoxyCodeLine{00111\ \ \ EXPECT\_TRUE(\&derived\ ==\ ::testing::internal::ImplicitCast\_<Base*>(\&derived));}
+\DoxyCodeLine{00112\ \}}
+\DoxyCodeLine{00113\ }
+\DoxyCodeLine{00114\ TEST(ImplicitCastTest,\ CanUseInheritance)\ \{}
+\DoxyCodeLine{00115\ \ \ Derived\ derived(1);}
+\DoxyCodeLine{00116\ \ \ Base\ base\ =\ ::testing::internal::ImplicitCast\_<Base>(derived);}
+\DoxyCodeLine{00117\ \ \ EXPECT\_EQ(derived.member(),\ base.member());}
+\DoxyCodeLine{00118\ \}}
+\DoxyCodeLine{00119\ }
+\DoxyCodeLine{00120\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classtesting_1_1internal_1_1_castable}{Castable}}\ \{}
+\DoxyCodeLine{00121\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00122\ \ \ \textcolor{keyword}{explicit}\ \mbox{\hyperlink{classtesting_1_1internal_1_1_castable}{Castable}}(\textcolor{keywordtype}{bool}*\ converted)\ :\ converted\_(converted)\ \{\}}
+\DoxyCodeLine{00123\ \ \ \textcolor{keyword}{operator}\ Base()\ \{}
+\DoxyCodeLine{00124\ \ \ \ \ *converted\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00125\ \ \ \ \ \textcolor{keywordflow}{return}\ Base();}
+\DoxyCodeLine{00126\ \ \ \}}
+\DoxyCodeLine{00127\ }
+\DoxyCodeLine{00128\ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00129\ \ \ \textcolor{keywordtype}{bool}*\ converted\_;}
+\DoxyCodeLine{00130\ \};}
+\DoxyCodeLine{00131\ }
+\DoxyCodeLine{00132\ TEST(ImplicitCastTest,\ CanUseNonConstCastOperator)\ \{}
+\DoxyCodeLine{00133\ \ \ \textcolor{keywordtype}{bool}\ converted\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00134\ \ \ \mbox{\hyperlink{classtesting_1_1internal_1_1_castable}{Castable}}\ castable(\&converted);}
+\DoxyCodeLine{00135\ \ \ Base\ base\ =\ ::testing::internal::ImplicitCast\_<Base>(castable);}
+\DoxyCodeLine{00136\ \ \ EXPECT\_TRUE(converted);}
+\DoxyCodeLine{00137\ \}}
+\DoxyCodeLine{00138\ }
+\DoxyCodeLine{00139\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classtesting_1_1internal_1_1_const_castable}{ConstCastable}}\ \{}
+\DoxyCodeLine{00140\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00141\ \ \ \textcolor{keyword}{explicit}\ \mbox{\hyperlink{classtesting_1_1internal_1_1_const_castable}{ConstCastable}}(\textcolor{keywordtype}{bool}*\ converted)\ :\ converted\_(converted)\ \{\}}
+\DoxyCodeLine{00142\ \ \ \textcolor{keyword}{operator}\ Base()\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00143\ \ \ \ \ *converted\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00144\ \ \ \ \ \textcolor{keywordflow}{return}\ Base();}
+\DoxyCodeLine{00145\ \ \ \}}
+\DoxyCodeLine{00146\ }
+\DoxyCodeLine{00147\ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00148\ \ \ \textcolor{keywordtype}{bool}*\ converted\_;}
+\DoxyCodeLine{00149\ \};}
+\DoxyCodeLine{00150\ }
+\DoxyCodeLine{00151\ TEST(ImplicitCastTest,\ CanUseConstCastOperatorOnConstValues)\ \{}
+\DoxyCodeLine{00152\ \ \ \textcolor{keywordtype}{bool}\ converted\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00153\ \ \ \textcolor{keyword}{const}\ \mbox{\hyperlink{classtesting_1_1internal_1_1_const_castable}{ConstCastable}}\ const\_castable(\&converted);}
+\DoxyCodeLine{00154\ \ \ Base\ base\ =\ ::testing::internal::ImplicitCast\_<Base>(const\_castable);}
+\DoxyCodeLine{00155\ \ \ EXPECT\_TRUE(converted);}
+\DoxyCodeLine{00156\ \}}
+\DoxyCodeLine{00157\ }
+\DoxyCodeLine{00158\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classtesting_1_1internal_1_1_const_and_non_const_castable}{ConstAndNonConstCastable}}\ \{}
+\DoxyCodeLine{00159\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00160\ \ \ \mbox{\hyperlink{classtesting_1_1internal_1_1_const_and_non_const_castable}{ConstAndNonConstCastable}}(\textcolor{keywordtype}{bool}*\ converted,\ \textcolor{keywordtype}{bool}*\ const\_converted)}
+\DoxyCodeLine{00161\ \ \ \ \ \ \ :\ converted\_(converted),\ const\_converted\_(const\_converted)\ \{\}}
+\DoxyCodeLine{00162\ \ \ \textcolor{keyword}{operator}\ Base()\ \{}
+\DoxyCodeLine{00163\ \ \ \ \ *converted\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00164\ \ \ \ \ \textcolor{keywordflow}{return}\ Base();}
+\DoxyCodeLine{00165\ \ \ \}}
+\DoxyCodeLine{00166\ \ \ \textcolor{keyword}{operator}\ Base()\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{00167\ \ \ \ \ *const\_converted\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00168\ \ \ \ \ \textcolor{keywordflow}{return}\ Base();}
+\DoxyCodeLine{00169\ \ \ \}}
+\DoxyCodeLine{00170\ }
+\DoxyCodeLine{00171\ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00172\ \ \ \textcolor{keywordtype}{bool}*\ converted\_;}
+\DoxyCodeLine{00173\ \ \ \textcolor{keywordtype}{bool}*\ const\_converted\_;}
+\DoxyCodeLine{00174\ \};}
+\DoxyCodeLine{00175\ }
+\DoxyCodeLine{00176\ TEST(ImplicitCastTest,\ CanSelectBetweenConstAndNonConstCasrAppropriately)\ \{}
+\DoxyCodeLine{00177\ \ \ \textcolor{keywordtype}{bool}\ converted\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00178\ \ \ \textcolor{keywordtype}{bool}\ const\_converted\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00179\ \ \ \mbox{\hyperlink{classtesting_1_1internal_1_1_const_and_non_const_castable}{ConstAndNonConstCastable}}\ castable(\&converted,\ \&const\_converted);}
+\DoxyCodeLine{00180\ \ \ Base\ base\ =\ ::testing::internal::ImplicitCast\_<Base>(castable);}
+\DoxyCodeLine{00181\ \ \ EXPECT\_TRUE(converted);}
+\DoxyCodeLine{00182\ \ \ EXPECT\_FALSE(const\_converted);}
+\DoxyCodeLine{00183\ }
+\DoxyCodeLine{00184\ \ \ converted\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00185\ \ \ const\_converted\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00186\ \ \ \textcolor{keyword}{const}\ \mbox{\hyperlink{classtesting_1_1internal_1_1_const_and_non_const_castable}{ConstAndNonConstCastable}}\ const\_castable(\&converted,\ \&const\_converted);}
+\DoxyCodeLine{00187\ \ \ base\ =\ ::testing::internal::ImplicitCast\_<Base>(const\_castable);}
+\DoxyCodeLine{00188\ \ \ EXPECT\_FALSE(converted);}
+\DoxyCodeLine{00189\ \ \ EXPECT\_TRUE(const\_converted);}
+\DoxyCodeLine{00190\ \}}
+\DoxyCodeLine{00191\ }
+\DoxyCodeLine{00192\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classtesting_1_1internal_1_1_to}{To}}\ \{}
+\DoxyCodeLine{00193\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00194\ \ \ \mbox{\hyperlink{classtesting_1_1internal_1_1_to}{To}}(\textcolor{keywordtype}{bool}*\ converted)\ \{\ *converted\ =\ \textcolor{keyword}{true};\ \}\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00195\ \};}
+\DoxyCodeLine{00196\ }
+\DoxyCodeLine{00197\ TEST(ImplicitCastTest,\ CanUseImplicitConstructor)\ \{}
+\DoxyCodeLine{00198\ \ \ \textcolor{keywordtype}{bool}\ converted\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00199\ \ \ \mbox{\hyperlink{classtesting_1_1internal_1_1_to}{To}}\ to\ =\ ::testing::internal::ImplicitCast\_<To>(\&converted);}
+\DoxyCodeLine{00200\ \ \ (void)to;}
+\DoxyCodeLine{00201\ \ \ EXPECT\_TRUE(converted);}
+\DoxyCodeLine{00202\ \}}
+\DoxyCodeLine{00203\ }
+\DoxyCodeLine{00204\ \textcolor{comment}{//\ The\ following\ code\ intentionally\ tests\ a\ suboptimal\ syntax.}}
+\DoxyCodeLine{00205\ \textcolor{preprocessor}{\#ifdef\ \_\_GNUC\_\_}}
+\DoxyCodeLine{00206\ \textcolor{preprocessor}{\#pragma\ GCC\ diagnostic\ push}}
+\DoxyCodeLine{00207\ \textcolor{preprocessor}{\#pragma\ GCC\ diagnostic\ ignored\ "{}-\/Wdangling-\/else"{}}}
+\DoxyCodeLine{00208\ \textcolor{preprocessor}{\#pragma\ GCC\ diagnostic\ ignored\ "{}-\/Wempty-\/body"{}}}
+\DoxyCodeLine{00209\ \textcolor{preprocessor}{\#pragma\ GCC\ diagnostic\ ignored\ "{}-\/Wpragmas"{}}}
+\DoxyCodeLine{00210\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00211\ TEST(GtestCheckSyntaxTest,\ BehavesLikeASingleStatement)\ \{}
+\DoxyCodeLine{00212\ \ \ \textcolor{keywordflow}{if}\ (AlwaysFalse())}
+\DoxyCodeLine{00213\ \ \ \ \ GTEST\_CHECK\_(\textcolor{keyword}{false})\ <<\ \textcolor{stringliteral}{"{}This\ should\ never\ be\ executed;\ "{}}}
+\DoxyCodeLine{00214\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}It's\ a\ compilation\ test\ only."{}};}
+\DoxyCodeLine{00215\ }
+\DoxyCodeLine{00216\ \ \ \textcolor{keywordflow}{if}\ (AlwaysTrue())}
+\DoxyCodeLine{00217\ \ \ \ \ GTEST\_CHECK\_(\textcolor{keyword}{true});}
+\DoxyCodeLine{00218\ \ \ else}
+\DoxyCodeLine{00219\ \ \ \ \ ;\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00220\ }
+\DoxyCodeLine{00221\ \ \ \textcolor{keywordflow}{if}\ (AlwaysFalse())}
+\DoxyCodeLine{00222\ \ \ \ \ ;\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00223\ \ \ \textcolor{keywordflow}{else}}
+\DoxyCodeLine{00224\ \ \ \ \ GTEST\_CHECK\_(\textcolor{keyword}{true})\ <<\ \textcolor{stringliteral}{"{}"{}};}
+\DoxyCodeLine{00225\ \}}
+\DoxyCodeLine{00226\ \textcolor{preprocessor}{\#ifdef\ \_\_GNUC\_\_}}
+\DoxyCodeLine{00227\ \textcolor{preprocessor}{\#pragma\ GCC\ diagnostic\ pop}}
+\DoxyCodeLine{00228\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00229\ }
+\DoxyCodeLine{00230\ TEST(GtestCheckSyntaxTest,\ WorksWithSwitch)\ \{}
+\DoxyCodeLine{00231\ \ \ \textcolor{keywordflow}{switch}\ (0)\ \{}
+\DoxyCodeLine{00232\ \ \ \ \ \textcolor{keywordflow}{case}\ 1:}
+\DoxyCodeLine{00233\ \ \ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{00234\ \ \ \ \ \textcolor{keywordflow}{default}:}
+\DoxyCodeLine{00235\ \ \ \ \ \ \ GTEST\_CHECK\_(\textcolor{keyword}{true});}
+\DoxyCodeLine{00236\ \ \ \}}
+\DoxyCodeLine{00237\ }
+\DoxyCodeLine{00238\ \ \ \textcolor{keywordflow}{switch}\ (0)}
+\DoxyCodeLine{00239\ \ \ \ \ \textcolor{keywordflow}{case}\ 0:}
+\DoxyCodeLine{00240\ \ \ \ \ \ \ GTEST\_CHECK\_(\textcolor{keyword}{true})\ <<\ \textcolor{stringliteral}{"{}Check\ failed\ in\ switch\ case"{}};}
+\DoxyCodeLine{00241\ \}}
+\DoxyCodeLine{00242\ }
+\DoxyCodeLine{00243\ \textcolor{comment}{//\ Verifies\ behavior\ of\ FormatFileLocation.}}
+\DoxyCodeLine{00244\ TEST(FormatFileLocationTest,\ FormatsFileLocation)\ \{}
+\DoxyCodeLine{00245\ \ \ EXPECT\_PRED\_FORMAT2(IsSubstring,\ \textcolor{stringliteral}{"{}foo.cc"{}},\ FormatFileLocation(\textcolor{stringliteral}{"{}foo.cc"{}},\ 42));}
+\DoxyCodeLine{00246\ \ \ EXPECT\_PRED\_FORMAT2(IsSubstring,\ \textcolor{stringliteral}{"{}42"{}},\ FormatFileLocation(\textcolor{stringliteral}{"{}foo.cc"{}},\ 42));}
+\DoxyCodeLine{00247\ \}}
+\DoxyCodeLine{00248\ }
+\DoxyCodeLine{00249\ TEST(FormatFileLocationTest,\ FormatsUnknownFile)\ \{}
+\DoxyCodeLine{00250\ \ \ EXPECT\_PRED\_FORMAT2(IsSubstring,\ \textcolor{stringliteral}{"{}unknown\ file"{}},}
+\DoxyCodeLine{00251\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ FormatFileLocation(\textcolor{keyword}{nullptr},\ 42));}
+\DoxyCodeLine{00252\ \ \ EXPECT\_PRED\_FORMAT2(IsSubstring,\ \textcolor{stringliteral}{"{}42"{}},\ FormatFileLocation(\textcolor{keyword}{nullptr},\ 42));}
+\DoxyCodeLine{00253\ \}}
+\DoxyCodeLine{00254\ }
+\DoxyCodeLine{00255\ TEST(FormatFileLocationTest,\ FormatsUknownLine)\ \{}
+\DoxyCodeLine{00256\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}foo.cc:"{}},\ FormatFileLocation(\textcolor{stringliteral}{"{}foo.cc"{}},\ -\/1));}
+\DoxyCodeLine{00257\ \}}
+\DoxyCodeLine{00258\ }
+\DoxyCodeLine{00259\ TEST(FormatFileLocationTest,\ FormatsUknownFileAndLine)\ \{}
+\DoxyCodeLine{00260\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}unknown\ file:"{}},\ FormatFileLocation(\textcolor{keyword}{nullptr},\ -\/1));}
+\DoxyCodeLine{00261\ \}}
+\DoxyCodeLine{00262\ }
+\DoxyCodeLine{00263\ \textcolor{comment}{//\ Verifies\ behavior\ of\ FormatCompilerIndependentFileLocation.}}
+\DoxyCodeLine{00264\ TEST(FormatCompilerIndependentFileLocationTest,\ FormatsFileLocation)\ \{}
+\DoxyCodeLine{00265\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}foo.cc:42"{}},\ FormatCompilerIndependentFileLocation(\textcolor{stringliteral}{"{}foo.cc"{}},\ 42));}
+\DoxyCodeLine{00266\ \}}
+\DoxyCodeLine{00267\ }
+\DoxyCodeLine{00268\ TEST(FormatCompilerIndependentFileLocationTest,\ FormatsUknownFile)\ \{}
+\DoxyCodeLine{00269\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}unknown\ file:42"{}},}
+\DoxyCodeLine{00270\ \ \ \ \ \ \ \ \ \ \ \ \ FormatCompilerIndependentFileLocation(\textcolor{keyword}{nullptr},\ 42));}
+\DoxyCodeLine{00271\ \}}
+\DoxyCodeLine{00272\ }
+\DoxyCodeLine{00273\ TEST(FormatCompilerIndependentFileLocationTest,\ FormatsUknownLine)\ \{}
+\DoxyCodeLine{00274\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}foo.cc"{}},\ FormatCompilerIndependentFileLocation(\textcolor{stringliteral}{"{}foo.cc"{}},\ -\/1));}
+\DoxyCodeLine{00275\ \}}
+\DoxyCodeLine{00276\ }
+\DoxyCodeLine{00277\ TEST(FormatCompilerIndependentFileLocationTest,\ FormatsUknownFileAndLine)\ \{}
+\DoxyCodeLine{00278\ \ \ EXPECT\_EQ(\textcolor{stringliteral}{"{}unknown\ file"{}},\ FormatCompilerIndependentFileLocation(\textcolor{keyword}{nullptr},\ -\/1));}
+\DoxyCodeLine{00279\ \}}
+\DoxyCodeLine{00280\ }
+\DoxyCodeLine{00281\ \textcolor{preprocessor}{\#if\ GTEST\_OS\_LINUX\ ||\ GTEST\_OS\_MAC\ ||\ GTEST\_OS\_QNX\ ||\ GTEST\_OS\_FUCHSIA\ ||\ \(\backslash\)}}
+\DoxyCodeLine{00282\ \textcolor{preprocessor}{\ \ \ \ GTEST\_OS\_DRAGONFLY\ ||\ GTEST\_OS\_FREEBSD\ ||\ GTEST\_OS\_GNU\_KFREEBSD\ ||\ \(\backslash\)}}
+\DoxyCodeLine{00283\ \textcolor{preprocessor}{\ \ \ \ GTEST\_OS\_NETBSD\ ||\ GTEST\_OS\_OPENBSD}}
+\DoxyCodeLine{00284\ \textcolor{keywordtype}{void}*\ ThreadFunc(\textcolor{keywordtype}{void}*\ data)\ \{}
+\DoxyCodeLine{00285\ \ \ internal::Mutex*\ mutex\ =\ \textcolor{keyword}{static\_cast<}internal::Mutex*\textcolor{keyword}{>}(data);}
+\DoxyCodeLine{00286\ \ \ mutex-\/>Lock();}
+\DoxyCodeLine{00287\ \ \ mutex-\/>Unlock();}
+\DoxyCodeLine{00288\ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00289\ \}}
+\DoxyCodeLine{00290\ }
+\DoxyCodeLine{00291\ TEST(GetThreadCountTest,\ ReturnsCorrectValue)\ \{}
+\DoxyCodeLine{00292\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{size\_t}\ starting\_count\ =\ GetThreadCount();}
+\DoxyCodeLine{00293\ \ \ pthread\_t\ \ \ \ \ \ \ thread\_id;}
+\DoxyCodeLine{00294\ }
+\DoxyCodeLine{00295\ \ \ internal::Mutex\ mutex;}
+\DoxyCodeLine{00296\ \ \ \{}
+\DoxyCodeLine{00297\ \ \ \ \ internal::MutexLock\ lock(\&mutex);}
+\DoxyCodeLine{00298\ \ \ \ \ pthread\_attr\_t\ \ attr;}
+\DoxyCodeLine{00299\ \ \ \ \ ASSERT\_EQ(0,\ pthread\_attr\_init(\&attr));}
+\DoxyCodeLine{00300\ \ \ \ \ ASSERT\_EQ(0,\ pthread\_attr\_setdetachstate(\&attr,\ PTHREAD\_CREATE\_JOINABLE));}
+\DoxyCodeLine{00301\ }
+\DoxyCodeLine{00302\ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ status\ =\ pthread\_create(\&thread\_id,\ \&attr,\ \&ThreadFunc,\ \&mutex);}
+\DoxyCodeLine{00303\ \ \ \ \ ASSERT\_EQ(0,\ pthread\_attr\_destroy(\&attr));}
+\DoxyCodeLine{00304\ \ \ \ \ ASSERT\_EQ(0,\ status);}
+\DoxyCodeLine{00305\ \ \ \ \ EXPECT\_EQ(starting\_count\ +\ 1,\ GetThreadCount());}
+\DoxyCodeLine{00306\ \ \ \}}
+\DoxyCodeLine{00307\ }
+\DoxyCodeLine{00308\ \ \ \textcolor{keywordtype}{void}*\ dummy;}
+\DoxyCodeLine{00309\ \ \ ASSERT\_EQ(0,\ pthread\_join(thread\_id,\ \&dummy));}
+\DoxyCodeLine{00310\ }
+\DoxyCodeLine{00311\ \ \ \textcolor{comment}{//\ The\ OS\ may\ not\ immediately\ report\ the\ updated\ thread\ count\ after}}
+\DoxyCodeLine{00312\ \ \ \textcolor{comment}{//\ joining\ a\ thread,\ causing\ flakiness\ in\ this\ test.\ To\ counter\ that,\ we}}
+\DoxyCodeLine{00313\ \ \ \textcolor{comment}{//\ wait\ for\ up\ to\ .5\ seconds\ for\ the\ OS\ to\ report\ the\ correct\ value.}}
+\DoxyCodeLine{00314\ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ i\ =\ 0;\ i\ <\ 5;\ ++i)\ \{}
+\DoxyCodeLine{00315\ \ \ \ \ \textcolor{keywordflow}{if}\ (GetThreadCount()\ ==\ starting\_count)}
+\DoxyCodeLine{00316\ \ \ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{00317\ }
+\DoxyCodeLine{00318\ \ \ \ \ SleepMilliseconds(100);}
+\DoxyCodeLine{00319\ \ \ \}}
+\DoxyCodeLine{00320\ }
+\DoxyCodeLine{00321\ \ \ EXPECT\_EQ(starting\_count,\ GetThreadCount());}
+\DoxyCodeLine{00322\ \}}
+\DoxyCodeLine{00323\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{00324\ TEST(GetThreadCountTest,\ ReturnsZeroWhenUnableToCountThreads)\ \{}
+\DoxyCodeLine{00325\ \ \ EXPECT\_EQ(0U,\ GetThreadCount());}
+\DoxyCodeLine{00326\ \}}
+\DoxyCodeLine{00327\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ GTEST\_OS\_LINUX\ ||\ GTEST\_OS\_MAC\ ||\ GTEST\_OS\_QNX\ ||\ GTEST\_OS\_FUCHSIA}}
+\DoxyCodeLine{00328\ }
+\DoxyCodeLine{00329\ TEST(GtestCheckDeathTest,\ DiesWithCorrectOutputOnFailure)\ \{}
+\DoxyCodeLine{00330\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{bool}\ a\_false\_condition\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00331\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}\ regex[]\ =}
+\DoxyCodeLine{00332\ \textcolor{preprocessor}{\#ifdef\ \_MSC\_VER}}
+\DoxyCodeLine{00333\ \ \ \ \ \ \textcolor{stringliteral}{"{}googletest-\/port-\/test\(\backslash\)\(\backslash\).cc\(\backslash\)\(\backslash\)(\(\backslash\)\(\backslash\)d+\(\backslash\)\(\backslash\)):"{}}}
+\DoxyCodeLine{00334\ \textcolor{preprocessor}{\#elif\ GTEST\_USES\_POSIX\_RE}}
+\DoxyCodeLine{00335\ \ \ \ \ \ \textcolor{stringliteral}{"{}googletest-\/port-\/test\(\backslash\)\(\backslash\).cc:[0-\/9]+"{}}}
+\DoxyCodeLine{00336\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{00337\ \ \ \ \ \ \textcolor{stringliteral}{"{}googletest-\/port-\/test\(\backslash\)\(\backslash\).cc:\(\backslash\)\(\backslash\)d+"{}}}
+\DoxyCodeLine{00338\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ \_MSC\_VER}}
+\DoxyCodeLine{00339\ \ \ \ \ \ \textcolor{stringliteral}{"{}.*a\_false\_condition.*Extra\ info.*"{}};}
+\DoxyCodeLine{00340\ }
+\DoxyCodeLine{00341\ \ \ EXPECT\_DEATH\_IF\_SUPPORTED(GTEST\_CHECK\_(a\_false\_condition)\ <<\ \textcolor{stringliteral}{"{}Extra\ info"{}},}
+\DoxyCodeLine{00342\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ regex);}
+\DoxyCodeLine{00343\ \}}
+\DoxyCodeLine{00344\ }
+\DoxyCodeLine{00345\ \textcolor{preprocessor}{\#if\ GTEST\_HAS\_DEATH\_TEST}}
+\DoxyCodeLine{00346\ }
+\DoxyCodeLine{00347\ TEST(GtestCheckDeathTest,\ LivesSilentlyOnSuccess)\ \{}
+\DoxyCodeLine{00348\ \ \ EXPECT\_EXIT(\{}
+\DoxyCodeLine{00349\ \ \ \ \ \ \ GTEST\_CHECK\_(\textcolor{keyword}{true})\ <<\ \textcolor{stringliteral}{"{}Extra\ info"{}};}
+\DoxyCodeLine{00350\ \ \ \ \ \ \ ::std::cerr\ <<\ \textcolor{stringliteral}{"{}Success\(\backslash\)n"{}};}
+\DoxyCodeLine{00351\ \ \ \ \ \ \ exit(0);\ \},}
+\DoxyCodeLine{00352\ \ \ \ \ \ \ ::testing::ExitedWithCode(0),\ \textcolor{stringliteral}{"{}Success"{}});}
+\DoxyCodeLine{00353\ \}}
+\DoxyCodeLine{00354\ }
+\DoxyCodeLine{00355\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ GTEST\_HAS\_DEATH\_TEST}}
+\DoxyCodeLine{00356\ }
+\DoxyCodeLine{00357\ \textcolor{comment}{//\ Verifies\ that\ Google\ Test\ choose\ regular\ expression\ engine\ appropriate\ to}}
+\DoxyCodeLine{00358\ \textcolor{comment}{//\ the\ platform.\ The\ test\ will\ produce\ compiler\ errors\ in\ case\ of\ failure.}}
+\DoxyCodeLine{00359\ \textcolor{comment}{//\ For\ simplicity,\ we\ only\ cover\ the\ most\ important\ platforms\ here.}}
+\DoxyCodeLine{00360\ TEST(RegexEngineSelectionTest,\ SelectsCorrectRegexEngine)\ \{}
+\DoxyCodeLine{00361\ \textcolor{preprocessor}{\#if\ !GTEST\_USES\_PCRE}}
+\DoxyCodeLine{00362\ \textcolor{preprocessor}{\#\ if\ GTEST\_HAS\_POSIX\_RE}}
+\DoxyCodeLine{00363\ }
+\DoxyCodeLine{00364\ \ \ EXPECT\_TRUE(GTEST\_USES\_POSIX\_RE);}
+\DoxyCodeLine{00365\ }
+\DoxyCodeLine{00366\ \textcolor{preprocessor}{\#\ else}}
+\DoxyCodeLine{00367\ }
+\DoxyCodeLine{00368\ \ \ EXPECT\_TRUE(GTEST\_USES\_SIMPLE\_RE);}
+\DoxyCodeLine{00369\ }
+\DoxyCodeLine{00370\ \textcolor{preprocessor}{\#\ endif}}
+\DoxyCodeLine{00371\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ !GTEST\_USES\_PCRE}}
+\DoxyCodeLine{00372\ \}}
+\DoxyCodeLine{00373\ }
+\DoxyCodeLine{00374\ \textcolor{preprocessor}{\#if\ GTEST\_USES\_POSIX\_RE}}
+\DoxyCodeLine{00375\ }
+\DoxyCodeLine{00376\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Str>}
+\DoxyCodeLine{00377\ \textcolor{keyword}{class\ }RETest\ :\ \textcolor{keyword}{public}\ \mbox{\hyperlink{classtesting_1_1_test}{::testing::Test}}\ \{\};}
+\DoxyCodeLine{00378\ }
+\DoxyCodeLine{00379\ \textcolor{comment}{//\ Defines\ StringTypes\ as\ the\ list\ of\ all\ string\ types\ that\ class\ RE}}
+\DoxyCodeLine{00380\ \textcolor{comment}{//\ supports.}}
+\DoxyCodeLine{00381\ \textcolor{keyword}{typedef}\ \mbox{\hyperlink{structtesting_1_1internal_1_1_proxy_type_list}{testing::Types<\ ::std::string,\ const\ char*>}}\ StringTypes;}
+\DoxyCodeLine{00382\ }
+\DoxyCodeLine{00383\ TYPED\_TEST\_SUITE(RETest,\ StringTypes);}
+\DoxyCodeLine{00384\ }
+\DoxyCodeLine{00385\ \textcolor{comment}{//\ Tests\ RE's\ implicit\ constructors.}}
+\DoxyCodeLine{00386\ TYPED\_TEST(RETest,\ ImplicitConstructorWorks)\ \{}
+\DoxyCodeLine{00387\ \ \ \textcolor{keyword}{const}\ RE\ empty(TypeParam(\textcolor{stringliteral}{"{}"{}}));}
+\DoxyCodeLine{00388\ \ \ EXPECT\_STREQ(\textcolor{stringliteral}{"{}"{}},\ empty.pattern());}
+\DoxyCodeLine{00389\ }
+\DoxyCodeLine{00390\ \ \ \textcolor{keyword}{const}\ RE\ simple(TypeParam(\textcolor{stringliteral}{"{}hello"{}}));}
+\DoxyCodeLine{00391\ \ \ EXPECT\_STREQ(\textcolor{stringliteral}{"{}hello"{}},\ simple.pattern());}
+\DoxyCodeLine{00392\ }
+\DoxyCodeLine{00393\ \ \ \textcolor{keyword}{const}\ RE\ normal(TypeParam(\textcolor{stringliteral}{"{}.*(\(\backslash\)\(\backslash\)w+)"{}}));}
+\DoxyCodeLine{00394\ \ \ EXPECT\_STREQ(\textcolor{stringliteral}{"{}.*(\(\backslash\)\(\backslash\)w+)"{}},\ normal.pattern());}
+\DoxyCodeLine{00395\ \}}
+\DoxyCodeLine{00396\ }
+\DoxyCodeLine{00397\ \textcolor{comment}{//\ Tests\ that\ RE's\ constructors\ reject\ invalid\ regular\ expressions.}}
+\DoxyCodeLine{00398\ TYPED\_TEST(RETest,\ RejectsInvalidRegex)\ \{}
+\DoxyCodeLine{00399\ \ \ EXPECT\_NONFATAL\_FAILURE(\{}
+\DoxyCodeLine{00400\ \ \ \ \ \textcolor{keyword}{const}\ RE\ invalid(TypeParam(\textcolor{stringliteral}{"{}?"{}}));}
+\DoxyCodeLine{00401\ \ \ \},\ \textcolor{stringliteral}{"{}\(\backslash\)"{}?\(\backslash\)"{}\ is\ not\ a\ valid\ POSIX\ Extended\ regular\ expression."{}});}
+\DoxyCodeLine{00402\ \}}
+\DoxyCodeLine{00403\ }
+\DoxyCodeLine{00404\ \textcolor{comment}{//\ Tests\ RE::FullMatch().}}
+\DoxyCodeLine{00405\ TYPED\_TEST(RETest,\ FullMatchWorks)\ \{}
+\DoxyCodeLine{00406\ \ \ \textcolor{keyword}{const}\ RE\ empty(TypeParam(\textcolor{stringliteral}{"{}"{}}));}
+\DoxyCodeLine{00407\ \ \ EXPECT\_TRUE(RE::FullMatch(TypeParam(\textcolor{stringliteral}{"{}"{}}),\ empty));}
+\DoxyCodeLine{00408\ \ \ EXPECT\_FALSE(RE::FullMatch(TypeParam(\textcolor{stringliteral}{"{}a"{}}),\ empty));}
+\DoxyCodeLine{00409\ }
+\DoxyCodeLine{00410\ \ \ \textcolor{keyword}{const}\ RE\ re(TypeParam(\textcolor{stringliteral}{"{}a.*z"{}}));}
+\DoxyCodeLine{00411\ \ \ EXPECT\_TRUE(RE::FullMatch(TypeParam(\textcolor{stringliteral}{"{}az"{}}),\ re));}
+\DoxyCodeLine{00412\ \ \ EXPECT\_TRUE(RE::FullMatch(TypeParam(\textcolor{stringliteral}{"{}axyz"{}}),\ re));}
+\DoxyCodeLine{00413\ \ \ EXPECT\_FALSE(RE::FullMatch(TypeParam(\textcolor{stringliteral}{"{}baz"{}}),\ re));}
+\DoxyCodeLine{00414\ \ \ EXPECT\_FALSE(RE::FullMatch(TypeParam(\textcolor{stringliteral}{"{}azy"{}}),\ re));}
+\DoxyCodeLine{00415\ \}}
+\DoxyCodeLine{00416\ }
+\DoxyCodeLine{00417\ \textcolor{comment}{//\ Tests\ RE::PartialMatch().}}
+\DoxyCodeLine{00418\ TYPED\_TEST(RETest,\ PartialMatchWorks)\ \{}
+\DoxyCodeLine{00419\ \ \ \textcolor{keyword}{const}\ RE\ empty(TypeParam(\textcolor{stringliteral}{"{}"{}}));}
+\DoxyCodeLine{00420\ \ \ EXPECT\_TRUE(RE::PartialMatch(TypeParam(\textcolor{stringliteral}{"{}"{}}),\ empty));}
+\DoxyCodeLine{00421\ \ \ EXPECT\_TRUE(RE::PartialMatch(TypeParam(\textcolor{stringliteral}{"{}a"{}}),\ empty));}
+\DoxyCodeLine{00422\ }
+\DoxyCodeLine{00423\ \ \ \textcolor{keyword}{const}\ RE\ re(TypeParam(\textcolor{stringliteral}{"{}a.*z"{}}));}
+\DoxyCodeLine{00424\ \ \ EXPECT\_TRUE(RE::PartialMatch(TypeParam(\textcolor{stringliteral}{"{}az"{}}),\ re));}
+\DoxyCodeLine{00425\ \ \ EXPECT\_TRUE(RE::PartialMatch(TypeParam(\textcolor{stringliteral}{"{}axyz"{}}),\ re));}
+\DoxyCodeLine{00426\ \ \ EXPECT\_TRUE(RE::PartialMatch(TypeParam(\textcolor{stringliteral}{"{}baz"{}}),\ re));}
+\DoxyCodeLine{00427\ \ \ EXPECT\_TRUE(RE::PartialMatch(TypeParam(\textcolor{stringliteral}{"{}azy"{}}),\ re));}
+\DoxyCodeLine{00428\ \ \ EXPECT\_FALSE(RE::PartialMatch(TypeParam(\textcolor{stringliteral}{"{}zza"{}}),\ re));}
+\DoxyCodeLine{00429\ \}}
+\DoxyCodeLine{00430\ }
+\DoxyCodeLine{00431\ \textcolor{preprocessor}{\#elif\ GTEST\_USES\_SIMPLE\_RE}}
+\DoxyCodeLine{00432\ }
+\DoxyCodeLine{00433\ TEST(IsInSetTest,\ NulCharIsNotInAnySet)\ \{}
+\DoxyCodeLine{00434\ \ \ EXPECT\_FALSE(IsInSet(\textcolor{charliteral}{'\(\backslash\)0'},\ \textcolor{stringliteral}{"{}"{}}));}
+\DoxyCodeLine{00435\ \ \ EXPECT\_FALSE(IsInSet(\textcolor{charliteral}{'\(\backslash\)0'},\ \textcolor{stringliteral}{"{}\(\backslash\)0"{}}));}
+\DoxyCodeLine{00436\ \ \ EXPECT\_FALSE(IsInSet(\textcolor{charliteral}{'\(\backslash\)0'},\ \textcolor{stringliteral}{"{}a"{}}));}
+\DoxyCodeLine{00437\ \}}
+\DoxyCodeLine{00438\ }
+\DoxyCodeLine{00439\ TEST(IsInSetTest,\ WorksForNonNulChars)\ \{}
+\DoxyCodeLine{00440\ \ \ EXPECT\_FALSE(IsInSet(\textcolor{charliteral}{'a'},\ \textcolor{stringliteral}{"{}Ab"{}}));}
+\DoxyCodeLine{00441\ \ \ EXPECT\_FALSE(IsInSet(\textcolor{charliteral}{'c'},\ \textcolor{stringliteral}{"{}"{}}));}
+\DoxyCodeLine{00442\ }
+\DoxyCodeLine{00443\ \ \ EXPECT\_TRUE(IsInSet(\textcolor{charliteral}{'b'},\ \textcolor{stringliteral}{"{}bcd"{}}));}
+\DoxyCodeLine{00444\ \ \ EXPECT\_TRUE(IsInSet(\textcolor{charliteral}{'b'},\ \textcolor{stringliteral}{"{}ab"{}}));}
+\DoxyCodeLine{00445\ \}}
+\DoxyCodeLine{00446\ }
+\DoxyCodeLine{00447\ TEST(IsAsciiDigitTest,\ IsFalseForNonDigit)\ \{}
+\DoxyCodeLine{00448\ \ \ EXPECT\_FALSE(IsAsciiDigit(\textcolor{charliteral}{'\(\backslash\)0'}));}
+\DoxyCodeLine{00449\ \ \ EXPECT\_FALSE(IsAsciiDigit(\textcolor{charliteral}{'\ '}));}
+\DoxyCodeLine{00450\ \ \ EXPECT\_FALSE(IsAsciiDigit(\textcolor{charliteral}{'+'}));}
+\DoxyCodeLine{00451\ \ \ EXPECT\_FALSE(IsAsciiDigit(\textcolor{charliteral}{'-\/'}));}
+\DoxyCodeLine{00452\ \ \ EXPECT\_FALSE(IsAsciiDigit(\textcolor{charliteral}{'.'}));}
+\DoxyCodeLine{00453\ \ \ EXPECT\_FALSE(IsAsciiDigit(\textcolor{charliteral}{'a'}));}
+\DoxyCodeLine{00454\ \}}
+\DoxyCodeLine{00455\ }
+\DoxyCodeLine{00456\ TEST(IsAsciiDigitTest,\ IsTrueForDigit)\ \{}
+\DoxyCodeLine{00457\ \ \ EXPECT\_TRUE(IsAsciiDigit(\textcolor{charliteral}{'0'}));}
+\DoxyCodeLine{00458\ \ \ EXPECT\_TRUE(IsAsciiDigit(\textcolor{charliteral}{'1'}));}
+\DoxyCodeLine{00459\ \ \ EXPECT\_TRUE(IsAsciiDigit(\textcolor{charliteral}{'5'}));}
+\DoxyCodeLine{00460\ \ \ EXPECT\_TRUE(IsAsciiDigit(\textcolor{charliteral}{'9'}));}
+\DoxyCodeLine{00461\ \}}
+\DoxyCodeLine{00462\ }
+\DoxyCodeLine{00463\ TEST(IsAsciiPunctTest,\ IsFalseForNonPunct)\ \{}
+\DoxyCodeLine{00464\ \ \ EXPECT\_FALSE(IsAsciiPunct(\textcolor{charliteral}{'\(\backslash\)0'}));}
+\DoxyCodeLine{00465\ \ \ EXPECT\_FALSE(IsAsciiPunct(\textcolor{charliteral}{'\ '}));}
+\DoxyCodeLine{00466\ \ \ EXPECT\_FALSE(IsAsciiPunct(\textcolor{charliteral}{'\(\backslash\)n'}));}
+\DoxyCodeLine{00467\ \ \ EXPECT\_FALSE(IsAsciiPunct(\textcolor{charliteral}{'a'}));}
+\DoxyCodeLine{00468\ \ \ EXPECT\_FALSE(IsAsciiPunct(\textcolor{charliteral}{'0'}));}
+\DoxyCodeLine{00469\ \}}
+\DoxyCodeLine{00470\ }
+\DoxyCodeLine{00471\ TEST(IsAsciiPunctTest,\ IsTrueForPunct)\ \{}
+\DoxyCodeLine{00472\ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ p\ =\ \textcolor{stringliteral}{"{}\string^-\/!\(\backslash\)"{}\#\$\%\&'()*+,./:;<=>?@[\(\backslash\)\(\backslash\)]\_`\{|\}\string~"{}};\ *p;\ p++)\ \{}
+\DoxyCodeLine{00473\ \ \ \ \ EXPECT\_PRED1(IsAsciiPunct,\ *p);}
+\DoxyCodeLine{00474\ \ \ \}}
+\DoxyCodeLine{00475\ \}}
+\DoxyCodeLine{00476\ }
+\DoxyCodeLine{00477\ TEST(IsRepeatTest,\ IsFalseForNonRepeatChar)\ \{}
+\DoxyCodeLine{00478\ \ \ EXPECT\_FALSE(IsRepeat(\textcolor{charliteral}{'\(\backslash\)0'}));}
+\DoxyCodeLine{00479\ \ \ EXPECT\_FALSE(IsRepeat(\textcolor{charliteral}{'\ '}));}
+\DoxyCodeLine{00480\ \ \ EXPECT\_FALSE(IsRepeat(\textcolor{charliteral}{'a'}));}
+\DoxyCodeLine{00481\ \ \ EXPECT\_FALSE(IsRepeat(\textcolor{charliteral}{'1'}));}
+\DoxyCodeLine{00482\ \ \ EXPECT\_FALSE(IsRepeat(\textcolor{charliteral}{'-\/'}));}
+\DoxyCodeLine{00483\ \}}
+\DoxyCodeLine{00484\ }
+\DoxyCodeLine{00485\ TEST(IsRepeatTest,\ IsTrueForRepeatChar)\ \{}
+\DoxyCodeLine{00486\ \ \ EXPECT\_TRUE(IsRepeat(\textcolor{charliteral}{'?'}));}
+\DoxyCodeLine{00487\ \ \ EXPECT\_TRUE(IsRepeat(\textcolor{charliteral}{'*'}));}
+\DoxyCodeLine{00488\ \ \ EXPECT\_TRUE(IsRepeat(\textcolor{charliteral}{'+'}));}
+\DoxyCodeLine{00489\ \}}
+\DoxyCodeLine{00490\ }
+\DoxyCodeLine{00491\ TEST(IsAsciiWhiteSpaceTest,\ IsFalseForNonWhiteSpace)\ \{}
+\DoxyCodeLine{00492\ \ \ EXPECT\_FALSE(IsAsciiWhiteSpace(\textcolor{charliteral}{'\(\backslash\)0'}));}
+\DoxyCodeLine{00493\ \ \ EXPECT\_FALSE(IsAsciiWhiteSpace(\textcolor{charliteral}{'a'}));}
+\DoxyCodeLine{00494\ \ \ EXPECT\_FALSE(IsAsciiWhiteSpace(\textcolor{charliteral}{'1'}));}
+\DoxyCodeLine{00495\ \ \ EXPECT\_FALSE(IsAsciiWhiteSpace(\textcolor{charliteral}{'+'}));}
+\DoxyCodeLine{00496\ \ \ EXPECT\_FALSE(IsAsciiWhiteSpace(\textcolor{charliteral}{'\_'}));}
+\DoxyCodeLine{00497\ \}}
+\DoxyCodeLine{00498\ }
+\DoxyCodeLine{00499\ TEST(IsAsciiWhiteSpaceTest,\ IsTrueForWhiteSpace)\ \{}
+\DoxyCodeLine{00500\ \ \ EXPECT\_TRUE(IsAsciiWhiteSpace(\textcolor{charliteral}{'\ '}));}
+\DoxyCodeLine{00501\ \ \ EXPECT\_TRUE(IsAsciiWhiteSpace(\textcolor{charliteral}{'\(\backslash\)n'}));}
+\DoxyCodeLine{00502\ \ \ EXPECT\_TRUE(IsAsciiWhiteSpace(\textcolor{charliteral}{'\(\backslash\)r'}));}
+\DoxyCodeLine{00503\ \ \ EXPECT\_TRUE(IsAsciiWhiteSpace(\textcolor{charliteral}{'\(\backslash\)t'}));}
+\DoxyCodeLine{00504\ \ \ EXPECT\_TRUE(IsAsciiWhiteSpace(\textcolor{charliteral}{'\(\backslash\)v'}));}
+\DoxyCodeLine{00505\ \ \ EXPECT\_TRUE(IsAsciiWhiteSpace(\textcolor{charliteral}{'\(\backslash\)f'}));}
+\DoxyCodeLine{00506\ \}}
+\DoxyCodeLine{00507\ }
+\DoxyCodeLine{00508\ TEST(IsAsciiWordCharTest,\ IsFalseForNonWordChar)\ \{}
+\DoxyCodeLine{00509\ \ \ EXPECT\_FALSE(IsAsciiWordChar(\textcolor{charliteral}{'\(\backslash\)0'}));}
+\DoxyCodeLine{00510\ \ \ EXPECT\_FALSE(IsAsciiWordChar(\textcolor{charliteral}{'+'}));}
+\DoxyCodeLine{00511\ \ \ EXPECT\_FALSE(IsAsciiWordChar(\textcolor{charliteral}{'.'}));}
+\DoxyCodeLine{00512\ \ \ EXPECT\_FALSE(IsAsciiWordChar(\textcolor{charliteral}{'\ '}));}
+\DoxyCodeLine{00513\ \ \ EXPECT\_FALSE(IsAsciiWordChar(\textcolor{charliteral}{'\(\backslash\)n'}));}
+\DoxyCodeLine{00514\ \}}
+\DoxyCodeLine{00515\ }
+\DoxyCodeLine{00516\ TEST(IsAsciiWordCharTest,\ IsTrueForLetter)\ \{}
+\DoxyCodeLine{00517\ \ \ EXPECT\_TRUE(IsAsciiWordChar(\textcolor{charliteral}{'a'}));}
+\DoxyCodeLine{00518\ \ \ EXPECT\_TRUE(IsAsciiWordChar(\textcolor{charliteral}{'b'}));}
+\DoxyCodeLine{00519\ \ \ EXPECT\_TRUE(IsAsciiWordChar(\textcolor{charliteral}{'A'}));}
+\DoxyCodeLine{00520\ \ \ EXPECT\_TRUE(IsAsciiWordChar(\textcolor{charliteral}{'Z'}));}
+\DoxyCodeLine{00521\ \}}
+\DoxyCodeLine{00522\ }
+\DoxyCodeLine{00523\ TEST(IsAsciiWordCharTest,\ IsTrueForDigit)\ \{}
+\DoxyCodeLine{00524\ \ \ EXPECT\_TRUE(IsAsciiWordChar(\textcolor{charliteral}{'0'}));}
+\DoxyCodeLine{00525\ \ \ EXPECT\_TRUE(IsAsciiWordChar(\textcolor{charliteral}{'1'}));}
+\DoxyCodeLine{00526\ \ \ EXPECT\_TRUE(IsAsciiWordChar(\textcolor{charliteral}{'7'}));}
+\DoxyCodeLine{00527\ \ \ EXPECT\_TRUE(IsAsciiWordChar(\textcolor{charliteral}{'9'}));}
+\DoxyCodeLine{00528\ \}}
+\DoxyCodeLine{00529\ }
+\DoxyCodeLine{00530\ TEST(IsAsciiWordCharTest,\ IsTrueForUnderscore)\ \{}
+\DoxyCodeLine{00531\ \ \ EXPECT\_TRUE(IsAsciiWordChar(\textcolor{charliteral}{'\_'}));}
+\DoxyCodeLine{00532\ \}}
+\DoxyCodeLine{00533\ }
+\DoxyCodeLine{00534\ TEST(IsValidEscapeTest,\ IsFalseForNonPrintable)\ \{}
+\DoxyCodeLine{00535\ \ \ EXPECT\_FALSE(IsValidEscape(\textcolor{charliteral}{'\(\backslash\)0'}));}
+\DoxyCodeLine{00536\ \ \ EXPECT\_FALSE(IsValidEscape(\textcolor{charliteral}{'\(\backslash\)007'}));}
+\DoxyCodeLine{00537\ \}}
+\DoxyCodeLine{00538\ }
+\DoxyCodeLine{00539\ TEST(IsValidEscapeTest,\ IsFalseForDigit)\ \{}
+\DoxyCodeLine{00540\ \ \ EXPECT\_FALSE(IsValidEscape(\textcolor{charliteral}{'0'}));}
+\DoxyCodeLine{00541\ \ \ EXPECT\_FALSE(IsValidEscape(\textcolor{charliteral}{'9'}));}
+\DoxyCodeLine{00542\ \}}
+\DoxyCodeLine{00543\ }
+\DoxyCodeLine{00544\ TEST(IsValidEscapeTest,\ IsFalseForWhiteSpace)\ \{}
+\DoxyCodeLine{00545\ \ \ EXPECT\_FALSE(IsValidEscape(\textcolor{charliteral}{'\ '}));}
+\DoxyCodeLine{00546\ \ \ EXPECT\_FALSE(IsValidEscape(\textcolor{charliteral}{'\(\backslash\)n'}));}
+\DoxyCodeLine{00547\ \}}
+\DoxyCodeLine{00548\ }
+\DoxyCodeLine{00549\ TEST(IsValidEscapeTest,\ IsFalseForSomeLetter)\ \{}
+\DoxyCodeLine{00550\ \ \ EXPECT\_FALSE(IsValidEscape(\textcolor{charliteral}{'a'}));}
+\DoxyCodeLine{00551\ \ \ EXPECT\_FALSE(IsValidEscape(\textcolor{charliteral}{'Z'}));}
+\DoxyCodeLine{00552\ \}}
+\DoxyCodeLine{00553\ }
+\DoxyCodeLine{00554\ TEST(IsValidEscapeTest,\ IsTrueForPunct)\ \{}
+\DoxyCodeLine{00555\ \ \ EXPECT\_TRUE(IsValidEscape(\textcolor{charliteral}{'.'}));}
+\DoxyCodeLine{00556\ \ \ EXPECT\_TRUE(IsValidEscape(\textcolor{charliteral}{'-\/'}));}
+\DoxyCodeLine{00557\ \ \ EXPECT\_TRUE(IsValidEscape(\textcolor{charliteral}{'\string^'}));}
+\DoxyCodeLine{00558\ \ \ EXPECT\_TRUE(IsValidEscape(\textcolor{charliteral}{'\$'}));}
+\DoxyCodeLine{00559\ \ \ EXPECT\_TRUE(IsValidEscape(\textcolor{charliteral}{'('}));}
+\DoxyCodeLine{00560\ \ \ EXPECT\_TRUE(IsValidEscape(\textcolor{charliteral}{']'}));}
+\DoxyCodeLine{00561\ \ \ EXPECT\_TRUE(IsValidEscape(\textcolor{charliteral}{'\{'}));}
+\DoxyCodeLine{00562\ \ \ EXPECT\_TRUE(IsValidEscape(\textcolor{charliteral}{'|'}));}
+\DoxyCodeLine{00563\ \}}
+\DoxyCodeLine{00564\ }
+\DoxyCodeLine{00565\ TEST(IsValidEscapeTest,\ IsTrueForSomeLetter)\ \{}
+\DoxyCodeLine{00566\ \ \ EXPECT\_TRUE(IsValidEscape(\textcolor{charliteral}{'d'}));}
+\DoxyCodeLine{00567\ \ \ EXPECT\_TRUE(IsValidEscape(\textcolor{charliteral}{'D'}));}
+\DoxyCodeLine{00568\ \ \ EXPECT\_TRUE(IsValidEscape(\textcolor{charliteral}{'s'}));}
+\DoxyCodeLine{00569\ \ \ EXPECT\_TRUE(IsValidEscape(\textcolor{charliteral}{'S'}));}
+\DoxyCodeLine{00570\ \ \ EXPECT\_TRUE(IsValidEscape(\textcolor{charliteral}{'w'}));}
+\DoxyCodeLine{00571\ \ \ EXPECT\_TRUE(IsValidEscape(\textcolor{charliteral}{'W'}));}
+\DoxyCodeLine{00572\ \}}
+\DoxyCodeLine{00573\ }
+\DoxyCodeLine{00574\ TEST(AtomMatchesCharTest,\ EscapedPunct)\ \{}
+\DoxyCodeLine{00575\ \ \ EXPECT\_FALSE(AtomMatchesChar(\textcolor{keyword}{true},\ \textcolor{charliteral}{'\(\backslash\)\(\backslash\)'},\ \textcolor{charliteral}{'\(\backslash\)0'}));}
+\DoxyCodeLine{00576\ \ \ EXPECT\_FALSE(AtomMatchesChar(\textcolor{keyword}{true},\ \textcolor{charliteral}{'\(\backslash\)\(\backslash\)'},\ \textcolor{charliteral}{'\ '}));}
+\DoxyCodeLine{00577\ \ \ EXPECT\_FALSE(AtomMatchesChar(\textcolor{keyword}{true},\ \textcolor{charliteral}{'\_'},\ \textcolor{charliteral}{'.'}));}
+\DoxyCodeLine{00578\ \ \ EXPECT\_FALSE(AtomMatchesChar(\textcolor{keyword}{true},\ \textcolor{charliteral}{'.'},\ \textcolor{charliteral}{'a'}));}
+\DoxyCodeLine{00579\ }
+\DoxyCodeLine{00580\ \ \ EXPECT\_TRUE(AtomMatchesChar(\textcolor{keyword}{true},\ \textcolor{charliteral}{'\(\backslash\)\(\backslash\)'},\ \textcolor{charliteral}{'\(\backslash\)\(\backslash\)'}));}
+\DoxyCodeLine{00581\ \ \ EXPECT\_TRUE(AtomMatchesChar(\textcolor{keyword}{true},\ \textcolor{charliteral}{'\_'},\ \textcolor{charliteral}{'\_'}));}
+\DoxyCodeLine{00582\ \ \ EXPECT\_TRUE(AtomMatchesChar(\textcolor{keyword}{true},\ \textcolor{charliteral}{'+'},\ \textcolor{charliteral}{'+'}));}
+\DoxyCodeLine{00583\ \ \ EXPECT\_TRUE(AtomMatchesChar(\textcolor{keyword}{true},\ \textcolor{charliteral}{'.'},\ \textcolor{charliteral}{'.'}));}
+\DoxyCodeLine{00584\ \}}
+\DoxyCodeLine{00585\ }
+\DoxyCodeLine{00586\ TEST(AtomMatchesCharTest,\ Escaped\_d)\ \{}
+\DoxyCodeLine{00587\ \ \ EXPECT\_FALSE(AtomMatchesChar(\textcolor{keyword}{true},\ \textcolor{charliteral}{'d'},\ \textcolor{charliteral}{'\(\backslash\)0'}));}
+\DoxyCodeLine{00588\ \ \ EXPECT\_FALSE(AtomMatchesChar(\textcolor{keyword}{true},\ \textcolor{charliteral}{'d'},\ \textcolor{charliteral}{'a'}));}
+\DoxyCodeLine{00589\ \ \ EXPECT\_FALSE(AtomMatchesChar(\textcolor{keyword}{true},\ \textcolor{charliteral}{'d'},\ \textcolor{charliteral}{'.'}));}
+\DoxyCodeLine{00590\ }
+\DoxyCodeLine{00591\ \ \ EXPECT\_TRUE(AtomMatchesChar(\textcolor{keyword}{true},\ \textcolor{charliteral}{'d'},\ \textcolor{charliteral}{'0'}));}
+\DoxyCodeLine{00592\ \ \ EXPECT\_TRUE(AtomMatchesChar(\textcolor{keyword}{true},\ \textcolor{charliteral}{'d'},\ \textcolor{charliteral}{'9'}));}
+\DoxyCodeLine{00593\ \}}
+\DoxyCodeLine{00594\ }
+\DoxyCodeLine{00595\ TEST(AtomMatchesCharTest,\ Escaped\_D)\ \{}
+\DoxyCodeLine{00596\ \ \ EXPECT\_FALSE(AtomMatchesChar(\textcolor{keyword}{true},\ \textcolor{charliteral}{'D'},\ \textcolor{charliteral}{'0'}));}
+\DoxyCodeLine{00597\ \ \ EXPECT\_FALSE(AtomMatchesChar(\textcolor{keyword}{true},\ \textcolor{charliteral}{'D'},\ \textcolor{charliteral}{'9'}));}
+\DoxyCodeLine{00598\ }
+\DoxyCodeLine{00599\ \ \ EXPECT\_TRUE(AtomMatchesChar(\textcolor{keyword}{true},\ \textcolor{charliteral}{'D'},\ \textcolor{charliteral}{'\(\backslash\)0'}));}
+\DoxyCodeLine{00600\ \ \ EXPECT\_TRUE(AtomMatchesChar(\textcolor{keyword}{true},\ \textcolor{charliteral}{'D'},\ \textcolor{charliteral}{'a'}));}
+\DoxyCodeLine{00601\ \ \ EXPECT\_TRUE(AtomMatchesChar(\textcolor{keyword}{true},\ \textcolor{charliteral}{'D'},\ \textcolor{charliteral}{'-\/'}));}
+\DoxyCodeLine{00602\ \}}
+\DoxyCodeLine{00603\ }
+\DoxyCodeLine{00604\ TEST(AtomMatchesCharTest,\ Escaped\_s)\ \{}
+\DoxyCodeLine{00605\ \ \ EXPECT\_FALSE(AtomMatchesChar(\textcolor{keyword}{true},\ \textcolor{charliteral}{'s'},\ \textcolor{charliteral}{'\(\backslash\)0'}));}
+\DoxyCodeLine{00606\ \ \ EXPECT\_FALSE(AtomMatchesChar(\textcolor{keyword}{true},\ \textcolor{charliteral}{'s'},\ \textcolor{charliteral}{'a'}));}
+\DoxyCodeLine{00607\ \ \ EXPECT\_FALSE(AtomMatchesChar(\textcolor{keyword}{true},\ \textcolor{charliteral}{'s'},\ \textcolor{charliteral}{'.'}));}
+\DoxyCodeLine{00608\ \ \ EXPECT\_FALSE(AtomMatchesChar(\textcolor{keyword}{true},\ \textcolor{charliteral}{'s'},\ \textcolor{charliteral}{'9'}));}
+\DoxyCodeLine{00609\ }
+\DoxyCodeLine{00610\ \ \ EXPECT\_TRUE(AtomMatchesChar(\textcolor{keyword}{true},\ \textcolor{charliteral}{'s'},\ \textcolor{charliteral}{'\ '}));}
+\DoxyCodeLine{00611\ \ \ EXPECT\_TRUE(AtomMatchesChar(\textcolor{keyword}{true},\ \textcolor{charliteral}{'s'},\ \textcolor{charliteral}{'\(\backslash\)n'}));}
+\DoxyCodeLine{00612\ \ \ EXPECT\_TRUE(AtomMatchesChar(\textcolor{keyword}{true},\ \textcolor{charliteral}{'s'},\ \textcolor{charliteral}{'\(\backslash\)t'}));}
+\DoxyCodeLine{00613\ \}}
+\DoxyCodeLine{00614\ }
+\DoxyCodeLine{00615\ TEST(AtomMatchesCharTest,\ Escaped\_S)\ \{}
+\DoxyCodeLine{00616\ \ \ EXPECT\_FALSE(AtomMatchesChar(\textcolor{keyword}{true},\ \textcolor{charliteral}{'S'},\ \textcolor{charliteral}{'\ '}));}
+\DoxyCodeLine{00617\ \ \ EXPECT\_FALSE(AtomMatchesChar(\textcolor{keyword}{true},\ \textcolor{charliteral}{'S'},\ \textcolor{charliteral}{'\(\backslash\)r'}));}
+\DoxyCodeLine{00618\ }
+\DoxyCodeLine{00619\ \ \ EXPECT\_TRUE(AtomMatchesChar(\textcolor{keyword}{true},\ \textcolor{charliteral}{'S'},\ \textcolor{charliteral}{'\(\backslash\)0'}));}
+\DoxyCodeLine{00620\ \ \ EXPECT\_TRUE(AtomMatchesChar(\textcolor{keyword}{true},\ \textcolor{charliteral}{'S'},\ \textcolor{charliteral}{'a'}));}
+\DoxyCodeLine{00621\ \ \ EXPECT\_TRUE(AtomMatchesChar(\textcolor{keyword}{true},\ \textcolor{charliteral}{'S'},\ \textcolor{charliteral}{'9'}));}
+\DoxyCodeLine{00622\ \}}
+\DoxyCodeLine{00623\ }
+\DoxyCodeLine{00624\ TEST(AtomMatchesCharTest,\ Escaped\_w)\ \{}
+\DoxyCodeLine{00625\ \ \ EXPECT\_FALSE(AtomMatchesChar(\textcolor{keyword}{true},\ \textcolor{charliteral}{'w'},\ \textcolor{charliteral}{'\(\backslash\)0'}));}
+\DoxyCodeLine{00626\ \ \ EXPECT\_FALSE(AtomMatchesChar(\textcolor{keyword}{true},\ \textcolor{charliteral}{'w'},\ \textcolor{charliteral}{'+'}));}
+\DoxyCodeLine{00627\ \ \ EXPECT\_FALSE(AtomMatchesChar(\textcolor{keyword}{true},\ \textcolor{charliteral}{'w'},\ \textcolor{charliteral}{'\ '}));}
+\DoxyCodeLine{00628\ \ \ EXPECT\_FALSE(AtomMatchesChar(\textcolor{keyword}{true},\ \textcolor{charliteral}{'w'},\ \textcolor{charliteral}{'\(\backslash\)n'}));}
+\DoxyCodeLine{00629\ }
+\DoxyCodeLine{00630\ \ \ EXPECT\_TRUE(AtomMatchesChar(\textcolor{keyword}{true},\ \textcolor{charliteral}{'w'},\ \textcolor{charliteral}{'0'}));}
+\DoxyCodeLine{00631\ \ \ EXPECT\_TRUE(AtomMatchesChar(\textcolor{keyword}{true},\ \textcolor{charliteral}{'w'},\ \textcolor{charliteral}{'b'}));}
+\DoxyCodeLine{00632\ \ \ EXPECT\_TRUE(AtomMatchesChar(\textcolor{keyword}{true},\ \textcolor{charliteral}{'w'},\ \textcolor{charliteral}{'C'}));}
+\DoxyCodeLine{00633\ \ \ EXPECT\_TRUE(AtomMatchesChar(\textcolor{keyword}{true},\ \textcolor{charliteral}{'w'},\ \textcolor{charliteral}{'\_'}));}
+\DoxyCodeLine{00634\ \}}
+\DoxyCodeLine{00635\ }
+\DoxyCodeLine{00636\ TEST(AtomMatchesCharTest,\ Escaped\_W)\ \{}
+\DoxyCodeLine{00637\ \ \ EXPECT\_FALSE(AtomMatchesChar(\textcolor{keyword}{true},\ \textcolor{charliteral}{'W'},\ \textcolor{charliteral}{'A'}));}
+\DoxyCodeLine{00638\ \ \ EXPECT\_FALSE(AtomMatchesChar(\textcolor{keyword}{true},\ \textcolor{charliteral}{'W'},\ \textcolor{charliteral}{'b'}));}
+\DoxyCodeLine{00639\ \ \ EXPECT\_FALSE(AtomMatchesChar(\textcolor{keyword}{true},\ \textcolor{charliteral}{'W'},\ \textcolor{charliteral}{'9'}));}
+\DoxyCodeLine{00640\ \ \ EXPECT\_FALSE(AtomMatchesChar(\textcolor{keyword}{true},\ \textcolor{charliteral}{'W'},\ \textcolor{charliteral}{'\_'}));}
+\DoxyCodeLine{00641\ }
+\DoxyCodeLine{00642\ \ \ EXPECT\_TRUE(AtomMatchesChar(\textcolor{keyword}{true},\ \textcolor{charliteral}{'W'},\ \textcolor{charliteral}{'\(\backslash\)0'}));}
+\DoxyCodeLine{00643\ \ \ EXPECT\_TRUE(AtomMatchesChar(\textcolor{keyword}{true},\ \textcolor{charliteral}{'W'},\ \textcolor{charliteral}{'*'}));}
+\DoxyCodeLine{00644\ \ \ EXPECT\_TRUE(AtomMatchesChar(\textcolor{keyword}{true},\ \textcolor{charliteral}{'W'},\ \textcolor{charliteral}{'\(\backslash\)n'}));}
+\DoxyCodeLine{00645\ \}}
+\DoxyCodeLine{00646\ }
+\DoxyCodeLine{00647\ TEST(AtomMatchesCharTest,\ EscapedWhiteSpace)\ \{}
+\DoxyCodeLine{00648\ \ \ EXPECT\_FALSE(AtomMatchesChar(\textcolor{keyword}{true},\ \textcolor{charliteral}{'f'},\ \textcolor{charliteral}{'\(\backslash\)0'}));}
+\DoxyCodeLine{00649\ \ \ EXPECT\_FALSE(AtomMatchesChar(\textcolor{keyword}{true},\ \textcolor{charliteral}{'f'},\ \textcolor{charliteral}{'\(\backslash\)n'}));}
+\DoxyCodeLine{00650\ \ \ EXPECT\_FALSE(AtomMatchesChar(\textcolor{keyword}{true},\ \textcolor{charliteral}{'n'},\ \textcolor{charliteral}{'\(\backslash\)0'}));}
+\DoxyCodeLine{00651\ \ \ EXPECT\_FALSE(AtomMatchesChar(\textcolor{keyword}{true},\ \textcolor{charliteral}{'n'},\ \textcolor{charliteral}{'\(\backslash\)r'}));}
+\DoxyCodeLine{00652\ \ \ EXPECT\_FALSE(AtomMatchesChar(\textcolor{keyword}{true},\ \textcolor{charliteral}{'r'},\ \textcolor{charliteral}{'\(\backslash\)0'}));}
+\DoxyCodeLine{00653\ \ \ EXPECT\_FALSE(AtomMatchesChar(\textcolor{keyword}{true},\ \textcolor{charliteral}{'r'},\ \textcolor{charliteral}{'a'}));}
+\DoxyCodeLine{00654\ \ \ EXPECT\_FALSE(AtomMatchesChar(\textcolor{keyword}{true},\ \textcolor{charliteral}{'t'},\ \textcolor{charliteral}{'\(\backslash\)0'}));}
+\DoxyCodeLine{00655\ \ \ EXPECT\_FALSE(AtomMatchesChar(\textcolor{keyword}{true},\ \textcolor{charliteral}{'t'},\ \textcolor{charliteral}{'t'}));}
+\DoxyCodeLine{00656\ \ \ EXPECT\_FALSE(AtomMatchesChar(\textcolor{keyword}{true},\ \textcolor{charliteral}{'v'},\ \textcolor{charliteral}{'\(\backslash\)0'}));}
+\DoxyCodeLine{00657\ \ \ EXPECT\_FALSE(AtomMatchesChar(\textcolor{keyword}{true},\ \textcolor{charliteral}{'v'},\ \textcolor{charliteral}{'\(\backslash\)f'}));}
+\DoxyCodeLine{00658\ }
+\DoxyCodeLine{00659\ \ \ EXPECT\_TRUE(AtomMatchesChar(\textcolor{keyword}{true},\ \textcolor{charliteral}{'f'},\ \textcolor{charliteral}{'\(\backslash\)f'}));}
+\DoxyCodeLine{00660\ \ \ EXPECT\_TRUE(AtomMatchesChar(\textcolor{keyword}{true},\ \textcolor{charliteral}{'n'},\ \textcolor{charliteral}{'\(\backslash\)n'}));}
+\DoxyCodeLine{00661\ \ \ EXPECT\_TRUE(AtomMatchesChar(\textcolor{keyword}{true},\ \textcolor{charliteral}{'r'},\ \textcolor{charliteral}{'\(\backslash\)r'}));}
+\DoxyCodeLine{00662\ \ \ EXPECT\_TRUE(AtomMatchesChar(\textcolor{keyword}{true},\ \textcolor{charliteral}{'t'},\ \textcolor{charliteral}{'\(\backslash\)t'}));}
+\DoxyCodeLine{00663\ \ \ EXPECT\_TRUE(AtomMatchesChar(\textcolor{keyword}{true},\ \textcolor{charliteral}{'v'},\ \textcolor{charliteral}{'\(\backslash\)v'}));}
+\DoxyCodeLine{00664\ \}}
+\DoxyCodeLine{00665\ }
+\DoxyCodeLine{00666\ TEST(AtomMatchesCharTest,\ UnescapedDot)\ \{}
+\DoxyCodeLine{00667\ \ \ EXPECT\_FALSE(AtomMatchesChar(\textcolor{keyword}{false},\ \textcolor{charliteral}{'.'},\ \textcolor{charliteral}{'\(\backslash\)n'}));}
+\DoxyCodeLine{00668\ }
+\DoxyCodeLine{00669\ \ \ EXPECT\_TRUE(AtomMatchesChar(\textcolor{keyword}{false},\ \textcolor{charliteral}{'.'},\ \textcolor{charliteral}{'\(\backslash\)0'}));}
+\DoxyCodeLine{00670\ \ \ EXPECT\_TRUE(AtomMatchesChar(\textcolor{keyword}{false},\ \textcolor{charliteral}{'.'},\ \textcolor{charliteral}{'.'}));}
+\DoxyCodeLine{00671\ \ \ EXPECT\_TRUE(AtomMatchesChar(\textcolor{keyword}{false},\ \textcolor{charliteral}{'.'},\ \textcolor{charliteral}{'a'}));}
+\DoxyCodeLine{00672\ \ \ EXPECT\_TRUE(AtomMatchesChar(\textcolor{keyword}{false},\ \textcolor{charliteral}{'.'},\ \textcolor{charliteral}{'\ '}));}
+\DoxyCodeLine{00673\ \}}
+\DoxyCodeLine{00674\ }
+\DoxyCodeLine{00675\ TEST(AtomMatchesCharTest,\ UnescapedChar)\ \{}
+\DoxyCodeLine{00676\ \ \ EXPECT\_FALSE(AtomMatchesChar(\textcolor{keyword}{false},\ \textcolor{charliteral}{'a'},\ \textcolor{charliteral}{'\(\backslash\)0'}));}
+\DoxyCodeLine{00677\ \ \ EXPECT\_FALSE(AtomMatchesChar(\textcolor{keyword}{false},\ \textcolor{charliteral}{'a'},\ \textcolor{charliteral}{'b'}));}
+\DoxyCodeLine{00678\ \ \ EXPECT\_FALSE(AtomMatchesChar(\textcolor{keyword}{false},\ \textcolor{charliteral}{'\$'},\ \textcolor{charliteral}{'a'}));}
+\DoxyCodeLine{00679\ }
+\DoxyCodeLine{00680\ \ \ EXPECT\_TRUE(AtomMatchesChar(\textcolor{keyword}{false},\ \textcolor{charliteral}{'\$'},\ \textcolor{charliteral}{'\$'}));}
+\DoxyCodeLine{00681\ \ \ EXPECT\_TRUE(AtomMatchesChar(\textcolor{keyword}{false},\ \textcolor{charliteral}{'5'},\ \textcolor{charliteral}{'5'}));}
+\DoxyCodeLine{00682\ \ \ EXPECT\_TRUE(AtomMatchesChar(\textcolor{keyword}{false},\ \textcolor{charliteral}{'Z'},\ \textcolor{charliteral}{'Z'}));}
+\DoxyCodeLine{00683\ \}}
+\DoxyCodeLine{00684\ }
+\DoxyCodeLine{00685\ TEST(ValidateRegexTest,\ GeneratesFailureAndReturnsFalseForInvalid)\ \{}
+\DoxyCodeLine{00686\ \ \ EXPECT\_NONFATAL\_FAILURE(ASSERT\_FALSE(ValidateRegex(NULL)),}
+\DoxyCodeLine{00687\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}NULL\ is\ not\ a\ valid\ simple\ regular\ expression"{}});}
+\DoxyCodeLine{00688\ \ \ EXPECT\_NONFATAL\_FAILURE(}
+\DoxyCodeLine{00689\ \ \ \ \ \ \ ASSERT\_FALSE(ValidateRegex(\textcolor{stringliteral}{"{}a\(\backslash\)\(\backslash\)"{}})),}
+\DoxyCodeLine{00690\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}Syntax\ error\ at\ index\ 1\ in\ simple\ regular\ expression\ \(\backslash\)"{}a\(\backslash\)\(\backslash\)\(\backslash\)"{}:\ "{}});}
+\DoxyCodeLine{00691\ \ \ EXPECT\_NONFATAL\_FAILURE(ASSERT\_FALSE(ValidateRegex(\textcolor{stringliteral}{"{}a\(\backslash\)\(\backslash\)"{}})),}
+\DoxyCodeLine{00692\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}'\(\backslash\)\(\backslash\)'\ cannot\ appear\ at\ the\ end"{}});}
+\DoxyCodeLine{00693\ \ \ EXPECT\_NONFATAL\_FAILURE(ASSERT\_FALSE(ValidateRegex(\textcolor{stringliteral}{"{}\(\backslash\)\(\backslash\)n\(\backslash\)\(\backslash\)"{}})),}
+\DoxyCodeLine{00694\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}'\(\backslash\)\(\backslash\)'\ cannot\ appear\ at\ the\ end"{}});}
+\DoxyCodeLine{00695\ \ \ EXPECT\_NONFATAL\_FAILURE(ASSERT\_FALSE(ValidateRegex(\textcolor{stringliteral}{"{}\(\backslash\)\(\backslash\)s\(\backslash\)\(\backslash\)hb"{}})),}
+\DoxyCodeLine{00696\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}invalid\ escape\ sequence\ \(\backslash\)"{}\(\backslash\)\(\backslash\)h\(\backslash\)"{}"{}});}
+\DoxyCodeLine{00697\ \ \ EXPECT\_NONFATAL\_FAILURE(ASSERT\_FALSE(ValidateRegex(\textcolor{stringliteral}{"{}\string^\string^"{}})),}
+\DoxyCodeLine{00698\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}'\string^'\ can\ only\ appear\ at\ the\ beginning"{}});}
+\DoxyCodeLine{00699\ \ \ EXPECT\_NONFATAL\_FAILURE(ASSERT\_FALSE(ValidateRegex(\textcolor{stringliteral}{"{}.*\string^b"{}})),}
+\DoxyCodeLine{00700\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}'\string^'\ can\ only\ appear\ at\ the\ beginning"{}});}
+\DoxyCodeLine{00701\ \ \ EXPECT\_NONFATAL\_FAILURE(ASSERT\_FALSE(ValidateRegex(\textcolor{stringliteral}{"{}\$\$"{}})),}
+\DoxyCodeLine{00702\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}'\$'\ can\ only\ appear\ at\ the\ end"{}});}
+\DoxyCodeLine{00703\ \ \ EXPECT\_NONFATAL\_FAILURE(ASSERT\_FALSE(ValidateRegex(\textcolor{stringliteral}{"{}\string^\$a"{}})),}
+\DoxyCodeLine{00704\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}'\$'\ can\ only\ appear\ at\ the\ end"{}});}
+\DoxyCodeLine{00705\ \ \ EXPECT\_NONFATAL\_FAILURE(ASSERT\_FALSE(ValidateRegex(\textcolor{stringliteral}{"{}a(b"{}})),}
+\DoxyCodeLine{00706\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}'('\ is\ unsupported"{}});}
+\DoxyCodeLine{00707\ \ \ EXPECT\_NONFATAL\_FAILURE(ASSERT\_FALSE(ValidateRegex(\textcolor{stringliteral}{"{}ab)"{}})),}
+\DoxyCodeLine{00708\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}')'\ is\ unsupported"{}});}
+\DoxyCodeLine{00709\ \ \ EXPECT\_NONFATAL\_FAILURE(ASSERT\_FALSE(ValidateRegex(\textcolor{stringliteral}{"{}[ab"{}})),}
+\DoxyCodeLine{00710\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}'['\ is\ unsupported"{}});}
+\DoxyCodeLine{00711\ \ \ EXPECT\_NONFATAL\_FAILURE(ASSERT\_FALSE(ValidateRegex(\textcolor{stringliteral}{"{}a\{2"{}})),}
+\DoxyCodeLine{00712\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}'\{'\ is\ unsupported"{}});}
+\DoxyCodeLine{00713\ \ \ EXPECT\_NONFATAL\_FAILURE(ASSERT\_FALSE(ValidateRegex(\textcolor{stringliteral}{"{}?"{}})),}
+\DoxyCodeLine{00714\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}'?'\ can\ only\ follow\ a\ repeatable\ token"{}});}
+\DoxyCodeLine{00715\ \ \ EXPECT\_NONFATAL\_FAILURE(ASSERT\_FALSE(ValidateRegex(\textcolor{stringliteral}{"{}\string^*"{}})),}
+\DoxyCodeLine{00716\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}'*'\ can\ only\ follow\ a\ repeatable\ token"{}});}
+\DoxyCodeLine{00717\ \ \ EXPECT\_NONFATAL\_FAILURE(ASSERT\_FALSE(ValidateRegex(\textcolor{stringliteral}{"{}5*+"{}})),}
+\DoxyCodeLine{00718\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}'+'\ can\ only\ follow\ a\ repeatable\ token"{}});}
+\DoxyCodeLine{00719\ \}}
+\DoxyCodeLine{00720\ }
+\DoxyCodeLine{00721\ TEST(ValidateRegexTest,\ ReturnsTrueForValid)\ \{}
+\DoxyCodeLine{00722\ \ \ EXPECT\_TRUE(ValidateRegex(\textcolor{stringliteral}{"{}"{}}));}
+\DoxyCodeLine{00723\ \ \ EXPECT\_TRUE(ValidateRegex(\textcolor{stringliteral}{"{}a"{}}));}
+\DoxyCodeLine{00724\ \ \ EXPECT\_TRUE(ValidateRegex(\textcolor{stringliteral}{"{}.*"{}}));}
+\DoxyCodeLine{00725\ \ \ EXPECT\_TRUE(ValidateRegex(\textcolor{stringliteral}{"{}\string^a\_+"{}}));}
+\DoxyCodeLine{00726\ \ \ EXPECT\_TRUE(ValidateRegex(\textcolor{stringliteral}{"{}\string^a\(\backslash\)\(\backslash\)t\(\backslash\)\(\backslash\)\&?"{}}));}
+\DoxyCodeLine{00727\ \ \ EXPECT\_TRUE(ValidateRegex(\textcolor{stringliteral}{"{}09*\$"{}}));}
+\DoxyCodeLine{00728\ \ \ EXPECT\_TRUE(ValidateRegex(\textcolor{stringliteral}{"{}\string^Z\$"{}}));}
+\DoxyCodeLine{00729\ \ \ EXPECT\_TRUE(ValidateRegex(\textcolor{stringliteral}{"{}a\(\backslash\)\(\backslash\)\string^Z\(\backslash\)\(\backslash\)\$\(\backslash\)\(\backslash\)(\(\backslash\)\(\backslash\))\(\backslash\)\(\backslash\)|\(\backslash\)\(\backslash\)[\(\backslash\)\(\backslash\)]\(\backslash\)\(\backslash\)\{\(\backslash\)\(\backslash\)\}"{}}));}
+\DoxyCodeLine{00730\ \}}
+\DoxyCodeLine{00731\ }
+\DoxyCodeLine{00732\ TEST(MatchRepetitionAndRegexAtHeadTest,\ WorksForZeroOrOne)\ \{}
+\DoxyCodeLine{00733\ \ \ EXPECT\_FALSE(MatchRepetitionAndRegexAtHead(\textcolor{keyword}{false},\ \textcolor{charliteral}{'a'},\ \textcolor{charliteral}{'?'},\ \textcolor{stringliteral}{"{}a"{}},\ \textcolor{stringliteral}{"{}ba"{}}));}
+\DoxyCodeLine{00734\ \ \ \textcolor{comment}{//\ Repeating\ more\ than\ once.}}
+\DoxyCodeLine{00735\ \ \ EXPECT\_FALSE(MatchRepetitionAndRegexAtHead(\textcolor{keyword}{false},\ \textcolor{charliteral}{'a'},\ \textcolor{charliteral}{'?'},\ \textcolor{stringliteral}{"{}b"{}},\ \textcolor{stringliteral}{"{}aab"{}}));}
+\DoxyCodeLine{00736\ }
+\DoxyCodeLine{00737\ \ \ \textcolor{comment}{//\ Repeating\ zero\ times.}}
+\DoxyCodeLine{00738\ \ \ EXPECT\_TRUE(MatchRepetitionAndRegexAtHead(\textcolor{keyword}{false},\ \textcolor{charliteral}{'a'},\ \textcolor{charliteral}{'?'},\ \textcolor{stringliteral}{"{}b"{}},\ \textcolor{stringliteral}{"{}ba"{}}));}
+\DoxyCodeLine{00739\ \ \ \textcolor{comment}{//\ Repeating\ once.}}
+\DoxyCodeLine{00740\ \ \ EXPECT\_TRUE(MatchRepetitionAndRegexAtHead(\textcolor{keyword}{false},\ \textcolor{charliteral}{'a'},\ \textcolor{charliteral}{'?'},\ \textcolor{stringliteral}{"{}b"{}},\ \textcolor{stringliteral}{"{}ab"{}}));}
+\DoxyCodeLine{00741\ \ \ EXPECT\_TRUE(MatchRepetitionAndRegexAtHead(\textcolor{keyword}{false},\ \textcolor{charliteral}{'\#'},\ \textcolor{charliteral}{'?'},\ \textcolor{stringliteral}{"{}."{}},\ \textcolor{stringliteral}{"{}\#\#"{}}));}
+\DoxyCodeLine{00742\ \}}
+\DoxyCodeLine{00743\ }
+\DoxyCodeLine{00744\ TEST(MatchRepetitionAndRegexAtHeadTest,\ WorksForZeroOrMany)\ \{}
+\DoxyCodeLine{00745\ \ \ EXPECT\_FALSE(MatchRepetitionAndRegexAtHead(\textcolor{keyword}{false},\ \textcolor{charliteral}{'.'},\ \textcolor{charliteral}{'*'},\ \textcolor{stringliteral}{"{}a\$"{}},\ \textcolor{stringliteral}{"{}baab"{}}));}
+\DoxyCodeLine{00746\ }
+\DoxyCodeLine{00747\ \ \ \textcolor{comment}{//\ Repeating\ zero\ times.}}
+\DoxyCodeLine{00748\ \ \ EXPECT\_TRUE(MatchRepetitionAndRegexAtHead(\textcolor{keyword}{false},\ \textcolor{charliteral}{'.'},\ \textcolor{charliteral}{'*'},\ \textcolor{stringliteral}{"{}b"{}},\ \textcolor{stringliteral}{"{}bc"{}}));}
+\DoxyCodeLine{00749\ \ \ \textcolor{comment}{//\ Repeating\ once.}}
+\DoxyCodeLine{00750\ \ \ EXPECT\_TRUE(MatchRepetitionAndRegexAtHead(\textcolor{keyword}{false},\ \textcolor{charliteral}{'.'},\ \textcolor{charliteral}{'*'},\ \textcolor{stringliteral}{"{}b"{}},\ \textcolor{stringliteral}{"{}abc"{}}));}
+\DoxyCodeLine{00751\ \ \ \textcolor{comment}{//\ Repeating\ more\ than\ once.}}
+\DoxyCodeLine{00752\ \ \ EXPECT\_TRUE(MatchRepetitionAndRegexAtHead(\textcolor{keyword}{true},\ \textcolor{charliteral}{'w'},\ \textcolor{charliteral}{'*'},\ \textcolor{stringliteral}{"{}-\/"{}},\ \textcolor{stringliteral}{"{}ab\_1-\/g"{}}));}
+\DoxyCodeLine{00753\ \}}
+\DoxyCodeLine{00754\ }
+\DoxyCodeLine{00755\ TEST(MatchRepetitionAndRegexAtHeadTest,\ WorksForOneOrMany)\ \{}
+\DoxyCodeLine{00756\ \ \ EXPECT\_FALSE(MatchRepetitionAndRegexAtHead(\textcolor{keyword}{false},\ \textcolor{charliteral}{'.'},\ \textcolor{charliteral}{'+'},\ \textcolor{stringliteral}{"{}a\$"{}},\ \textcolor{stringliteral}{"{}baab"{}}));}
+\DoxyCodeLine{00757\ \ \ \textcolor{comment}{//\ Repeating\ zero\ times.}}
+\DoxyCodeLine{00758\ \ \ EXPECT\_FALSE(MatchRepetitionAndRegexAtHead(\textcolor{keyword}{false},\ \textcolor{charliteral}{'.'},\ \textcolor{charliteral}{'+'},\ \textcolor{stringliteral}{"{}b"{}},\ \textcolor{stringliteral}{"{}bc"{}}));}
+\DoxyCodeLine{00759\ }
+\DoxyCodeLine{00760\ \ \ \textcolor{comment}{//\ Repeating\ once.}}
+\DoxyCodeLine{00761\ \ \ EXPECT\_TRUE(MatchRepetitionAndRegexAtHead(\textcolor{keyword}{false},\ \textcolor{charliteral}{'.'},\ \textcolor{charliteral}{'+'},\ \textcolor{stringliteral}{"{}b"{}},\ \textcolor{stringliteral}{"{}abc"{}}));}
+\DoxyCodeLine{00762\ \ \ \textcolor{comment}{//\ Repeating\ more\ than\ once.}}
+\DoxyCodeLine{00763\ \ \ EXPECT\_TRUE(MatchRepetitionAndRegexAtHead(\textcolor{keyword}{true},\ \textcolor{charliteral}{'w'},\ \textcolor{charliteral}{'+'},\ \textcolor{stringliteral}{"{}-\/"{}},\ \textcolor{stringliteral}{"{}ab\_1-\/g"{}}));}
+\DoxyCodeLine{00764\ \}}
+\DoxyCodeLine{00765\ }
+\DoxyCodeLine{00766\ TEST(MatchRegexAtHeadTest,\ ReturnsTrueForEmptyRegex)\ \{}
+\DoxyCodeLine{00767\ \ \ EXPECT\_TRUE(MatchRegexAtHead(\textcolor{stringliteral}{"{}"{}},\ \textcolor{stringliteral}{"{}"{}}));}
+\DoxyCodeLine{00768\ \ \ EXPECT\_TRUE(MatchRegexAtHead(\textcolor{stringliteral}{"{}"{}},\ \textcolor{stringliteral}{"{}ab"{}}));}
+\DoxyCodeLine{00769\ \}}
+\DoxyCodeLine{00770\ }
+\DoxyCodeLine{00771\ TEST(MatchRegexAtHeadTest,\ WorksWhenDollarIsInRegex)\ \{}
+\DoxyCodeLine{00772\ \ \ EXPECT\_FALSE(MatchRegexAtHead(\textcolor{stringliteral}{"{}\$"{}},\ \textcolor{stringliteral}{"{}a"{}}));}
+\DoxyCodeLine{00773\ }
+\DoxyCodeLine{00774\ \ \ EXPECT\_TRUE(MatchRegexAtHead(\textcolor{stringliteral}{"{}\$"{}},\ \textcolor{stringliteral}{"{}"{}}));}
+\DoxyCodeLine{00775\ \ \ EXPECT\_TRUE(MatchRegexAtHead(\textcolor{stringliteral}{"{}a\$"{}},\ \textcolor{stringliteral}{"{}a"{}}));}
+\DoxyCodeLine{00776\ \}}
+\DoxyCodeLine{00777\ }
+\DoxyCodeLine{00778\ TEST(MatchRegexAtHeadTest,\ WorksWhenRegexStartsWithEscapeSequence)\ \{}
+\DoxyCodeLine{00779\ \ \ EXPECT\_FALSE(MatchRegexAtHead(\textcolor{stringliteral}{"{}\(\backslash\)\(\backslash\)w"{}},\ \textcolor{stringliteral}{"{}+"{}}));}
+\DoxyCodeLine{00780\ \ \ EXPECT\_FALSE(MatchRegexAtHead(\textcolor{stringliteral}{"{}\(\backslash\)\(\backslash\)W"{}},\ \textcolor{stringliteral}{"{}ab"{}}));}
+\DoxyCodeLine{00781\ }
+\DoxyCodeLine{00782\ \ \ EXPECT\_TRUE(MatchRegexAtHead(\textcolor{stringliteral}{"{}\(\backslash\)\(\backslash\)sa"{}},\ \textcolor{stringliteral}{"{}\(\backslash\)nab"{}}));}
+\DoxyCodeLine{00783\ \ \ EXPECT\_TRUE(MatchRegexAtHead(\textcolor{stringliteral}{"{}\(\backslash\)\(\backslash\)d"{}},\ \textcolor{stringliteral}{"{}1a"{}}));}
+\DoxyCodeLine{00784\ \}}
+\DoxyCodeLine{00785\ }
+\DoxyCodeLine{00786\ TEST(MatchRegexAtHeadTest,\ WorksWhenRegexStartsWithRepetition)\ \{}
+\DoxyCodeLine{00787\ \ \ EXPECT\_FALSE(MatchRegexAtHead(\textcolor{stringliteral}{"{}.+a"{}},\ \textcolor{stringliteral}{"{}abc"{}}));}
+\DoxyCodeLine{00788\ \ \ EXPECT\_FALSE(MatchRegexAtHead(\textcolor{stringliteral}{"{}a?b"{}},\ \textcolor{stringliteral}{"{}aab"{}}));}
+\DoxyCodeLine{00789\ }
+\DoxyCodeLine{00790\ \ \ EXPECT\_TRUE(MatchRegexAtHead(\textcolor{stringliteral}{"{}.*a"{}},\ \textcolor{stringliteral}{"{}bc12-\/ab"{}}));}
+\DoxyCodeLine{00791\ \ \ EXPECT\_TRUE(MatchRegexAtHead(\textcolor{stringliteral}{"{}a?b"{}},\ \textcolor{stringliteral}{"{}b"{}}));}
+\DoxyCodeLine{00792\ \ \ EXPECT\_TRUE(MatchRegexAtHead(\textcolor{stringliteral}{"{}a?b"{}},\ \textcolor{stringliteral}{"{}ab"{}}));}
+\DoxyCodeLine{00793\ \}}
+\DoxyCodeLine{00794\ }
+\DoxyCodeLine{00795\ TEST(MatchRegexAtHeadTest,}
+\DoxyCodeLine{00796\ \ \ \ \ \ WorksWhenRegexStartsWithRepetionOfEscapeSequence)\ \{}
+\DoxyCodeLine{00797\ \ \ EXPECT\_FALSE(MatchRegexAtHead(\textcolor{stringliteral}{"{}\(\backslash\)\(\backslash\).+a"{}},\ \textcolor{stringliteral}{"{}abc"{}}));}
+\DoxyCodeLine{00798\ \ \ EXPECT\_FALSE(MatchRegexAtHead(\textcolor{stringliteral}{"{}\(\backslash\)\(\backslash\)s?b"{}},\ \textcolor{stringliteral}{"{}\ \ b"{}}));}
+\DoxyCodeLine{00799\ }
+\DoxyCodeLine{00800\ \ \ EXPECT\_TRUE(MatchRegexAtHead(\textcolor{stringliteral}{"{}\(\backslash\)\(\backslash\)(*a"{}},\ \textcolor{stringliteral}{"{}((((ab"{}}));}
+\DoxyCodeLine{00801\ \ \ EXPECT\_TRUE(MatchRegexAtHead(\textcolor{stringliteral}{"{}\(\backslash\)\(\backslash\)\string^?b"{}},\ \textcolor{stringliteral}{"{}\string^b"{}}));}
+\DoxyCodeLine{00802\ \ \ EXPECT\_TRUE(MatchRegexAtHead(\textcolor{stringliteral}{"{}\(\backslash\)\(\backslash\)\(\backslash\)\(\backslash\)?b"{}},\ \textcolor{stringliteral}{"{}b"{}}));}
+\DoxyCodeLine{00803\ \ \ EXPECT\_TRUE(MatchRegexAtHead(\textcolor{stringliteral}{"{}\(\backslash\)\(\backslash\)\(\backslash\)\(\backslash\)?b"{}},\ \textcolor{stringliteral}{"{}\(\backslash\)\(\backslash\)b"{}}));}
+\DoxyCodeLine{00804\ \}}
+\DoxyCodeLine{00805\ }
+\DoxyCodeLine{00806\ TEST(MatchRegexAtHeadTest,\ MatchesSequentially)\ \{}
+\DoxyCodeLine{00807\ \ \ EXPECT\_FALSE(MatchRegexAtHead(\textcolor{stringliteral}{"{}ab.*c"{}},\ \textcolor{stringliteral}{"{}acabc"{}}));}
+\DoxyCodeLine{00808\ }
+\DoxyCodeLine{00809\ \ \ EXPECT\_TRUE(MatchRegexAtHead(\textcolor{stringliteral}{"{}ab.*c"{}},\ \textcolor{stringliteral}{"{}ab-\/fsc"{}}));}
+\DoxyCodeLine{00810\ \}}
+\DoxyCodeLine{00811\ }
+\DoxyCodeLine{00812\ TEST(MatchRegexAnywhereTest,\ ReturnsFalseWhenStringIsNull)\ \{}
+\DoxyCodeLine{00813\ \ \ EXPECT\_FALSE(MatchRegexAnywhere(\textcolor{stringliteral}{"{}"{}},\ NULL));}
+\DoxyCodeLine{00814\ \}}
+\DoxyCodeLine{00815\ }
+\DoxyCodeLine{00816\ TEST(MatchRegexAnywhereTest,\ WorksWhenRegexStartsWithCaret)\ \{}
+\DoxyCodeLine{00817\ \ \ EXPECT\_FALSE(MatchRegexAnywhere(\textcolor{stringliteral}{"{}\string^a"{}},\ \textcolor{stringliteral}{"{}ba"{}}));}
+\DoxyCodeLine{00818\ \ \ EXPECT\_FALSE(MatchRegexAnywhere(\textcolor{stringliteral}{"{}\string^\$"{}},\ \textcolor{stringliteral}{"{}a"{}}));}
+\DoxyCodeLine{00819\ }
+\DoxyCodeLine{00820\ \ \ EXPECT\_TRUE(MatchRegexAnywhere(\textcolor{stringliteral}{"{}\string^a"{}},\ \textcolor{stringliteral}{"{}ab"{}}));}
+\DoxyCodeLine{00821\ \ \ EXPECT\_TRUE(MatchRegexAnywhere(\textcolor{stringliteral}{"{}\string^"{}},\ \textcolor{stringliteral}{"{}ab"{}}));}
+\DoxyCodeLine{00822\ \ \ EXPECT\_TRUE(MatchRegexAnywhere(\textcolor{stringliteral}{"{}\string^\$"{}},\ \textcolor{stringliteral}{"{}"{}}));}
+\DoxyCodeLine{00823\ \}}
+\DoxyCodeLine{00824\ }
+\DoxyCodeLine{00825\ TEST(MatchRegexAnywhereTest,\ ReturnsFalseWhenNoMatch)\ \{}
+\DoxyCodeLine{00826\ \ \ EXPECT\_FALSE(MatchRegexAnywhere(\textcolor{stringliteral}{"{}a"{}},\ \textcolor{stringliteral}{"{}bcde123"{}}));}
+\DoxyCodeLine{00827\ \ \ EXPECT\_FALSE(MatchRegexAnywhere(\textcolor{stringliteral}{"{}a.+a"{}},\ \textcolor{stringliteral}{"{}-\/-\/aa88888888"{}}));}
+\DoxyCodeLine{00828\ \}}
+\DoxyCodeLine{00829\ }
+\DoxyCodeLine{00830\ TEST(MatchRegexAnywhereTest,\ ReturnsTrueWhenMatchingPrefix)\ \{}
+\DoxyCodeLine{00831\ \ \ EXPECT\_TRUE(MatchRegexAnywhere(\textcolor{stringliteral}{"{}\(\backslash\)\(\backslash\)w+"{}},\ \textcolor{stringliteral}{"{}ab1\_\ -\/\ 5"{}}));}
+\DoxyCodeLine{00832\ \ \ EXPECT\_TRUE(MatchRegexAnywhere(\textcolor{stringliteral}{"{}.*="{}},\ \textcolor{stringliteral}{"{}="{}}));}
+\DoxyCodeLine{00833\ \ \ EXPECT\_TRUE(MatchRegexAnywhere(\textcolor{stringliteral}{"{}x.*ab?.*bc"{}},\ \textcolor{stringliteral}{"{}xaaabc"{}}));}
+\DoxyCodeLine{00834\ \}}
+\DoxyCodeLine{00835\ }
+\DoxyCodeLine{00836\ TEST(MatchRegexAnywhereTest,\ ReturnsTrueWhenMatchingNonPrefix)\ \{}
+\DoxyCodeLine{00837\ \ \ EXPECT\_TRUE(MatchRegexAnywhere(\textcolor{stringliteral}{"{}\(\backslash\)\(\backslash\)w+"{}},\ \textcolor{stringliteral}{"{}\$\$\$\ ab1\_\ -\/\ 5"{}}));}
+\DoxyCodeLine{00838\ \ \ EXPECT\_TRUE(MatchRegexAnywhere(\textcolor{stringliteral}{"{}\(\backslash\)\(\backslash\).+="{}},\ \textcolor{stringliteral}{"{}=\ \ ...="{}}));}
+\DoxyCodeLine{00839\ \}}
+\DoxyCodeLine{00840\ }
+\DoxyCodeLine{00841\ \textcolor{comment}{//\ Tests\ RE's\ implicit\ constructors.}}
+\DoxyCodeLine{00842\ TEST(RETest,\ ImplicitConstructorWorks)\ \{}
+\DoxyCodeLine{00843\ \ \ \textcolor{keyword}{const}\ RE\ empty(\textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{00844\ \ \ EXPECT\_STREQ(\textcolor{stringliteral}{"{}"{}},\ empty.pattern());}
+\DoxyCodeLine{00845\ }
+\DoxyCodeLine{00846\ \ \ \textcolor{keyword}{const}\ RE\ simple(\textcolor{stringliteral}{"{}hello"{}});}
+\DoxyCodeLine{00847\ \ \ EXPECT\_STREQ(\textcolor{stringliteral}{"{}hello"{}},\ simple.pattern());}
+\DoxyCodeLine{00848\ \}}
+\DoxyCodeLine{00849\ }
+\DoxyCodeLine{00850\ \textcolor{comment}{//\ Tests\ that\ RE's\ constructors\ reject\ invalid\ regular\ expressions.}}
+\DoxyCodeLine{00851\ TEST(RETest,\ RejectsInvalidRegex)\ \{}
+\DoxyCodeLine{00852\ \ \ EXPECT\_NONFATAL\_FAILURE(\{}
+\DoxyCodeLine{00853\ \ \ \ \ \textcolor{keyword}{const}\ RE\ normal(NULL);}
+\DoxyCodeLine{00854\ \ \ \},\ \textcolor{stringliteral}{"{}NULL\ is\ not\ a\ valid\ simple\ regular\ expression"{}});}
+\DoxyCodeLine{00855\ }
+\DoxyCodeLine{00856\ \ \ EXPECT\_NONFATAL\_FAILURE(\{}
+\DoxyCodeLine{00857\ \ \ \ \ \textcolor{keyword}{const}\ RE\ normal(\textcolor{stringliteral}{"{}.*(\(\backslash\)\(\backslash\)w+"{}});}
+\DoxyCodeLine{00858\ \ \ \},\ \textcolor{stringliteral}{"{}'('\ is\ unsupported"{}});}
+\DoxyCodeLine{00859\ }
+\DoxyCodeLine{00860\ \ \ EXPECT\_NONFATAL\_FAILURE(\{}
+\DoxyCodeLine{00861\ \ \ \ \ \textcolor{keyword}{const}\ RE\ invalid(\textcolor{stringliteral}{"{}\string^?"{}});}
+\DoxyCodeLine{00862\ \ \ \},\ \textcolor{stringliteral}{"{}'?'\ can\ only\ follow\ a\ repeatable\ token"{}});}
+\DoxyCodeLine{00863\ \}}
+\DoxyCodeLine{00864\ }
+\DoxyCodeLine{00865\ \textcolor{comment}{//\ Tests\ RE::FullMatch().}}
+\DoxyCodeLine{00866\ TEST(RETest,\ FullMatchWorks)\ \{}
+\DoxyCodeLine{00867\ \ \ \textcolor{keyword}{const}\ RE\ empty(\textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{00868\ \ \ EXPECT\_TRUE(RE::FullMatch(\textcolor{stringliteral}{"{}"{}},\ empty));}
+\DoxyCodeLine{00869\ \ \ EXPECT\_FALSE(RE::FullMatch(\textcolor{stringliteral}{"{}a"{}},\ empty));}
+\DoxyCodeLine{00870\ }
+\DoxyCodeLine{00871\ \ \ \textcolor{keyword}{const}\ RE\ re1(\textcolor{stringliteral}{"{}a"{}});}
+\DoxyCodeLine{00872\ \ \ EXPECT\_TRUE(RE::FullMatch(\textcolor{stringliteral}{"{}a"{}},\ re1));}
+\DoxyCodeLine{00873\ }
+\DoxyCodeLine{00874\ \ \ \textcolor{keyword}{const}\ RE\ re(\textcolor{stringliteral}{"{}a.*z"{}});}
+\DoxyCodeLine{00875\ \ \ EXPECT\_TRUE(RE::FullMatch(\textcolor{stringliteral}{"{}az"{}},\ re));}
+\DoxyCodeLine{00876\ \ \ EXPECT\_TRUE(RE::FullMatch(\textcolor{stringliteral}{"{}axyz"{}},\ re));}
+\DoxyCodeLine{00877\ \ \ EXPECT\_FALSE(RE::FullMatch(\textcolor{stringliteral}{"{}baz"{}},\ re));}
+\DoxyCodeLine{00878\ \ \ EXPECT\_FALSE(RE::FullMatch(\textcolor{stringliteral}{"{}azy"{}},\ re));}
+\DoxyCodeLine{00879\ \}}
+\DoxyCodeLine{00880\ }
+\DoxyCodeLine{00881\ \textcolor{comment}{//\ Tests\ RE::PartialMatch().}}
+\DoxyCodeLine{00882\ TEST(RETest,\ PartialMatchWorks)\ \{}
+\DoxyCodeLine{00883\ \ \ \textcolor{keyword}{const}\ RE\ empty(\textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{00884\ \ \ EXPECT\_TRUE(RE::PartialMatch(\textcolor{stringliteral}{"{}"{}},\ empty));}
+\DoxyCodeLine{00885\ \ \ EXPECT\_TRUE(RE::PartialMatch(\textcolor{stringliteral}{"{}a"{}},\ empty));}
+\DoxyCodeLine{00886\ }
+\DoxyCodeLine{00887\ \ \ \textcolor{keyword}{const}\ RE\ re(\textcolor{stringliteral}{"{}a.*z"{}});}
+\DoxyCodeLine{00888\ \ \ EXPECT\_TRUE(RE::PartialMatch(\textcolor{stringliteral}{"{}az"{}},\ re));}
+\DoxyCodeLine{00889\ \ \ EXPECT\_TRUE(RE::PartialMatch(\textcolor{stringliteral}{"{}axyz"{}},\ re));}
+\DoxyCodeLine{00890\ \ \ EXPECT\_TRUE(RE::PartialMatch(\textcolor{stringliteral}{"{}baz"{}},\ re));}
+\DoxyCodeLine{00891\ \ \ EXPECT\_TRUE(RE::PartialMatch(\textcolor{stringliteral}{"{}azy"{}},\ re));}
+\DoxyCodeLine{00892\ \ \ EXPECT\_FALSE(RE::PartialMatch(\textcolor{stringliteral}{"{}zza"{}},\ re));}
+\DoxyCodeLine{00893\ \}}
+\DoxyCodeLine{00894\ }
+\DoxyCodeLine{00895\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ GTEST\_USES\_POSIX\_RE}}
+\DoxyCodeLine{00896\ }
+\DoxyCodeLine{00897\ \textcolor{preprocessor}{\#if\ !GTEST\_OS\_WINDOWS\_MOBILE}}
+\DoxyCodeLine{00898\ }
+\DoxyCodeLine{00899\ TEST(CaptureTest,\ CapturesStdout)\ \{}
+\DoxyCodeLine{00900\ \ \ CaptureStdout();}
+\DoxyCodeLine{00901\ \ \ fprintf(stdout,\ \textcolor{stringliteral}{"{}abc"{}});}
+\DoxyCodeLine{00902\ \ \ EXPECT\_STREQ(\textcolor{stringliteral}{"{}abc"{}},\ GetCapturedStdout().c\_str());}
+\DoxyCodeLine{00903\ }
+\DoxyCodeLine{00904\ \ \ CaptureStdout();}
+\DoxyCodeLine{00905\ \ \ fprintf(stdout,\ \textcolor{stringliteral}{"{}def\%cghi"{}},\ \textcolor{charliteral}{'\(\backslash\)0'});}
+\DoxyCodeLine{00906\ \ \ EXPECT\_EQ(::std::string(\textcolor{stringliteral}{"{}def\(\backslash\)0ghi"{}},\ 7),\ ::std::string(GetCapturedStdout()));}
+\DoxyCodeLine{00907\ \}}
+\DoxyCodeLine{00908\ }
+\DoxyCodeLine{00909\ TEST(CaptureTest,\ CapturesStderr)\ \{}
+\DoxyCodeLine{00910\ \ \ CaptureStderr();}
+\DoxyCodeLine{00911\ \ \ fprintf(stderr,\ \textcolor{stringliteral}{"{}jkl"{}});}
+\DoxyCodeLine{00912\ \ \ EXPECT\_STREQ(\textcolor{stringliteral}{"{}jkl"{}},\ GetCapturedStderr().c\_str());}
+\DoxyCodeLine{00913\ }
+\DoxyCodeLine{00914\ \ \ CaptureStderr();}
+\DoxyCodeLine{00915\ \ \ fprintf(stderr,\ \textcolor{stringliteral}{"{}jkl\%cmno"{}},\ \textcolor{charliteral}{'\(\backslash\)0'});}
+\DoxyCodeLine{00916\ \ \ EXPECT\_EQ(::std::string(\textcolor{stringliteral}{"{}jkl\(\backslash\)0mno"{}},\ 7),\ ::std::string(GetCapturedStderr()));}
+\DoxyCodeLine{00917\ \}}
+\DoxyCodeLine{00918\ }
+\DoxyCodeLine{00919\ \textcolor{comment}{//\ Tests\ that\ stdout\ and\ stderr\ capture\ don't\ interfere\ with\ each\ other.}}
+\DoxyCodeLine{00920\ TEST(CaptureTest,\ CapturesStdoutAndStderr)\ \{}
+\DoxyCodeLine{00921\ \ \ CaptureStdout();}
+\DoxyCodeLine{00922\ \ \ CaptureStderr();}
+\DoxyCodeLine{00923\ \ \ fprintf(stdout,\ \textcolor{stringliteral}{"{}pqr"{}});}
+\DoxyCodeLine{00924\ \ \ fprintf(stderr,\ \textcolor{stringliteral}{"{}stu"{}});}
+\DoxyCodeLine{00925\ \ \ EXPECT\_STREQ(\textcolor{stringliteral}{"{}pqr"{}},\ GetCapturedStdout().c\_str());}
+\DoxyCodeLine{00926\ \ \ EXPECT\_STREQ(\textcolor{stringliteral}{"{}stu"{}},\ GetCapturedStderr().c\_str());}
+\DoxyCodeLine{00927\ \}}
+\DoxyCodeLine{00928\ }
+\DoxyCodeLine{00929\ TEST(CaptureDeathTest,\ CannotReenterStdoutCapture)\ \{}
+\DoxyCodeLine{00930\ \ \ CaptureStdout();}
+\DoxyCodeLine{00931\ \ \ EXPECT\_DEATH\_IF\_SUPPORTED(CaptureStdout(),}
+\DoxyCodeLine{00932\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}Only\ one\ stdout\ capturer\ can\ exist\ at\ a\ time"{}});}
+\DoxyCodeLine{00933\ \ \ GetCapturedStdout();}
+\DoxyCodeLine{00934\ }
+\DoxyCodeLine{00935\ \ \ \textcolor{comment}{//\ We\ cannot\ test\ stderr\ capturing\ using\ death\ tests\ as\ they\ use\ it}}
+\DoxyCodeLine{00936\ \ \ \textcolor{comment}{//\ themselves.}}
+\DoxyCodeLine{00937\ \}}
+\DoxyCodeLine{00938\ }
+\DoxyCodeLine{00939\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ !GTEST\_OS\_WINDOWS\_MOBILE}}
+\DoxyCodeLine{00940\ }
+\DoxyCodeLine{00941\ TEST(ThreadLocalTest,\ DefaultConstructorInitializesToDefaultValues)\ \{}
+\DoxyCodeLine{00942\ \ \ ThreadLocal<int>\ t1;}
+\DoxyCodeLine{00943\ \ \ EXPECT\_EQ(0,\ t1.get());}
+\DoxyCodeLine{00944\ }
+\DoxyCodeLine{00945\ \ \ ThreadLocal<void*>\ t2;}
+\DoxyCodeLine{00946\ \ \ EXPECT\_TRUE(t2.get()\ ==\ \textcolor{keyword}{nullptr});}
+\DoxyCodeLine{00947\ \}}
+\DoxyCodeLine{00948\ }
+\DoxyCodeLine{00949\ TEST(ThreadLocalTest,\ SingleParamConstructorInitializesToParam)\ \{}
+\DoxyCodeLine{00950\ \ \ ThreadLocal<int>\ t1(123);}
+\DoxyCodeLine{00951\ \ \ EXPECT\_EQ(123,\ t1.get());}
+\DoxyCodeLine{00952\ }
+\DoxyCodeLine{00953\ \ \ \textcolor{keywordtype}{int}\ i\ =\ 0;}
+\DoxyCodeLine{00954\ \ \ ThreadLocal<int*>\ t2(\&i);}
+\DoxyCodeLine{00955\ \ \ EXPECT\_EQ(\&i,\ t2.get());}
+\DoxyCodeLine{00956\ \}}
+\DoxyCodeLine{00957\ }
+\DoxyCodeLine{00958\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classtesting_1_1internal_1_1_no_default_contructor}{NoDefaultContructor}}\ \{}
+\DoxyCodeLine{00959\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00960\ \ \ \textcolor{keyword}{explicit}\ \mbox{\hyperlink{classtesting_1_1internal_1_1_no_default_contructor}{NoDefaultContructor}}(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*)\ \{\}}
+\DoxyCodeLine{00961\ \ \ \mbox{\hyperlink{classtesting_1_1internal_1_1_no_default_contructor}{NoDefaultContructor}}(\textcolor{keyword}{const}\ \mbox{\hyperlink{classtesting_1_1internal_1_1_no_default_contructor}{NoDefaultContructor}}\&)\ \{\}}
+\DoxyCodeLine{00962\ \};}
+\DoxyCodeLine{00963\ }
+\DoxyCodeLine{00964\ TEST(ThreadLocalTest,\ ValueDefaultContructorIsNotRequiredForParamVersion)\ \{}
+\DoxyCodeLine{00965\ \ \ ThreadLocal<NoDefaultContructor>\ bar(\mbox{\hyperlink{classtesting_1_1internal_1_1_no_default_contructor}{NoDefaultContructor}}(\textcolor{stringliteral}{"{}foo"{}}));}
+\DoxyCodeLine{00966\ \ \ bar.pointer();}
+\DoxyCodeLine{00967\ \}}
+\DoxyCodeLine{00968\ }
+\DoxyCodeLine{00969\ TEST(ThreadLocalTest,\ GetAndPointerReturnSameValue)\ \{}
+\DoxyCodeLine{00970\ \ \ ThreadLocal<std::string>\ thread\_local\_string;}
+\DoxyCodeLine{00971\ }
+\DoxyCodeLine{00972\ \ \ EXPECT\_EQ(thread\_local\_string.pointer(),\ \&(thread\_local\_string.get()));}
+\DoxyCodeLine{00973\ }
+\DoxyCodeLine{00974\ \ \ \textcolor{comment}{//\ Verifies\ the\ condition\ still\ holds\ after\ calling\ set.}}
+\DoxyCodeLine{00975\ \ \ thread\_local\_string.set(\textcolor{stringliteral}{"{}foo"{}});}
+\DoxyCodeLine{00976\ \ \ EXPECT\_EQ(thread\_local\_string.pointer(),\ \&(thread\_local\_string.get()));}
+\DoxyCodeLine{00977\ \}}
+\DoxyCodeLine{00978\ }
+\DoxyCodeLine{00979\ TEST(ThreadLocalTest,\ PointerAndConstPointerReturnSameValue)\ \{}
+\DoxyCodeLine{00980\ \ \ ThreadLocal<std::string>\ thread\_local\_string;}
+\DoxyCodeLine{00981\ \ \ \textcolor{keyword}{const}\ ThreadLocal<std::string>\&\ const\_thread\_local\_string\ =}
+\DoxyCodeLine{00982\ \ \ \ \ \ \ thread\_local\_string;}
+\DoxyCodeLine{00983\ }
+\DoxyCodeLine{00984\ \ \ EXPECT\_EQ(thread\_local\_string.pointer(),\ const\_thread\_local\_string.pointer());}
+\DoxyCodeLine{00985\ }
+\DoxyCodeLine{00986\ \ \ thread\_local\_string.set(\textcolor{stringliteral}{"{}foo"{}});}
+\DoxyCodeLine{00987\ \ \ EXPECT\_EQ(thread\_local\_string.pointer(),\ const\_thread\_local\_string.pointer());}
+\DoxyCodeLine{00988\ \}}
+\DoxyCodeLine{00989\ }
+\DoxyCodeLine{00990\ \textcolor{preprocessor}{\#if\ GTEST\_IS\_THREADSAFE}}
+\DoxyCodeLine{00991\ }
+\DoxyCodeLine{00992\ \textcolor{keywordtype}{void}\ AddTwo(\textcolor{keywordtype}{int}*\ param)\ \{\ *param\ +=\ 2;\ \}}
+\DoxyCodeLine{00993\ }
+\DoxyCodeLine{00994\ TEST(ThreadWithParamTest,\ ConstructorExecutesThreadFunc)\ \{}
+\DoxyCodeLine{00995\ \ \ \textcolor{keywordtype}{int}\ i\ =\ 40;}
+\DoxyCodeLine{00996\ \ \ ThreadWithParam<int*>\ thread(\&AddTwo,\ \&i,\ \textcolor{keyword}{nullptr});}
+\DoxyCodeLine{00997\ \ \ thread.Join();}
+\DoxyCodeLine{00998\ \ \ EXPECT\_EQ(42,\ i);}
+\DoxyCodeLine{00999\ \}}
+\DoxyCodeLine{01000\ }
+\DoxyCodeLine{01001\ TEST(MutexDeathTest,\ AssertHeldShouldAssertWhenNotLocked)\ \{}
+\DoxyCodeLine{01002\ \ \ \textcolor{comment}{//\ AssertHeld()\ is\ flaky\ only\ in\ the\ presence\ of\ multiple\ threads\ accessing}}
+\DoxyCodeLine{01003\ \ \ \textcolor{comment}{//\ the\ lock.\ In\ this\ case,\ the\ test\ is\ robust.}}
+\DoxyCodeLine{01004\ \ \ EXPECT\_DEATH\_IF\_SUPPORTED(\{}
+\DoxyCodeLine{01005\ \ \ \ \ Mutex\ m;}
+\DoxyCodeLine{01006\ \ \ \ \ \{\ MutexLock\ lock(\&m);\ \}}
+\DoxyCodeLine{01007\ \ \ \ \ m.AssertHeld();}
+\DoxyCodeLine{01008\ \ \ \},}
+\DoxyCodeLine{01009\ \ \ \textcolor{stringliteral}{"{}thread\ .*hold"{}});}
+\DoxyCodeLine{01010\ \}}
+\DoxyCodeLine{01011\ }
+\DoxyCodeLine{01012\ TEST(MutexTest,\ AssertHeldShouldNotAssertWhenLocked)\ \{}
+\DoxyCodeLine{01013\ \ \ Mutex\ m;}
+\DoxyCodeLine{01014\ \ \ MutexLock\ lock(\&m);}
+\DoxyCodeLine{01015\ \ \ m.AssertHeld();}
+\DoxyCodeLine{01016\ \}}
+\DoxyCodeLine{01017\ }
+\DoxyCodeLine{01018\ \textcolor{keyword}{class\ }AtomicCounterWithMutex\ \{}
+\DoxyCodeLine{01019\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{01020\ \ \ \textcolor{keyword}{explicit}\ AtomicCounterWithMutex(Mutex*\ mutex)\ :}
+\DoxyCodeLine{01021\ \ \ \ \ value\_(0),\ mutex\_(mutex),\ random\_(42)\ \{\}}
+\DoxyCodeLine{01022\ }
+\DoxyCodeLine{01023\ \ \ \textcolor{keywordtype}{void}\ Increment()\ \{}
+\DoxyCodeLine{01024\ \ \ \ \ MutexLock\ lock(mutex\_);}
+\DoxyCodeLine{01025\ \ \ \ \ \textcolor{keywordtype}{int}\ temp\ =\ value\_;}
+\DoxyCodeLine{01026\ \ \ \ \ \{}
+\DoxyCodeLine{01027\ \ \ \ \ \ \ \textcolor{comment}{//\ We\ need\ to\ put\ up\ a\ memory\ barrier\ to\ prevent\ reads\ and\ writes\ to}}
+\DoxyCodeLine{01028\ \ \ \ \ \ \ \textcolor{comment}{//\ value\_\ rearranged\ with\ the\ call\ to\ SleepMilliseconds\ when\ observed}}
+\DoxyCodeLine{01029\ \ \ \ \ \ \ \textcolor{comment}{//\ from\ other\ threads.}}
+\DoxyCodeLine{01030\ \textcolor{preprocessor}{\#if\ GTEST\_HAS\_PTHREAD}}
+\DoxyCodeLine{01031\ \ \ \ \ \ \ \textcolor{comment}{//\ On\ POSIX,\ locking\ a\ mutex\ puts\ up\ a\ memory\ barrier.\ \ We\ cannot\ use}}
+\DoxyCodeLine{01032\ \ \ \ \ \ \ \textcolor{comment}{//\ Mutex\ and\ MutexLock\ here\ or\ rely\ on\ their\ memory\ barrier}}
+\DoxyCodeLine{01033\ \ \ \ \ \ \ \textcolor{comment}{//\ functionality\ as\ we\ are\ testing\ them\ here.}}
+\DoxyCodeLine{01034\ \ \ \ \ \ \ pthread\_mutex\_t\ memory\_barrier\_mutex;}
+\DoxyCodeLine{01035\ \ \ \ \ \ \ GTEST\_CHECK\_POSIX\_SUCCESS\_(}
+\DoxyCodeLine{01036\ \ \ \ \ \ \ \ \ \ \ pthread\_mutex\_init(\&memory\_barrier\_mutex,\ \textcolor{keyword}{nullptr}));}
+\DoxyCodeLine{01037\ \ \ \ \ \ \ GTEST\_CHECK\_POSIX\_SUCCESS\_(pthread\_mutex\_lock(\&memory\_barrier\_mutex));}
+\DoxyCodeLine{01038\ }
+\DoxyCodeLine{01039\ \ \ \ \ \ \ SleepMilliseconds(\textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{int}\textcolor{keyword}{>}(random\_.Generate(30)));}
+\DoxyCodeLine{01040\ }
+\DoxyCodeLine{01041\ \ \ \ \ \ \ GTEST\_CHECK\_POSIX\_SUCCESS\_(pthread\_mutex\_unlock(\&memory\_barrier\_mutex));}
+\DoxyCodeLine{01042\ \ \ \ \ \ \ GTEST\_CHECK\_POSIX\_SUCCESS\_(pthread\_mutex\_destroy(\&memory\_barrier\_mutex));}
+\DoxyCodeLine{01043\ \textcolor{preprocessor}{\#elif\ GTEST\_OS\_WINDOWS}}
+\DoxyCodeLine{01044\ \ \ \ \ \ \ \textcolor{comment}{//\ On\ Windows,\ performing\ an\ interlocked\ access\ puts\ up\ a\ memory\ barrier.}}
+\DoxyCodeLine{01045\ \ \ \ \ \ \ \textcolor{keyword}{volatile}\ LONG\ dummy\ =\ 0;}
+\DoxyCodeLine{01046\ \ \ \ \ \ \ ::InterlockedIncrement(\&dummy);}
+\DoxyCodeLine{01047\ \ \ \ \ \ \ SleepMilliseconds(\textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{int}\textcolor{keyword}{>}(random\_.Generate(30)));}
+\DoxyCodeLine{01048\ \ \ \ \ \ \ ::InterlockedIncrement(\&dummy);}
+\DoxyCodeLine{01049\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{01050\ \textcolor{preprocessor}{\#\ error\ "{}Memory\ barrier\ not\ implemented\ on\ this\ platform."{}}}
+\DoxyCodeLine{01051\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ GTEST\_HAS\_PTHREAD}}
+\DoxyCodeLine{01052\ \ \ \ \ \}}
+\DoxyCodeLine{01053\ \ \ \ \ value\_\ =\ temp\ +\ 1;}
+\DoxyCodeLine{01054\ \ \ \}}
+\DoxyCodeLine{01055\ \ \ \textcolor{keywordtype}{int}\ value()\textcolor{keyword}{\ const\ }\{\ \textcolor{keywordflow}{return}\ value\_;\ \}}
+\DoxyCodeLine{01056\ }
+\DoxyCodeLine{01057\ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{01058\ \ \ \textcolor{keyword}{volatile}\ \textcolor{keywordtype}{int}\ value\_;}
+\DoxyCodeLine{01059\ \ \ Mutex*\ \textcolor{keyword}{const}\ mutex\_;\ \ \textcolor{comment}{//\ Protects\ value\_.}}
+\DoxyCodeLine{01060\ \ \ Random\ \ \ \ \ \ \ random\_;}
+\DoxyCodeLine{01061\ \};}
+\DoxyCodeLine{01062\ }
+\DoxyCodeLine{01063\ \textcolor{keywordtype}{void}\ CountingThreadFunc(pair<AtomicCounterWithMutex*,\ int>\ param)\ \{}
+\DoxyCodeLine{01064\ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ i\ =\ 0;\ i\ <\ param.second;\ ++i)}
+\DoxyCodeLine{01065\ \ \ \ \ \ \ param.first-\/>Increment();}
+\DoxyCodeLine{01066\ \}}
+\DoxyCodeLine{01067\ }
+\DoxyCodeLine{01068\ \textcolor{comment}{//\ Tests\ that\ the\ mutex\ only\ lets\ one\ thread\ at\ a\ time\ to\ lock\ it.}}
+\DoxyCodeLine{01069\ TEST(MutexTest,\ OnlyOneThreadCanLockAtATime)\ \{}
+\DoxyCodeLine{01070\ \ \ Mutex\ mutex;}
+\DoxyCodeLine{01071\ \ \ AtomicCounterWithMutex\ locked\_counter(\&mutex);}
+\DoxyCodeLine{01072\ }
+\DoxyCodeLine{01073\ \ \ \textcolor{keyword}{typedef}\ ThreadWithParam<pair<AtomicCounterWithMutex*,\ int>\ >\ ThreadType;}
+\DoxyCodeLine{01074\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ kCycleCount\ =\ 20;}
+\DoxyCodeLine{01075\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{int}\ kThreadCount\ =\ 7;}
+\DoxyCodeLine{01076\ \ \ std::unique\_ptr<ThreadType>\ counting\_threads[kThreadCount];}
+\DoxyCodeLine{01077\ \ \ Notification\ threads\_can\_start;}
+\DoxyCodeLine{01078\ \ \ \textcolor{comment}{//\ Creates\ and\ runs\ kThreadCount\ threads\ that\ increment\ locked\_counter}}
+\DoxyCodeLine{01079\ \ \ \textcolor{comment}{//\ kCycleCount\ times\ each.}}
+\DoxyCodeLine{01080\ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ i\ =\ 0;\ i\ <\ kThreadCount;\ ++i)\ \{}
+\DoxyCodeLine{01081\ \ \ \ \ counting\_threads[i].reset(\textcolor{keyword}{new}\ ThreadType(\&CountingThreadFunc,}
+\DoxyCodeLine{01082\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ make\_pair(\&locked\_counter,}
+\DoxyCodeLine{01083\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ kCycleCount),}
+\DoxyCodeLine{01084\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \&threads\_can\_start));}
+\DoxyCodeLine{01085\ \ \ \}}
+\DoxyCodeLine{01086\ \ \ threads\_can\_start.Notify();}
+\DoxyCodeLine{01087\ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ i\ =\ 0;\ i\ <\ kThreadCount;\ ++i)}
+\DoxyCodeLine{01088\ \ \ \ \ counting\_threads[i]-\/>Join();}
+\DoxyCodeLine{01089\ }
+\DoxyCodeLine{01090\ \ \ \textcolor{comment}{//\ If\ the\ mutex\ lets\ more\ than\ one\ thread\ to\ increment\ the\ counter\ at\ a}}
+\DoxyCodeLine{01091\ \ \ \textcolor{comment}{//\ time,\ they\ are\ likely\ to\ encounter\ a\ race\ condition\ and\ have\ some}}
+\DoxyCodeLine{01092\ \ \ \textcolor{comment}{//\ increments\ overwritten,\ resulting\ in\ the\ lower\ then\ expected\ counter}}
+\DoxyCodeLine{01093\ \ \ \textcolor{comment}{//\ value.}}
+\DoxyCodeLine{01094\ \ \ EXPECT\_EQ(kCycleCount\ *\ kThreadCount,\ locked\_counter.value());}
+\DoxyCodeLine{01095\ \}}
+\DoxyCodeLine{01096\ }
+\DoxyCodeLine{01097\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{01098\ \textcolor{keywordtype}{void}\ RunFromThread(\textcolor{keywordtype}{void}\ (func)(T),\ T\ param)\ \{}
+\DoxyCodeLine{01099\ \ \ ThreadWithParam<T>\ thread(func,\ param,\ \textcolor{keyword}{nullptr});}
+\DoxyCodeLine{01100\ \ \ thread.Join();}
+\DoxyCodeLine{01101\ \}}
+\DoxyCodeLine{01102\ }
+\DoxyCodeLine{01103\ \textcolor{keywordtype}{void}\ RetrieveThreadLocalValue(}
+\DoxyCodeLine{01104\ \ \ \ \ pair<ThreadLocal<std::string>*,\ std::string*>\ param)\ \{}
+\DoxyCodeLine{01105\ \ \ *param.second\ =\ param.first-\/>get();}
+\DoxyCodeLine{01106\ \}}
+\DoxyCodeLine{01107\ }
+\DoxyCodeLine{01108\ TEST(ThreadLocalTest,\ ParameterizedConstructorSetsDefault)\ \{}
+\DoxyCodeLine{01109\ \ \ ThreadLocal<std::string>\ thread\_local\_string(\textcolor{stringliteral}{"{}foo"{}});}
+\DoxyCodeLine{01110\ \ \ EXPECT\_STREQ(\textcolor{stringliteral}{"{}foo"{}},\ thread\_local\_string.get().c\_str());}
+\DoxyCodeLine{01111\ }
+\DoxyCodeLine{01112\ \ \ thread\_local\_string.set(\textcolor{stringliteral}{"{}bar"{}});}
+\DoxyCodeLine{01113\ \ \ EXPECT\_STREQ(\textcolor{stringliteral}{"{}bar"{}},\ thread\_local\_string.get().c\_str());}
+\DoxyCodeLine{01114\ }
+\DoxyCodeLine{01115\ \ \ std::string\ result;}
+\DoxyCodeLine{01116\ \ \ RunFromThread(\&RetrieveThreadLocalValue,}
+\DoxyCodeLine{01117\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ make\_pair(\&thread\_local\_string,\ \&result));}
+\DoxyCodeLine{01118\ \ \ EXPECT\_STREQ(\textcolor{stringliteral}{"{}foo"{}},\ result.c\_str());}
+\DoxyCodeLine{01119\ \}}
+\DoxyCodeLine{01120\ }
+\DoxyCodeLine{01121\ \textcolor{comment}{//\ Keeps\ track\ of\ whether\ of\ destructors\ being\ called\ on\ instances\ of}}
+\DoxyCodeLine{01122\ \textcolor{comment}{//\ DestructorTracker.\ \ On\ Windows,\ waits\ for\ the\ destructor\ call\ reports.}}
+\DoxyCodeLine{01123\ \textcolor{keyword}{class\ }DestructorCall\ \{}
+\DoxyCodeLine{01124\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{01125\ \ \ DestructorCall()\ \{}
+\DoxyCodeLine{01126\ \ \ \ \ invoked\_\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{01127\ \textcolor{preprocessor}{\#if\ GTEST\_OS\_WINDOWS}}
+\DoxyCodeLine{01128\ \ \ \ \ wait\_event\_.Reset(::CreateEvent(NULL,\ TRUE,\ FALSE,\ NULL));}
+\DoxyCodeLine{01129\ \ \ \ \ GTEST\_CHECK\_(wait\_event\_.Get()\ !=\ NULL);}
+\DoxyCodeLine{01130\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{01131\ \ \ \}}
+\DoxyCodeLine{01132\ }
+\DoxyCodeLine{01133\ \ \ \textcolor{keywordtype}{bool}\ CheckDestroyed()\textcolor{keyword}{\ const\ }\{}
+\DoxyCodeLine{01134\ \textcolor{preprocessor}{\#if\ GTEST\_OS\_WINDOWS}}
+\DoxyCodeLine{01135\ \ \ \ \ \textcolor{keywordflow}{if}\ (::WaitForSingleObject(wait\_event\_.Get(),\ 1000)\ !=\ WAIT\_OBJECT\_0)}
+\DoxyCodeLine{01136\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{01137\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{01138\ \ \ \ \ \textcolor{keywordflow}{return}\ invoked\_;}
+\DoxyCodeLine{01139\ \ \ \}}
+\DoxyCodeLine{01140\ }
+\DoxyCodeLine{01141\ \ \ \textcolor{keywordtype}{void}\ ReportDestroyed()\ \{}
+\DoxyCodeLine{01142\ \ \ \ \ invoked\_\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{01143\ \textcolor{preprocessor}{\#if\ GTEST\_OS\_WINDOWS}}
+\DoxyCodeLine{01144\ \ \ \ \ ::SetEvent(wait\_event\_.Get());}
+\DoxyCodeLine{01145\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{01146\ \ \ \}}
+\DoxyCodeLine{01147\ }
+\DoxyCodeLine{01148\ \ \ \textcolor{keyword}{static}\ std::vector<DestructorCall*>\&\ List()\ \{\ \textcolor{keywordflow}{return}\ *list\_;\ \}}
+\DoxyCodeLine{01149\ }
+\DoxyCodeLine{01150\ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ ResetList()\ \{}
+\DoxyCodeLine{01151\ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{size\_t}\ i\ =\ 0;\ i\ <\ list\_-\/>size();\ ++i)\ \{}
+\DoxyCodeLine{01152\ \ \ \ \ \ \ \textcolor{keyword}{delete}\ list\_-\/>at(i);}
+\DoxyCodeLine{01153\ \ \ \ \ \}}
+\DoxyCodeLine{01154\ \ \ \ \ list\_-\/>clear();}
+\DoxyCodeLine{01155\ \ \ \}}
+\DoxyCodeLine{01156\ }
+\DoxyCodeLine{01157\ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{01158\ \ \ \textcolor{keywordtype}{bool}\ invoked\_;}
+\DoxyCodeLine{01159\ \textcolor{preprocessor}{\#if\ GTEST\_OS\_WINDOWS}}
+\DoxyCodeLine{01160\ \ \ AutoHandle\ wait\_event\_;}
+\DoxyCodeLine{01161\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{01162\ \ \ \textcolor{keyword}{static}\ std::vector<DestructorCall*>*\ \textcolor{keyword}{const}\ list\_;}
+\DoxyCodeLine{01163\ }
+\DoxyCodeLine{01164\ \ \ GTEST\_DISALLOW\_COPY\_AND\_ASSIGN\_(DestructorCall);}
+\DoxyCodeLine{01165\ \};}
+\DoxyCodeLine{01166\ }
+\DoxyCodeLine{01167\ std::vector<DestructorCall*>*\ \textcolor{keyword}{const}\ DestructorCall::list\_\ =}
+\DoxyCodeLine{01168\ \ \ \ \ \textcolor{keyword}{new}\ std::vector<DestructorCall*>;}
+\DoxyCodeLine{01169\ }
+\DoxyCodeLine{01170\ \textcolor{comment}{//\ DestructorTracker\ keeps\ track\ of\ whether\ its\ instances\ have\ been}}
+\DoxyCodeLine{01171\ \textcolor{comment}{//\ destroyed.}}
+\DoxyCodeLine{01172\ \textcolor{keyword}{class\ }DestructorTracker\ \{}
+\DoxyCodeLine{01173\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{01174\ \ \ DestructorTracker()\ :\ index\_(GetNewIndex())\ \{\}}
+\DoxyCodeLine{01175\ \ \ DestructorTracker(\textcolor{keyword}{const}\ DestructorTracker\&\ \textcolor{comment}{/*\ rhs\ */})}
+\DoxyCodeLine{01176\ \ \ \ \ \ \ :\ index\_(GetNewIndex())\ \{\}}
+\DoxyCodeLine{01177\ \ \ \string~DestructorTracker()\ \{}
+\DoxyCodeLine{01178\ \ \ \ \ \textcolor{comment}{//\ We\ never\ access\ DestructorCall::List()\ concurrently,\ so\ we\ don't\ need}}
+\DoxyCodeLine{01179\ \ \ \ \ \textcolor{comment}{//\ to\ protect\ this\ access\ with\ a\ mutex.}}
+\DoxyCodeLine{01180\ \ \ \ \ DestructorCall::List()[index\_]-\/>ReportDestroyed();}
+\DoxyCodeLine{01181\ \ \ \}}
+\DoxyCodeLine{01182\ }
+\DoxyCodeLine{01183\ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{01184\ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{size\_t}\ GetNewIndex()\ \{}
+\DoxyCodeLine{01185\ \ \ \ \ DestructorCall::List().push\_back(\textcolor{keyword}{new}\ DestructorCall);}
+\DoxyCodeLine{01186\ \ \ \ \ \textcolor{keywordflow}{return}\ DestructorCall::List().size()\ -\/\ 1;}
+\DoxyCodeLine{01187\ \ \ \}}
+\DoxyCodeLine{01188\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{size\_t}\ index\_;}
+\DoxyCodeLine{01189\ \};}
+\DoxyCodeLine{01190\ }
+\DoxyCodeLine{01191\ \textcolor{keyword}{typedef}\ ThreadLocal<DestructorTracker>*\ ThreadParam;}
+\DoxyCodeLine{01192\ }
+\DoxyCodeLine{01193\ \textcolor{keywordtype}{void}\ CallThreadLocalGet(ThreadParam\ thread\_local\_param)\ \{}
+\DoxyCodeLine{01194\ \ \ thread\_local\_param-\/>get();}
+\DoxyCodeLine{01195\ \}}
+\DoxyCodeLine{01196\ }
+\DoxyCodeLine{01197\ \textcolor{comment}{//\ Tests\ that\ when\ a\ ThreadLocal\ object\ dies\ in\ a\ thread,\ it\ destroys}}
+\DoxyCodeLine{01198\ \textcolor{comment}{//\ the\ managed\ object\ for\ that\ thread.}}
+\DoxyCodeLine{01199\ TEST(ThreadLocalTest,\ DestroysManagedObjectForOwnThreadWhenDying)\ \{}
+\DoxyCodeLine{01200\ \ \ DestructorCall::ResetList();}
+\DoxyCodeLine{01201\ }
+\DoxyCodeLine{01202\ \ \ \{}
+\DoxyCodeLine{01203\ \ \ \ \ ThreadLocal<DestructorTracker>\ thread\_local\_tracker;}
+\DoxyCodeLine{01204\ \ \ \ \ ASSERT\_EQ(0U,\ DestructorCall::List().size());}
+\DoxyCodeLine{01205\ }
+\DoxyCodeLine{01206\ \ \ \ \ \textcolor{comment}{//\ This\ creates\ another\ DestructorTracker\ object\ for\ the\ main\ thread.}}
+\DoxyCodeLine{01207\ \ \ \ \ thread\_local\_tracker.get();}
+\DoxyCodeLine{01208\ \ \ \ \ ASSERT\_EQ(1U,\ DestructorCall::List().size());}
+\DoxyCodeLine{01209\ \ \ \ \ ASSERT\_FALSE(DestructorCall::List()[0]-\/>CheckDestroyed());}
+\DoxyCodeLine{01210\ \ \ \}}
+\DoxyCodeLine{01211\ }
+\DoxyCodeLine{01212\ \ \ \textcolor{comment}{//\ Now\ thread\_local\_tracker\ has\ died.}}
+\DoxyCodeLine{01213\ \ \ ASSERT\_EQ(1U,\ DestructorCall::List().size());}
+\DoxyCodeLine{01214\ \ \ EXPECT\_TRUE(DestructorCall::List()[0]-\/>CheckDestroyed());}
+\DoxyCodeLine{01215\ }
+\DoxyCodeLine{01216\ \ \ DestructorCall::ResetList();}
+\DoxyCodeLine{01217\ \}}
+\DoxyCodeLine{01218\ }
+\DoxyCodeLine{01219\ \textcolor{comment}{//\ Tests\ that\ when\ a\ thread\ exits,\ the\ thread-\/local\ object\ for\ that}}
+\DoxyCodeLine{01220\ \textcolor{comment}{//\ thread\ is\ destroyed.}}
+\DoxyCodeLine{01221\ TEST(ThreadLocalTest,\ DestroysManagedObjectAtThreadExit)\ \{}
+\DoxyCodeLine{01222\ \ \ DestructorCall::ResetList();}
+\DoxyCodeLine{01223\ }
+\DoxyCodeLine{01224\ \ \ \{}
+\DoxyCodeLine{01225\ \ \ \ \ ThreadLocal<DestructorTracker>\ thread\_local\_tracker;}
+\DoxyCodeLine{01226\ \ \ \ \ ASSERT\_EQ(0U,\ DestructorCall::List().size());}
+\DoxyCodeLine{01227\ }
+\DoxyCodeLine{01228\ \ \ \ \ \textcolor{comment}{//\ This\ creates\ another\ DestructorTracker\ object\ in\ the\ new\ thread.}}
+\DoxyCodeLine{01229\ \ \ \ \ ThreadWithParam<ThreadParam>\ thread(\&CallThreadLocalGet,}
+\DoxyCodeLine{01230\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \&thread\_local\_tracker,\ \textcolor{keyword}{nullptr});}
+\DoxyCodeLine{01231\ \ \ \ \ thread.Join();}
+\DoxyCodeLine{01232\ }
+\DoxyCodeLine{01233\ \ \ \ \ \textcolor{comment}{//\ The\ thread\ has\ exited,\ and\ we\ should\ have\ a\ DestroyedTracker}}
+\DoxyCodeLine{01234\ \ \ \ \ \textcolor{comment}{//\ instance\ created\ for\ it.\ But\ it\ may\ not\ have\ been\ destroyed\ yet.}}
+\DoxyCodeLine{01235\ \ \ \ \ ASSERT\_EQ(1U,\ DestructorCall::List().size());}
+\DoxyCodeLine{01236\ \ \ \}}
+\DoxyCodeLine{01237\ }
+\DoxyCodeLine{01238\ \ \ \textcolor{comment}{//\ The\ thread\ has\ exited\ and\ thread\_local\_tracker\ has\ died.}}
+\DoxyCodeLine{01239\ \ \ ASSERT\_EQ(1U,\ DestructorCall::List().size());}
+\DoxyCodeLine{01240\ \ \ EXPECT\_TRUE(DestructorCall::List()[0]-\/>CheckDestroyed());}
+\DoxyCodeLine{01241\ }
+\DoxyCodeLine{01242\ \ \ DestructorCall::ResetList();}
+\DoxyCodeLine{01243\ \}}
+\DoxyCodeLine{01244\ }
+\DoxyCodeLine{01245\ TEST(ThreadLocalTest,\ ThreadLocalMutationsAffectOnlyCurrentThread)\ \{}
+\DoxyCodeLine{01246\ \ \ ThreadLocal<std::string>\ thread\_local\_string;}
+\DoxyCodeLine{01247\ \ \ thread\_local\_string.set(\textcolor{stringliteral}{"{}Foo"{}});}
+\DoxyCodeLine{01248\ \ \ EXPECT\_STREQ(\textcolor{stringliteral}{"{}Foo"{}},\ thread\_local\_string.get().c\_str());}
+\DoxyCodeLine{01249\ }
+\DoxyCodeLine{01250\ \ \ std::string\ result;}
+\DoxyCodeLine{01251\ \ \ RunFromThread(\&RetrieveThreadLocalValue,}
+\DoxyCodeLine{01252\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ make\_pair(\&thread\_local\_string,\ \&result));}
+\DoxyCodeLine{01253\ \ \ EXPECT\_TRUE(result.empty());}
+\DoxyCodeLine{01254\ \}}
+\DoxyCodeLine{01255\ }
+\DoxyCodeLine{01256\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ GTEST\_IS\_THREADSAFE}}
+\DoxyCodeLine{01257\ }
+\DoxyCodeLine{01258\ \textcolor{preprocessor}{\#if\ GTEST\_OS\_WINDOWS}}
+\DoxyCodeLine{01259\ TEST(WindowsTypesTest,\ HANDLEIsVoidStar)\ \{}
+\DoxyCodeLine{01260\ \ \ StaticAssertTypeEq<HANDLE,\ void*>();}
+\DoxyCodeLine{01261\ \}}
+\DoxyCodeLine{01262\ }
+\DoxyCodeLine{01263\ \textcolor{preprocessor}{\#if\ GTEST\_OS\_WINDOWS\_MINGW\ \&\&\ !defined(\_\_MINGW64\_VERSION\_MAJOR)}}
+\DoxyCodeLine{01264\ TEST(WindowsTypesTest,\ \_CRITICAL\_SECTIONIs\_CRITICAL\_SECTION)\ \{}
+\DoxyCodeLine{01265\ \ \ StaticAssertTypeEq<CRITICAL\_SECTION,\ \_CRITICAL\_SECTION>();}
+\DoxyCodeLine{01266\ \}}
+\DoxyCodeLine{01267\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{01268\ TEST(WindowsTypesTest,\ CRITICAL\_SECTIONIs\_RTL\_CRITICAL\_SECTION)\ \{}
+\DoxyCodeLine{01269\ \ \ StaticAssertTypeEq<CRITICAL\_SECTION,\ \_RTL\_CRITICAL\_SECTION>();}
+\DoxyCodeLine{01270\ \}}
+\DoxyCodeLine{01271\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{01272\ }
+\DoxyCodeLine{01273\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ GTEST\_OS\_WINDOWS}}
+\DoxyCodeLine{01274\ }
+\DoxyCodeLine{01275\ \}\ \ \textcolor{comment}{//\ namespace\ internal}}
+\DoxyCodeLine{01276\ \}\ \ \textcolor{comment}{//\ namespace\ testing}}
+
+\end{DoxyCode}

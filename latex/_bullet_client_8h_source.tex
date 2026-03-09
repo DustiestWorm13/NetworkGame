@@ -1,0 +1,34 @@
+\doxysection{Bullet\+Client.\+h}
+\hypertarget{_bullet_client_8h_source}{}\label{_bullet_client_8h_source}\index{src/client/BulletClient.h@{src/client/BulletClient.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#ifndef\ BULLET\_CLIENT\_H}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#define\ BULLET\_CLIENT\_H}}
+\DoxyCodeLine{00003\ }
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ "{}Bullet.h"{}}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ "{}SpriteComponent.h"{}}}
+\DoxyCodeLine{00006\ }
+\DoxyCodeLine{00007\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_bullet_client}{BulletClient}}\ :\ \textcolor{keyword}{public}\ \mbox{\hyperlink{class_bullet}{Bullet}}}
+\DoxyCodeLine{00008\ \{}
+\DoxyCodeLine{00009\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00010\ \ \ \ \ \textcolor{keyword}{static}\ \ GameObjectPtr\ \ \ StaticCreate()\ \ \ \ \ \ \{\ \textcolor{keywordflow}{return}\ GameObjectPtr(\ \textcolor{keyword}{new}\ \mbox{\hyperlink{class_bullet_client}{BulletClient}}()\ );\ \}}
+\DoxyCodeLine{00011\ }
+\DoxyCodeLine{00012\ \ \ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{void}\ Update();}
+\DoxyCodeLine{00013\ \ \ \ \ \textcolor{comment}{//virtual\ void\ \ HandleDying()\ override;}}
+\DoxyCodeLine{00014\ }
+\DoxyCodeLine{00015\ \ \ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{void}\ \ \ \ Read(\ \mbox{\hyperlink{class_input_memory_bit_stream}{InputMemoryBitStream}}\&\ inInputStream\ )\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00016\ }
+\DoxyCodeLine{00017\ \textcolor{keyword}{protected}:}
+\DoxyCodeLine{00018\ \ \ \ \ \mbox{\hyperlink{class_bullet_client}{BulletClient}}();}
+\DoxyCodeLine{00019\ }
+\DoxyCodeLine{00020\ }
+\DoxyCodeLine{00021\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00022\ \ \ \ \ \textcolor{keywordtype}{float}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ mTimeLocationBecameOutOfSync;}
+\DoxyCodeLine{00023\ \ \ \ \ \textcolor{keywordtype}{float}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ mTimeVelocityBecameOutOfSync;}
+\DoxyCodeLine{00024\ }
+\DoxyCodeLine{00025\ \ \ \ \ SpriteComponentPtr\ \ mSpriteComponent;}
+\DoxyCodeLine{00026\ \};}
+\DoxyCodeLine{00027\ \textcolor{keyword}{typedef}\ shared\_ptr<\ BulletClient\ >\ \ BulletClientPtr;}
+\DoxyCodeLine{00028\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{//PLAYER\_CLIENT\_H}}
+
+\end{DoxyCode}

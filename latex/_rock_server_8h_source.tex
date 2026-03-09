@@ -1,0 +1,48 @@
+\doxysection{Rock\+Server.\+h}
+\hypertarget{_rock_server_8h_source}{}\label{_rock_server_8h_source}\index{src/server/RockServer.h@{src/server/RockServer.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#ifndef\ ROCK\_SERVER\_H}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#define\ ROCK\_SERVER\_H}}
+\DoxyCodeLine{00003\ }
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ "{}Rock.h"{}}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ "{}NetworkManagerServer.h"{}}}
+\DoxyCodeLine{00006\ }
+\DoxyCodeLine{00007\ \textcolor{comment}{/*enum\ ERockControlType}}
+\DoxyCodeLine{00008\ \textcolor{comment}{\{}}
+\DoxyCodeLine{00009\ \textcolor{comment}{\ \ \ \ ESCT\_Human,}}
+\DoxyCodeLine{00010\ \textcolor{comment}{\ \ \ \ ESCT\_AI}}
+\DoxyCodeLine{00011\ \textcolor{comment}{\};*/}}
+\DoxyCodeLine{00012\ }
+\DoxyCodeLine{00013\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_rock_server}{RockServer}}\ :\ \textcolor{keyword}{public}\ \mbox{\hyperlink{class_rock}{Rock}}}
+\DoxyCodeLine{00014\ \{}
+\DoxyCodeLine{00015\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00016\ \ \ \ \ \textcolor{keyword}{static}\ GameObjectPtr\ \ \ \ StaticCreate()\ \{\ \textcolor{keywordflow}{return}\ NetworkManagerServer::sInstance-\/>RegisterAndReturn(\ \textcolor{keyword}{new}\ \mbox{\hyperlink{class_rock_server}{RockServer}}()\ );\ \}}
+\DoxyCodeLine{00017\ \ \ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{void}\ HandleDying()\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00018\ }
+\DoxyCodeLine{00019\ \ \ \ \ \textcolor{keywordtype}{void}\ RockSplit();}
+\DoxyCodeLine{00020\ }
+\DoxyCodeLine{00021\ \ \ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{void}\ Update()\ \textcolor{keyword}{override};}
+\DoxyCodeLine{00022\ }
+\DoxyCodeLine{00023\ \ \ \ \ \textcolor{comment}{//void\ SetRockControlType(\ ERockControlType\ inRockControlType\ )\ \{\ mRockControlType\ =\ inRockControlType;\ \}}}
+\DoxyCodeLine{00024\ }
+\DoxyCodeLine{00025\ \ \ \ \ \textcolor{keywordtype}{void}\ TakeDamage(\ \textcolor{keywordtype}{int}\ inDamagingRockId\ );}
+\DoxyCodeLine{00026\ }
+\DoxyCodeLine{00027\ \textcolor{keyword}{protected}:}
+\DoxyCodeLine{00028\ \ \ \ \ \mbox{\hyperlink{class_rock_server}{RockServer}}();}
+\DoxyCodeLine{00029\ }
+\DoxyCodeLine{00030\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00031\ }
+\DoxyCodeLine{00032\ \ \ \ \ }
+\DoxyCodeLine{00033\ }
+\DoxyCodeLine{00034\ \ \ \ \ \textcolor{comment}{//ERockControlType\ \ mRockControlType;}}
+\DoxyCodeLine{00035\ }
+\DoxyCodeLine{00036\ }
+\DoxyCodeLine{00037\ \ \ \ \ \textcolor{keywordtype}{float}\ \ \ \ \ \ \ mTimeOfNextShot;}
+\DoxyCodeLine{00038\ \ \ \ \ \textcolor{keywordtype}{float}\ \ \ \ \ \ \ mTimeBetweenShots;}
+\DoxyCodeLine{00039\ }
+\DoxyCodeLine{00040\ \};}
+\DoxyCodeLine{00041\ }
+\DoxyCodeLine{00042\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{//\ PLAYER\_SERVER\_H}}
+
+\end{DoxyCode}

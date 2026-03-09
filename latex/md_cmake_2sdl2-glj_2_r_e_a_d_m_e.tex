@@ -1,0 +1,179 @@
+\chapter{SDL2 CMake modules}
+\hypertarget{md_cmake_2sdl2-glj_2_r_e_a_d_m_e}{}\label{md_cmake_2sdl2-glj_2_r_e_a_d_m_e}\index{SDL2 CMake modules@{SDL2 CMake modules}}
+\label{md_cmake_2sdl2-glj_2_r_e_a_d_m_e_autotoc_md437}%
+\Hypertarget{md_cmake_2sdl2-glj_2_r_e_a_d_m_e_autotoc_md437}%
+ {\bfseries{Updated\+:}} -\/ GLJ 27-\/2-\/2020
+\begin{DoxyItemize}
+\item The original version doesn\textquotesingle{}t work on Windows, taking out one of the changes (related to Threads) to see if this is the issue. It certainlty seems there is something SDL2 related going on.
+\end{DoxyItemize}
+
+{\bfseries{TODO}}
+\begin{DoxyItemize}
+\item This version uses the machine type to find the correct SDL2.\+dll version to link against (x86/x64) would be better to get this from the build system as there is we might want to compile for x86 on a x64 system.
+\end{DoxyItemize}\hypertarget{md_cmake_2sdl2-glj_2_r_e_a_d_m_e_autotoc_md438}{}\doxysection{\texorpdfstring{ORIGINAL README FOLLOWS}{ORIGINAL README FOLLOWS}}\label{md_cmake_2sdl2-glj_2_r_e_a_d_m_e_autotoc_md438}
+This repository contains \href{https://cmake.org}{\texttt{ CMake}} modules for finding and using the SDL2 library as well as other related libraries\+:
+
+
+\begin{DoxyItemize}
+\item \href{https://www.libsdl.org}{\texttt{ SDL2}}
+\item \href{https://www.libsdl.org/projects/SDL_image}{\texttt{ SDL2\+\_\+image}}
+\item \href{https://www.libsdl.org/projects/SDL_ttf}{\texttt{ SDL2\+\_\+ttf}}
+\item \href{https://www.libsdl.org/projects/SDL_net}{\texttt{ SDL2\+\_\+net}}
+\item \href{https://www.libsdl.org/projects/SDL_mixer}{\texttt{ SDL2\+\_\+mixer}}
+\item \href{http://www.ferzkopp.net/wordpress/2016/01/02/sdl_gfx-sdl2_gfx}{\texttt{ SDL2\+\_\+gfx}}
+\end{DoxyItemize}
+
+These modules are based on the SDL (1.\+2) modules, with the same names, distributed with the CMake project. The SDL2\+\_\+gfx module is also based on the SDL\+\_\+image module.\hypertarget{md_cmake_2sdl2-glj_2_r_e_a_d_m_e_autotoc_md439}{}\doxysubsection{\texorpdfstring{Details and Improvements}{Details and Improvements}}\label{md_cmake_2sdl2-glj_2_r_e_a_d_m_e_autotoc_md439}
+The improvements made to these modules are as follows\+:
+
+{\bfseries{Find\+SDL2.\+cmake}}
+
+
+\begin{DoxyItemize}
+\item Adapt {\ttfamily Find\+SDL.\+cmake} to {\ttfamily SDL2} ({\ttfamily Find\+SDL2.\+cmake}).
+\item Add cache variables for more flexibility\+:~\newline
+ {\ttfamily SDL2\+\_\+\+PATH}, {\ttfamily SDL2\+\_\+\+NO\+\_\+\+DEFAULT\+\_\+\+PATH}
+\item Mark {\ttfamily Threads} as a required dependency for non-\/\+OSX systems.
+\item Modernize the {\ttfamily Find\+SDL2.\+cmake} module by creating specific targets\+:
+\begin{DoxyItemize}
+\item {\ttfamily SDL2\+::\+Core} \+: Library project should link to {\ttfamily SDL2\+::\+Core}
+\item {\ttfamily SDL2\+::\+Main} \+: Application project should link to {\ttfamily SDL2\+::\+Main}
+\end{DoxyItemize}
+\end{DoxyItemize}
+
+{\itshape For more details, please see the embedded documentation in {\ttfamily Find\+SDL2.\+cmake} file.}
+
+{\bfseries{Find\+SDL2\+\_\+\texorpdfstring{$<$}{<}COMPONENT\texorpdfstring{$>$}{>}.cmake}}
+
+
+\begin{DoxyItemize}
+\item Adapt {\ttfamily Find\+SDL\+\_\+\texorpdfstring{$<$}{<}COMPONENT\texorpdfstring{$>$}{>}.cmake} to {\ttfamily SDL2\+\_\+\texorpdfstring{$<$}{<}COMPONENT\texorpdfstring{$>$}{>}} ({\ttfamily Find\+SDL2\+\_\+\texorpdfstring{$<$}{<}COMPONENT\texorpdfstring{$>$}{>}.cmake}).
+\item Add cache variables for more flexibility\+:~\newline
+ {\ttfamily SDL2\+\_\+\texorpdfstring{$<$}{<}COMPONENT\texorpdfstring{$>$}{>}\+\_\+\+PATH}, {\ttfamily SDL2\+\_\+\texorpdfstring{$<$}{<}COMPONENT\texorpdfstring{$>$}{>}\+\_\+\+NO\+\_\+\+DEFAULT\+\_\+\+PATH}
+\item Add {\ttfamily SDL2} as a required dependency.
+\item Modernize the {\ttfamily Find\+SDL2\+\_\+\texorpdfstring{$<$}{<}COMPONENT\texorpdfstring{$>$}{>}.cmake} modules by creating specific targets\+:~\newline
+ {\ttfamily SDL2\+::\+Image}, {\ttfamily SDL2\+::\+TTF}, {\ttfamily SDL2\+::\+Net}, {\ttfamily SDL2\+::\+Mixer} and {\ttfamily SDL2\+::\+GFX}.
+\end{DoxyItemize}
+
+{\itshape For more details, please see the embedded documentation in {\ttfamily Find\+SDL2\+\_\+\texorpdfstring{$<$}{<}COMPONENT\texorpdfstring{$>$}{>}.cmake} file.}\hypertarget{md_cmake_2sdl2-glj_2_r_e_a_d_m_e_autotoc_md440}{}\doxysubsection{\texorpdfstring{Usage}{Usage}}\label{md_cmake_2sdl2-glj_2_r_e_a_d_m_e_autotoc_md440}
+In order to use the SDL2 CMake modules, we have to clone this repository in a sud-\/directory {\ttfamily cmake/sdl2} in our project as follows\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{cd\ <PROJECT\_DIR>}
+\DoxyCodeLine{git\ clone\ https://gitlab.com/aminosbh/sdl2-\/cmake-\/modules.git\ cmake/sdl2}
+\DoxyCodeLine{rm\ -\/rf\ cmake/sdl2/.git}
+
+\end{DoxyCode}
+
+
+Or if we are using git for our project, we can add this repository as a submodule as follows\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{cd\ <PROJECT\_DIR>}
+\DoxyCodeLine{git\ submodule\ add\ https://gitlab.com/aminosbh/sdl2-\/cmake-\/modules.git\ cmake/sdl2}
+\DoxyCodeLine{git\ commit\ -\/m\ "{}Add\ SDL2\ CMake\ modules"{}}
+
+\end{DoxyCode}
+
+
+Then we should specify the modules path in the main CMake\+Lists.\+txt file like the following\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{list(APPEND\ CMAKE\_MODULE\_PATH\ \$\{CMAKE\_CURRENT\_SOURCE\_DIR\}/cmake/sdl2)}
+
+\end{DoxyCode}
+
+
+Finally, we can use the SDL2 modules. There is two approaches that can be adopted\+: A legacy approach and a modern approach. Both of them are supported.\hypertarget{md_cmake_2sdl2-glj_2_r_e_a_d_m_e_autotoc_md441}{}\doxysubsubsection{\texorpdfstring{Modern CMake}{Modern CMake}}\label{md_cmake_2sdl2-glj_2_r_e_a_d_m_e_autotoc_md441}
+We can link to the SDL2\+:\+: targets like the following example\+:~\newline
+ {\itshape This example requires the SDL2, SDL2\+\_\+image and the SDL2\+\_\+gfx libraries}
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\#\ Find\ SDL2,\ SDL2\_image\ and\ SDL2\_gfx\ libraries}
+\DoxyCodeLine{find\_package(SDL2\ REQUIRED)}
+\DoxyCodeLine{find\_package(SDL2\_image\ REQUIRED)}
+\DoxyCodeLine{find\_package(SDL2\_gfx\ REQUIRED)}
+\DoxyCodeLine{}
+\DoxyCodeLine{\#\ Link\ SDL2::Main,\ SDL2::Image\ and\ SDL2::GFX\ to\ our\ project}
+\DoxyCodeLine{target\_link\_libraries(\$\{PROJECT\_NAME\}\ SDL2::Main\ SDL2::Image\ SDL2::GFX)}
+
+\end{DoxyCode}
+
+
+{\itshape Use the appropriate packages for you project.}~\newline
+ {\itshape Please see above, for the whole list of packages}~\newline
+ {\itshape For more details, please see the embedded documentation in modules files}\hypertarget{md_cmake_2sdl2-glj_2_r_e_a_d_m_e_autotoc_md442}{}\doxysubsubsection{\texorpdfstring{Legacy CMake}{Legacy CMake}}\label{md_cmake_2sdl2-glj_2_r_e_a_d_m_e_autotoc_md442}
+We can also specify manually the include directories and libraries to link to\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\#\ Find\ and\ link\ SDL2}
+\DoxyCodeLine{find\_package(SDL2\ REQUIRED)}
+\DoxyCodeLine{target\_include\_directories(\$\{PROJECT\_NAME\}\ PRIVATE\ \$\{SDL2\_INCLUDE\_DIRS\})}
+\DoxyCodeLine{target\_link\_libraries(\$\{PROJECT\_NAME\}\ \$\{SDL2\_LIBRARIES\})}
+\DoxyCodeLine{}
+\DoxyCodeLine{\#\ Find\ and\ link\ SDL2\_image}
+\DoxyCodeLine{find\_package(SDL2\_image\ REQUIRED)}
+\DoxyCodeLine{target\_include\_directories(\$\{PROJECT\_NAME\}\ PRIVATE\ \$\{SDL2\_IMAGE\_INCLUDE\_DIRS\})}
+\DoxyCodeLine{target\_link\_libraries(\$\{PROJECT\_NAME\}\ \$\{SDL2\_IMAGE\_LIBRARIES\})}
+\DoxyCodeLine{}
+\DoxyCodeLine{\#\ Find\ and\ link\ SDL2\_gfx}
+\DoxyCodeLine{find\_package(SDL2\_gfx\ REQUIRED)}
+\DoxyCodeLine{target\_include\_directories(\$\{PROJECT\_NAME\}\ PRIVATE\ \$\{SDL2\_GFX\_INCLUDE\_DIRS\})}
+\DoxyCodeLine{target\_link\_libraries(\$\{PROJECT\_NAME\}\ \$\{SDL2\_GFX\_LIBRARIES\})}
+
+\end{DoxyCode}
+
+
+{\itshape For more details, please see the embedded documentation in modules files}\hypertarget{md_cmake_2sdl2-glj_2_r_e_a_d_m_e_autotoc_md443}{}\doxysubsection{\texorpdfstring{Special customization variables}{Special customization variables}}\label{md_cmake_2sdl2-glj_2_r_e_a_d_m_e_autotoc_md443}
+Each module have special customization cache variables that can be used to help the modules find the appropriate libraries\+:
+
+
+\begin{DoxyItemize}
+\item {\ttfamily SDL2\+\_\+\+PATH} and {\ttfamily SDL2\+\_\+\texorpdfstring{$<$}{<}COMPONENT\texorpdfstring{$>$}{>}\+\_\+\+PATH}\+:~\newline
+ Can be specified to set the root search path for the {\ttfamily SDL2} and {\ttfamily SDL2\+\_\+\texorpdfstring{$<$}{<}COMPONENT\texorpdfstring{$>$}{>}}
+\item {\ttfamily SDL2\+\_\+\+NO\+\_\+\+DEFAULT\+\_\+\+PATH} and {\ttfamily SDL2\+\_\+\texorpdfstring{$<$}{<}COMPONENT\texorpdfstring{$>$}{>}\+\_\+\+NO\+\_\+\+DEFAULT\+\_\+\+PATH}\+:~\newline
+ Disable search {\ttfamily SDL2/\+SDL2\+\_\+\texorpdfstring{$<$}{<}COMPONENT\texorpdfstring{$>$}{>}} library in default path\+:~\newline
+ If {\ttfamily SDL2\mbox{[}\+\_\+\texorpdfstring{$<$}{<}COMPONENT\texorpdfstring{$>$}{>}\mbox{]}\+\_\+\+PATH} is set, defaults to ON~\newline
+ Else defaults to OFF
+\item {\ttfamily SDL2\+\_\+\+INCLUDE\+\_\+\+DIR} and {\ttfamily SDL2\+\_\+\texorpdfstring{$<$}{<}COMPONENT\texorpdfstring{$>$}{>}\+\_\+\+INCLUDE\+\_\+\+DIR}\+:~\newline
+ Set headers path. (Override)
+\item {\ttfamily SDL2\+\_\+\+LIBRARY} and {\ttfamily SDL2\+\_\+\texorpdfstring{$<$}{<}COMPONENT\texorpdfstring{$>$}{>}\+\_\+\+LIBRARY}\+:~\newline
+ Set the library (.dll, .so, .a, etc) path. (Override)
+\item {\ttfamily SDL2\+MAIN\+\_\+\+LIBRAY}\+:~\newline
+ Set the {\ttfamily SDL2main} library (.a) path. (Override)
+\end{DoxyItemize}
+
+These variables could be used in case of Windows projects, and when the libraries are not localized in a standard pathes. They can be specified when executing the {\ttfamily cmake} command or when using the \href{https://cmake.org/runningcmake}{\texttt{ CMake GUI}} (They are marked as advanced).
+
+{\bfseries{cmake command example\+:}}
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{mkdir\ build}
+\DoxyCodeLine{cd\ build}
+\DoxyCodeLine{cmake\ ..\ -\/DSDL2\_PATH="{}/path/to/sdl2"{}}
+
+\end{DoxyCode}
+
+
+{\bfseries{CMake\+Lists.\+txt example\+:}}
+
+If we embed, for example, binaries of the SDL2\+\_\+ttf in our project, we can specify the cache variables values just before calling the {\ttfamily find\+\_\+package} command as follows\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{set(SDL2\_TTF\_PATH\ "{}/path/to/sdl2\_ttf"{}\ CACHE\ BOOL\ "{}"{}\ FORCE)}
+\DoxyCodeLine{find\_package(SDL2\_ttf\ REQUIRED)}
+
+\end{DoxyCode}
+\hypertarget{md_cmake_2sdl2-glj_2_r_e_a_d_m_e_autotoc_md444}{}\doxysubsection{\texorpdfstring{License}{License}}\label{md_cmake_2sdl2-glj_2_r_e_a_d_m_e_autotoc_md444}
+Maintainer\+: Amine B. Hassouna \href{https://gitlab.com/aminosbh}{\texttt{ @aminosbh}}
+
+The SDL2 CMake modules are based on the SDL (1.\+2) modules available with the CMake project which is distributed under the OSI-\/approved BSD 3-\/Clause License.
+
+The SDL2 CMake modules are also distributed under the OSI-\/approved BSD 3-\/Clause License. See accompanying file \href{Copyright.txt}{\texttt{ Copyright.\+txt}}. 

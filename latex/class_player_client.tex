@@ -1,0 +1,180 @@
+\doxysection{Player\+Client Class Reference}
+\hypertarget{class_player_client}{}\label{class_player_client}\index{PlayerClient@{PlayerClient}}
+Inheritance diagram for Player\+Client\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.000000cm]{class_player_client}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+virtual void \mbox{\hyperlink{class_player_client_ab7c6fe5c47f95455aa0233948518dca3}{Update}} ()
+\item 
+virtual void \mbox{\hyperlink{class_player_client_a624b912ef8c3c2b70918a54c837ad4dd}{Handle\+Dying}} () override
+\item 
+virtual void \mbox{\hyperlink{class_player_client_af4171796bed08a3518085e892fc09dd9}{Read}} (\mbox{\hyperlink{class_input_memory_bit_stream}{Input\+Memory\+Bit\+Stream}} \&in\+Input\+Stream) override
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \mbox{\hyperlink{class_player}{Player}}}
+\begin{DoxyCompactItemize}
+\item 
+virtual uint32\+\_\+t \mbox{\hyperlink{class_player_a5989372688e4b9b1ddd4b646d0a68d2e}{Get\+All\+State\+Mask}} () const override
+\item 
+virtual bool \mbox{\hyperlink{class_player_a524e270f30b925d04c8e79d3395e84f4}{Handle\+Collision\+With\+Player}} (\mbox{\hyperlink{class_player}{Player}} \texorpdfstring{$\ast$}{*}in\+Player)
+\item 
+virtual bool \mbox{\hyperlink{class_player_a47b34f30c70829be0b0689a21fe4d725}{Handle\+Collision\+With\+Rock}} (\mbox{\hyperlink{class_rock}{Rock}} \texorpdfstring{$\ast$}{*}in\+Rock)
+\item 
+virtual bool \mbox{\hyperlink{class_player_a2dca2f6311428c16ba5c74207074877e}{Handle\+Collision\+With\+Bullet}} (\mbox{\hyperlink{class_bullet}{Bullet}} \texorpdfstring{$\ast$}{*}in\+Bullet)
+\item 
+void {\bfseries Process\+Input} (float in\+Delta\+Time, const \mbox{\hyperlink{class_input_state}{Input\+State}} \&in\+Input\+State)
+\item 
+void {\bfseries Simulate\+Movement} (float in\+Delta\+Time)
+\item 
+void {\bfseries Process\+Collisions} ()
+\item 
+void {\bfseries Process\+Collisions\+With\+Screen\+Walls} ()
+\item 
+void {\bfseries Set\+Player\+Id} (uint32\+\_\+t in\+Player\+Id)
+\item 
+uint32\+\_\+t {\bfseries Get\+Player\+Id} () const
+\item 
+void {\bfseries Set\+Velocity} (const \mbox{\hyperlink{class_vector3}{Vector3}} \&in\+Velocity)
+\item 
+const \mbox{\hyperlink{class_vector3}{Vector3}} \& {\bfseries Get\+Velocity} () const
+\item 
+uint32\+\_\+t \mbox{\hyperlink{class_player_ab9d195103c258b59d029f2409cbe9e13}{Write}} (\mbox{\hyperlink{class_output_memory_bit_stream}{Output\+Memory\+Bit\+Stream}} \&in\+Output\+Stream, uint32\+\_\+t in\+Dirty\+State) const override
+\item 
+float {\bfseries Get\+Max\+Linear\+Speed} ()
+\item 
+float {\bfseries Get\+Max\+Rotation\+Speed} ()
+\item 
+float {\bfseries Get\+Wall\+Restitution} ()
+\item 
+float {\bfseries Get\+NPCRestitution} ()
+\item 
+float {\bfseries Get\+Last\+Move\+Timestamp} ()
+\item 
+float {\bfseries Get\+Thrust\+Dir} ()
+\item 
+int {\bfseries Get\+Health} ()
+\item 
+bool {\bfseries Is\+Shooting} ()
+\item 
+bool {\bfseries operator==} (\mbox{\hyperlink{class_player}{Player}} \&other)
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \mbox{\hyperlink{class_game_object}{Game\+Object}}}
+\begin{DoxyCompactItemize}
+\item 
+void {\bfseries Set\+Index\+In\+World} (int in\+Index)
+\item 
+int {\bfseries Get\+Index\+In\+World} () const
+\item 
+void {\bfseries Set\+Rotation} (float in\+Rotation)
+\item 
+float {\bfseries Get\+Rotation} () const
+\item 
+void {\bfseries Set\+Scale} (float in\+Scale)
+\item 
+float {\bfseries Get\+Scale} () const
+\item 
+const \mbox{\hyperlink{class_vector3}{Vector3}} \& {\bfseries Get\+Location} () const
+\item 
+void {\bfseries Set\+Location} (const \mbox{\hyperlink{class_vector3}{Vector3}} \&in\+Location)
+\item 
+float {\bfseries Get\+Collision\+Radius} () const
+\item 
+void {\bfseries Set\+Collision\+Radius} (float in\+Radius)
+\item 
+\mbox{\hyperlink{class_vector3}{Vector3}} {\bfseries Get\+Forward\+Vector} () const
+\item 
+void {\bfseries Set\+Color} (const \mbox{\hyperlink{class_vector3}{Vector3}} \&in\+Color)
+\item 
+const \mbox{\hyperlink{class_vector3}{Vector3}} \& {\bfseries Get\+Color} () const
+\item 
+bool {\bfseries Does\+Want\+To\+Die} () const
+\item 
+void {\bfseries Set\+Does\+Want\+To\+Die} (bool in\+Wants)
+\item 
+int {\bfseries Get\+Network\+Id} () const
+\item 
+void {\bfseries Set\+Network\+Id} (int in\+Network\+Id)
+\item 
+bool {\bfseries operator==} (\mbox{\hyperlink{class_game_object}{Game\+Object}} \&other)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_player_client_a188fc2037825f52142a34fa506c0273a}\label{class_player_client_a188fc2037825f52142a34fa506c0273a} 
+static Game\+Object\+Ptr {\bfseries Static\+Create} ()
+\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Member Functions inherited from \mbox{\hyperlink{class_player}{Player}}}
+\begin{DoxyCompactItemize}
+\item 
+static \mbox{\hyperlink{class_game_object}{Game\+Object}} \texorpdfstring{$\ast$}{*} {\bfseries Static\+Create} ()
+\item 
+static Game\+Object\+Ptr {\bfseries Static\+Create\+Ptr} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Additional Inherited Members}
+\doxysubsection*{Public Types inherited from \mbox{\hyperlink{class_player}{Player}}}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_player_a835f3722bd7636c9ebfb42a376fc3cab}\label{class_player_a835f3722bd7636c9ebfb42a376fc3cab} 
+enum {\bfseries EPlayer\+Replication\+State} \{ \newline
+{\bfseries ECRS\+\_\+\+Pose} = 1 \texorpdfstring{$<$}{<}\texorpdfstring{$<$}{<} 0
+, {\bfseries ECRS\+\_\+\+Color} = 1 \texorpdfstring{$<$}{<}\texorpdfstring{$<$}{<} 1
+, {\bfseries ECRS\+\_\+\+Player\+Id} = 1 \texorpdfstring{$<$}{<}\texorpdfstring{$<$}{<} 2
+, {\bfseries ECRS\+\_\+\+Health} = 1 \texorpdfstring{$<$}{<}\texorpdfstring{$<$}{<} 3
+, \newline
+{\bfseries ECRS\+\_\+\+All\+State} = ECRS\+\_\+\+Pose \texorpdfstring{$\vert$}{|} ECRS\+\_\+\+Color \texorpdfstring{$\vert$}{|} ECRS\+\_\+\+Player\+Id \texorpdfstring{$\vert$}{|} ECRS\+\_\+\+Health
+ \}
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Attributes inherited from \mbox{\hyperlink{class_player}{Player}}}
+\begin{DoxyCompactItemize}
+\item 
+float {\bfseries m\+Last\+Move\+Timestamp}
+\begin{DoxyCompactList}\small\item\em move down here for padding reasons... \end{DoxyCompactList}\item 
+float {\bfseries m\+Thrust\+Dir}
+\item 
+int {\bfseries m\+Health}
+\item 
+bool {\bfseries m\+Is\+Shooting}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_player_client_a624b912ef8c3c2b70918a54c837ad4dd}\label{class_player_client_a624b912ef8c3c2b70918a54c837ad4dd} 
+\index{PlayerClient@{PlayerClient}!HandleDying@{HandleDying}}
+\index{HandleDying@{HandleDying}!PlayerClient@{PlayerClient}}
+\doxysubsubsection{\texorpdfstring{HandleDying()}{HandleDying()}}
+{\footnotesize\ttfamily void Player\+Client\+::\+Handle\+Dying (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Reimplemented from \mbox{\hyperlink{class_game_object}{Game\+Object}}.
+
+\Hypertarget{class_player_client_af4171796bed08a3518085e892fc09dd9}\label{class_player_client_af4171796bed08a3518085e892fc09dd9} 
+\index{PlayerClient@{PlayerClient}!Read@{Read}}
+\index{Read@{Read}!PlayerClient@{PlayerClient}}
+\doxysubsubsection{\texorpdfstring{Read()}{Read()}}
+{\footnotesize\ttfamily void Player\+Client\+::\+Read (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_input_memory_bit_stream}{Input\+Memory\+Bit\+Stream}} \&}]{in\+Input\+Stream }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Reimplemented from \mbox{\hyperlink{class_game_object}{Game\+Object}}.
+
+\Hypertarget{class_player_client_ab7c6fe5c47f95455aa0233948518dca3}\label{class_player_client_ab7c6fe5c47f95455aa0233948518dca3} 
+\index{PlayerClient@{PlayerClient}!Update@{Update}}
+\index{Update@{Update}!PlayerClient@{PlayerClient}}
+\doxysubsubsection{\texorpdfstring{Update()}{Update()}}
+{\footnotesize\ttfamily void Player\+Client\+::\+Update (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Reimplemented from \mbox{\hyperlink{class_player}{Player}}.
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+src/client/Player\+Client.\+h\item 
+src/client/Player\+Client.\+cpp\end{DoxyCompactItemize}

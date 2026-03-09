@@ -1,0 +1,2781 @@
+\doxysection{gmock-\/spec-\/builders\+\_\+test.cc}
+\hypertarget{gmock-spec-builders__test_8cc_source}{}\label{gmock-spec-builders__test_8cc_source}\index{build/\_deps/googletest-\/src/googlemock/test/gmock-\/spec-\/builders\_test.cc@{build/\_deps/googletest-\/src/googlemock/test/gmock-\/spec-\/builders\_test.cc}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{//\ Copyright\ 2007,\ Google\ Inc.}}
+\DoxyCodeLine{00002\ \textcolor{comment}{//\ All\ rights\ reserved.}}
+\DoxyCodeLine{00003\ \textcolor{comment}{//}}
+\DoxyCodeLine{00004\ \textcolor{comment}{//\ Redistribution\ and\ use\ in\ source\ and\ binary\ forms,\ with\ or\ without}}
+\DoxyCodeLine{00005\ \textcolor{comment}{//\ modification,\ are\ permitted\ provided\ that\ the\ following\ conditions\ are}}
+\DoxyCodeLine{00006\ \textcolor{comment}{//\ met:}}
+\DoxyCodeLine{00007\ \textcolor{comment}{//}}
+\DoxyCodeLine{00008\ \textcolor{comment}{//\ \ \ \ \ *\ Redistributions\ of\ source\ code\ must\ retain\ the\ above\ copyright}}
+\DoxyCodeLine{00009\ \textcolor{comment}{//\ notice,\ this\ list\ of\ conditions\ and\ the\ following\ disclaimer.}}
+\DoxyCodeLine{00010\ \textcolor{comment}{//\ \ \ \ \ *\ Redistributions\ in\ binary\ form\ must\ reproduce\ the\ above}}
+\DoxyCodeLine{00011\ \textcolor{comment}{//\ copyright\ notice,\ this\ list\ of\ conditions\ and\ the\ following\ disclaimer}}
+\DoxyCodeLine{00012\ \textcolor{comment}{//\ in\ the\ documentation\ and/or\ other\ materials\ provided\ with\ the}}
+\DoxyCodeLine{00013\ \textcolor{comment}{//\ distribution.}}
+\DoxyCodeLine{00014\ \textcolor{comment}{//\ \ \ \ \ *\ Neither\ the\ name\ of\ Google\ Inc.\ nor\ the\ names\ of\ its}}
+\DoxyCodeLine{00015\ \textcolor{comment}{//\ contributors\ may\ be\ used\ to\ endorse\ or\ promote\ products\ derived\ from}}
+\DoxyCodeLine{00016\ \textcolor{comment}{//\ this\ software\ without\ specific\ prior\ written\ permission.}}
+\DoxyCodeLine{00017\ \textcolor{comment}{//}}
+\DoxyCodeLine{00018\ \textcolor{comment}{//\ THIS\ SOFTWARE\ IS\ PROVIDED\ BY\ THE\ COPYRIGHT\ HOLDERS\ AND\ CONTRIBUTORS}}
+\DoxyCodeLine{00019\ \textcolor{comment}{//\ "{}AS\ IS"{}\ AND\ ANY\ EXPRESS\ OR\ IMPLIED\ WARRANTIES,\ INCLUDING,\ BUT\ NOT}}
+\DoxyCodeLine{00020\ \textcolor{comment}{//\ LIMITED\ TO,\ THE\ IMPLIED\ WARRANTIES\ OF\ MERCHANTABILITY\ AND\ FITNESS\ FOR}}
+\DoxyCodeLine{00021\ \textcolor{comment}{//\ A\ PARTICULAR\ PURPOSE\ ARE\ DISCLAIMED.\ IN\ NO\ EVENT\ SHALL\ THE\ COPYRIGHT}}
+\DoxyCodeLine{00022\ \textcolor{comment}{//\ OWNER\ OR\ CONTRIBUTORS\ BE\ LIABLE\ FOR\ ANY\ DIRECT,\ INDIRECT,\ INCIDENTAL,}}
+\DoxyCodeLine{00023\ \textcolor{comment}{//\ SPECIAL,\ EXEMPLARY,\ OR\ CONSEQUENTIAL\ DAMAGES\ (INCLUDING,\ BUT\ NOT}}
+\DoxyCodeLine{00024\ \textcolor{comment}{//\ LIMITED\ TO,\ PROCUREMENT\ OF\ SUBSTITUTE\ GOODS\ OR\ SERVICES;\ LOSS\ OF\ USE,}}
+\DoxyCodeLine{00025\ \textcolor{comment}{//\ DATA,\ OR\ PROFITS;\ OR\ BUSINESS\ INTERRUPTION)\ HOWEVER\ CAUSED\ AND\ ON\ ANY}}
+\DoxyCodeLine{00026\ \textcolor{comment}{//\ THEORY\ OF\ LIABILITY,\ WHETHER\ IN\ CONTRACT,\ STRICT\ LIABILITY,\ OR\ TORT}}
+\DoxyCodeLine{00027\ \textcolor{comment}{//\ (INCLUDING\ NEGLIGENCE\ OR\ OTHERWISE)\ ARISING\ IN\ ANY\ WAY\ OUT\ OF\ THE\ USE}}
+\DoxyCodeLine{00028\ \textcolor{comment}{//\ OF\ THIS\ SOFTWARE,\ EVEN\ IF\ ADVISED\ OF\ THE\ POSSIBILITY\ OF\ SUCH\ DAMAGE.}}
+\DoxyCodeLine{00029\ }
+\DoxyCodeLine{00030\ }
+\DoxyCodeLine{00031\ \textcolor{comment}{//\ Google\ Mock\ -\/\ a\ framework\ for\ writing\ C++\ mock\ classes.}}
+\DoxyCodeLine{00032\ \textcolor{comment}{//}}
+\DoxyCodeLine{00033\ \textcolor{comment}{//\ This\ file\ tests\ the\ spec\ builder\ syntax.}}
+\DoxyCodeLine{00034\ }
+\DoxyCodeLine{00035\ \textcolor{preprocessor}{\#include\ "{}gmock/gmock-\/spec-\/builders.h"{}}}
+\DoxyCodeLine{00036\ }
+\DoxyCodeLine{00037\ \textcolor{preprocessor}{\#include\ <memory>}}
+\DoxyCodeLine{00038\ \textcolor{preprocessor}{\#include\ <ostream>}\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00039\ \textcolor{preprocessor}{\#include\ <sstream>}}
+\DoxyCodeLine{00040\ \textcolor{preprocessor}{\#include\ <string>}}
+\DoxyCodeLine{00041\ }
+\DoxyCodeLine{00042\ \textcolor{preprocessor}{\#include\ "{}gmock/gmock.h"{}}}
+\DoxyCodeLine{00043\ \textcolor{preprocessor}{\#include\ "{}gmock/internal/gmock-\/port.h"{}}}
+\DoxyCodeLine{00044\ \textcolor{preprocessor}{\#include\ "{}gtest/gtest.h"{}}}
+\DoxyCodeLine{00045\ \textcolor{preprocessor}{\#include\ "{}gtest/gtest-\/spi.h"{}}}
+\DoxyCodeLine{00046\ \textcolor{preprocessor}{\#include\ "{}gtest/internal/gtest-\/port.h"{}}}
+\DoxyCodeLine{00047\ }
+\DoxyCodeLine{00048\ \textcolor{keyword}{namespace\ }testing\ \{}
+\DoxyCodeLine{00049\ \textcolor{keyword}{namespace\ }internal\ \{}
+\DoxyCodeLine{00050\ }
+\DoxyCodeLine{00051\ \textcolor{comment}{//\ Helper\ class\ for\ testing\ the\ Expectation\ class\ template.}}
+\DoxyCodeLine{00052\ \textcolor{keyword}{class\ }\mbox{\hyperlink{classtesting_1_1internal_1_1_expectation_tester}{ExpectationTester}}\ \{}
+\DoxyCodeLine{00053\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00054\ \ \ \textcolor{comment}{//\ Sets\ the\ call\ count\ of\ the\ given\ expectation\ to\ the\ given\ number.}}
+\DoxyCodeLine{00055\ \ \ \textcolor{keywordtype}{void}\ SetCallCount(\textcolor{keywordtype}{int}\ n,\ ExpectationBase*\ exp)\ \{}
+\DoxyCodeLine{00056\ \ \ \ \ exp-\/>call\_count\_\ =\ n;}
+\DoxyCodeLine{00057\ \ \ \}}
+\DoxyCodeLine{00058\ \};}
+\DoxyCodeLine{00059\ }
+\DoxyCodeLine{00060\ \}\ \ \textcolor{comment}{//\ namespace\ internal}}
+\DoxyCodeLine{00061\ \}\ \ \textcolor{comment}{//\ namespace\ testing}}
+\DoxyCodeLine{00062\ }
+\DoxyCodeLine{00063\ \textcolor{keyword}{namespace\ }\{}
+\DoxyCodeLine{00064\ }
+\DoxyCodeLine{00065\ \textcolor{keyword}{using\ }testing::\_;}
+\DoxyCodeLine{00066\ \textcolor{keyword}{using\ }testing::AnyNumber;}
+\DoxyCodeLine{00067\ \textcolor{keyword}{using\ }testing::AtLeast;}
+\DoxyCodeLine{00068\ \textcolor{keyword}{using\ }testing::AtMost;}
+\DoxyCodeLine{00069\ \textcolor{keyword}{using\ }testing::Between;}
+\DoxyCodeLine{00070\ \textcolor{keyword}{using\ }testing::Cardinality;}
+\DoxyCodeLine{00071\ \textcolor{keyword}{using\ }testing::CardinalityInterface;}
+\DoxyCodeLine{00072\ \textcolor{keyword}{using\ }testing::Const;}
+\DoxyCodeLine{00073\ \textcolor{keyword}{using\ }testing::ContainsRegex;}
+\DoxyCodeLine{00074\ \textcolor{keyword}{using\ }testing::DoAll;}
+\DoxyCodeLine{00075\ \textcolor{keyword}{using\ }testing::DoDefault;}
+\DoxyCodeLine{00076\ \textcolor{keyword}{using\ }testing::Eq;}
+\DoxyCodeLine{00077\ \textcolor{keyword}{using\ }testing::Expectation;}
+\DoxyCodeLine{00078\ \textcolor{keyword}{using\ }testing::ExpectationSet;}
+\DoxyCodeLine{00079\ \textcolor{keyword}{using\ }testing::GMOCK\_FLAG(verbose);}
+\DoxyCodeLine{00080\ \textcolor{keyword}{using\ }testing::Gt;}
+\DoxyCodeLine{00081\ \textcolor{keyword}{using\ }testing::IgnoreResult;}
+\DoxyCodeLine{00082\ \textcolor{keyword}{using\ }testing::InSequence;}
+\DoxyCodeLine{00083\ \textcolor{keyword}{using\ }testing::Invoke;}
+\DoxyCodeLine{00084\ \textcolor{keyword}{using\ }testing::InvokeWithoutArgs;}
+\DoxyCodeLine{00085\ \textcolor{keyword}{using\ }testing::IsNotSubstring;}
+\DoxyCodeLine{00086\ \textcolor{keyword}{using\ }testing::IsSubstring;}
+\DoxyCodeLine{00087\ \textcolor{keyword}{using\ }testing::Lt;}
+\DoxyCodeLine{00088\ \textcolor{keyword}{using\ }\mbox{\hyperlink{classtesting_1_1_message}{testing::Message}};}
+\DoxyCodeLine{00089\ \textcolor{keyword}{using\ }testing::Mock;}
+\DoxyCodeLine{00090\ \textcolor{keyword}{using\ }\mbox{\hyperlink{classtesting_1_1_naggy_mock}{testing::NaggyMock}};}
+\DoxyCodeLine{00091\ \textcolor{keyword}{using\ }testing::Ne;}
+\DoxyCodeLine{00092\ \textcolor{keyword}{using\ }testing::Return;}
+\DoxyCodeLine{00093\ \textcolor{keyword}{using\ }testing::SaveArg;}
+\DoxyCodeLine{00094\ \textcolor{keyword}{using\ }testing::Sequence;}
+\DoxyCodeLine{00095\ \textcolor{keyword}{using\ }testing::SetArgPointee;}
+\DoxyCodeLine{00096\ \textcolor{keyword}{using\ }\mbox{\hyperlink{classtesting_1_1internal_1_1_expectation_tester}{testing::internal::ExpectationTester}};}
+\DoxyCodeLine{00097\ \textcolor{keyword}{using\ }testing::internal::FormatFileLocation;}
+\DoxyCodeLine{00098\ \textcolor{keyword}{using\ }testing::internal::kAllow;}
+\DoxyCodeLine{00099\ \textcolor{keyword}{using\ }testing::internal::kErrorVerbosity;}
+\DoxyCodeLine{00100\ \textcolor{keyword}{using\ }testing::internal::kFail;}
+\DoxyCodeLine{00101\ \textcolor{keyword}{using\ }testing::internal::kInfoVerbosity;}
+\DoxyCodeLine{00102\ \textcolor{keyword}{using\ }testing::internal::kWarn;}
+\DoxyCodeLine{00103\ \textcolor{keyword}{using\ }testing::internal::kWarningVerbosity;}
+\DoxyCodeLine{00104\ }
+\DoxyCodeLine{00105\ \textcolor{preprocessor}{\#if\ GTEST\_HAS\_STREAM\_REDIRECTION}}
+\DoxyCodeLine{00106\ \textcolor{keyword}{using\ }testing::HasSubstr;}
+\DoxyCodeLine{00107\ \textcolor{keyword}{using\ }testing::internal::CaptureStdout;}
+\DoxyCodeLine{00108\ \textcolor{keyword}{using\ }testing::internal::GetCapturedStdout;}
+\DoxyCodeLine{00109\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00110\ }
+\DoxyCodeLine{00111\ \textcolor{keyword}{class\ }Incomplete;}
+\DoxyCodeLine{00112\ }
+\DoxyCodeLine{00113\ \textcolor{keyword}{class\ }MockIncomplete\ \{}
+\DoxyCodeLine{00114\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00115\ \ \ \textcolor{comment}{//\ This\ line\ verifies\ that\ a\ mock\ method\ can\ take\ a\ by-\/reference}}
+\DoxyCodeLine{00116\ \ \ \textcolor{comment}{//\ argument\ of\ an\ incomplete\ type.}}
+\DoxyCodeLine{00117\ \ \ MOCK\_METHOD1(ByRefFunc,\ \textcolor{keywordtype}{void}(\textcolor{keyword}{const}\ Incomplete\&\ x));}
+\DoxyCodeLine{00118\ \};}
+\DoxyCodeLine{00119\ }
+\DoxyCodeLine{00120\ \textcolor{comment}{//\ Tells\ Google\ Mock\ how\ to\ print\ a\ value\ of\ type\ Incomplete.}}
+\DoxyCodeLine{00121\ \textcolor{keywordtype}{void}\ PrintTo(\textcolor{keyword}{const}\ Incomplete\&\ x,\ ::std::ostream*\ os);}
+\DoxyCodeLine{00122\ }
+\DoxyCodeLine{00123\ TEST(MockMethodTest,\ CanInstantiateWithIncompleteArgType)\ \{}
+\DoxyCodeLine{00124\ \ \ \textcolor{comment}{//\ Even\ though\ this\ mock\ class\ contains\ a\ mock\ method\ that\ takes}}
+\DoxyCodeLine{00125\ \ \ \textcolor{comment}{//\ by-\/reference\ an\ argument\ whose\ type\ is\ incomplete,\ we\ can\ still}}
+\DoxyCodeLine{00126\ \ \ \textcolor{comment}{//\ use\ the\ mock,\ as\ long\ as\ Google\ Mock\ knows\ how\ to\ print\ the}}
+\DoxyCodeLine{00127\ \ \ \textcolor{comment}{//\ argument.}}
+\DoxyCodeLine{00128\ \ \ MockIncomplete\ incomplete;}
+\DoxyCodeLine{00129\ \ \ EXPECT\_CALL(incomplete,\ ByRefFunc(\_))}
+\DoxyCodeLine{00130\ \ \ \ \ \ \ .Times(AnyNumber());}
+\DoxyCodeLine{00131\ \}}
+\DoxyCodeLine{00132\ }
+\DoxyCodeLine{00133\ \textcolor{comment}{//\ The\ definition\ of\ the\ printer\ for\ the\ argument\ type\ doesn't\ have\ to}}
+\DoxyCodeLine{00134\ \textcolor{comment}{//\ be\ visible\ where\ the\ mock\ is\ used.}}
+\DoxyCodeLine{00135\ \textcolor{keywordtype}{void}\ PrintTo(\textcolor{keyword}{const}\ Incomplete\&\ \textcolor{comment}{/*\ x\ */},\ ::std::ostream*\ os)\ \{}
+\DoxyCodeLine{00136\ \ \ *os\ <<\ \textcolor{stringliteral}{"{}incomplete"{}};}
+\DoxyCodeLine{00137\ \}}
+\DoxyCodeLine{00138\ }
+\DoxyCodeLine{00139\ \textcolor{keyword}{class\ }Result\ \{\};}
+\DoxyCodeLine{00140\ }
+\DoxyCodeLine{00141\ \textcolor{comment}{//\ A\ type\ that's\ not\ default\ constructible.}}
+\DoxyCodeLine{00142\ \textcolor{keyword}{class\ }NonDefaultConstructible\ \{}
+\DoxyCodeLine{00143\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00144\ \ \ \textcolor{keyword}{explicit}\ NonDefaultConstructible(\textcolor{keywordtype}{int}\ \textcolor{comment}{/*\ dummy\ */})\ \{\}}
+\DoxyCodeLine{00145\ \};}
+\DoxyCodeLine{00146\ }
+\DoxyCodeLine{00147\ \textcolor{keyword}{class\ }MockA\ \{}
+\DoxyCodeLine{00148\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00149\ \ \ MockA()\ \{\}}
+\DoxyCodeLine{00150\ }
+\DoxyCodeLine{00151\ \ \ MOCK\_METHOD1(DoA,\ \textcolor{keywordtype}{void}(\textcolor{keywordtype}{int}\ n));}
+\DoxyCodeLine{00152\ \ \ MOCK\_METHOD1(ReturnResult,\ Result(\textcolor{keywordtype}{int}\ n));}
+\DoxyCodeLine{00153\ \ \ MOCK\_METHOD0(ReturnNonDefaultConstructible,\ NonDefaultConstructible());}
+\DoxyCodeLine{00154\ \ \ MOCK\_METHOD2(Binary,\ \textcolor{keywordtype}{bool}(\textcolor{keywordtype}{int}\ x,\ \textcolor{keywordtype}{int}\ y));}
+\DoxyCodeLine{00155\ \ \ MOCK\_METHOD2(ReturnInt,\ \textcolor{keywordtype}{int}(\textcolor{keywordtype}{int}\ x,\ \textcolor{keywordtype}{int}\ y));}
+\DoxyCodeLine{00156\ }
+\DoxyCodeLine{00157\ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00158\ \ \ GTEST\_DISALLOW\_COPY\_AND\_ASSIGN\_(MockA);}
+\DoxyCodeLine{00159\ \};}
+\DoxyCodeLine{00160\ }
+\DoxyCodeLine{00161\ \textcolor{keyword}{class\ }MockB\ \{}
+\DoxyCodeLine{00162\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00163\ \ \ MockB()\ \{\}}
+\DoxyCodeLine{00164\ }
+\DoxyCodeLine{00165\ \ \ MOCK\_CONST\_METHOD0(DoB,\ \textcolor{keywordtype}{int}());\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00166\ \ \ MOCK\_METHOD1(DoB,\ \textcolor{keywordtype}{int}(\textcolor{keywordtype}{int}\ n));\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00167\ }
+\DoxyCodeLine{00168\ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00169\ \ \ GTEST\_DISALLOW\_COPY\_AND\_ASSIGN\_(MockB);}
+\DoxyCodeLine{00170\ \};}
+\DoxyCodeLine{00171\ }
+\DoxyCodeLine{00172\ \textcolor{keyword}{class\ }ReferenceHoldingMock\ \{}
+\DoxyCodeLine{00173\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00174\ \ \ ReferenceHoldingMock()\ \{\}}
+\DoxyCodeLine{00175\ }
+\DoxyCodeLine{00176\ \ \ MOCK\_METHOD1(AcceptReference,\ \textcolor{keywordtype}{void}(std::shared\_ptr<MockA>*));}
+\DoxyCodeLine{00177\ }
+\DoxyCodeLine{00178\ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00179\ \ \ GTEST\_DISALLOW\_COPY\_AND\_ASSIGN\_(ReferenceHoldingMock);}
+\DoxyCodeLine{00180\ \};}
+\DoxyCodeLine{00181\ }
+\DoxyCodeLine{00182\ \textcolor{comment}{//\ Tests\ that\ EXPECT\_CALL\ and\ ON\_CALL\ compile\ in\ a\ presence\ of\ macro}}
+\DoxyCodeLine{00183\ \textcolor{comment}{//\ redefining\ a\ mock\ method\ name.\ This\ could\ happen,\ for\ example,\ when}}
+\DoxyCodeLine{00184\ \textcolor{comment}{//\ the\ tested\ code\ \#includes\ Win32\ API\ headers\ which\ define\ many\ APIs}}
+\DoxyCodeLine{00185\ \textcolor{comment}{//\ as\ macros,\ e.g.\ \#define\ TextOut\ TextOutW.}}
+\DoxyCodeLine{00186\ }
+\DoxyCodeLine{00187\ \textcolor{preprocessor}{\#define\ Method\ MethodW}}
+\DoxyCodeLine{00188\ }
+\DoxyCodeLine{00189\ \textcolor{keyword}{class\ }CC\ \{}
+\DoxyCodeLine{00190\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00191\ \ \ \textcolor{keyword}{virtual}\ \string~CC()\ \{\}}
+\DoxyCodeLine{00192\ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{int}\ Method()\ =\ 0;}
+\DoxyCodeLine{00193\ \};}
+\DoxyCodeLine{00194\ \textcolor{keyword}{class\ }MockCC\ :\ \textcolor{keyword}{public}\ CC\ \{}
+\DoxyCodeLine{00195\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00196\ \ \ MockCC()\ \{\}}
+\DoxyCodeLine{00197\ }
+\DoxyCodeLine{00198\ \ \ MOCK\_METHOD0(Method,\ \textcolor{keywordtype}{int}());}
+\DoxyCodeLine{00199\ }
+\DoxyCodeLine{00200\ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00201\ \ \ GTEST\_DISALLOW\_COPY\_AND\_ASSIGN\_(MockCC);}
+\DoxyCodeLine{00202\ \};}
+\DoxyCodeLine{00203\ }
+\DoxyCodeLine{00204\ \textcolor{comment}{//\ Tests\ that\ a\ method\ with\ expanded\ name\ compiles.}}
+\DoxyCodeLine{00205\ TEST(OnCallSyntaxTest,\ CompilesWithMethodNameExpandedFromMacro)\ \{}
+\DoxyCodeLine{00206\ \ \ MockCC\ cc;}
+\DoxyCodeLine{00207\ \ \ ON\_CALL(cc,\ Method());}
+\DoxyCodeLine{00208\ \}}
+\DoxyCodeLine{00209\ }
+\DoxyCodeLine{00210\ \textcolor{comment}{//\ Tests\ that\ the\ method\ with\ expanded\ name\ not\ only\ compiles\ but\ runs}}
+\DoxyCodeLine{00211\ \textcolor{comment}{//\ and\ returns\ a\ correct\ value,\ too.}}
+\DoxyCodeLine{00212\ TEST(OnCallSyntaxTest,\ WorksWithMethodNameExpandedFromMacro)\ \{}
+\DoxyCodeLine{00213\ \ \ MockCC\ cc;}
+\DoxyCodeLine{00214\ \ \ ON\_CALL(cc,\ Method()).WillByDefault(Return(42));}
+\DoxyCodeLine{00215\ \ \ EXPECT\_EQ(42,\ cc.Method());}
+\DoxyCodeLine{00216\ \}}
+\DoxyCodeLine{00217\ }
+\DoxyCodeLine{00218\ \textcolor{comment}{//\ Tests\ that\ a\ method\ with\ expanded\ name\ compiles.}}
+\DoxyCodeLine{00219\ TEST(ExpectCallSyntaxTest,\ CompilesWithMethodNameExpandedFromMacro)\ \{}
+\DoxyCodeLine{00220\ \ \ MockCC\ cc;}
+\DoxyCodeLine{00221\ \ \ EXPECT\_CALL(cc,\ Method());}
+\DoxyCodeLine{00222\ \ \ cc.Method();}
+\DoxyCodeLine{00223\ \}}
+\DoxyCodeLine{00224\ }
+\DoxyCodeLine{00225\ \textcolor{comment}{//\ Tests\ that\ it\ works,\ too.}}
+\DoxyCodeLine{00226\ TEST(ExpectCallSyntaxTest,\ WorksWithMethodNameExpandedFromMacro)\ \{}
+\DoxyCodeLine{00227\ \ \ MockCC\ cc;}
+\DoxyCodeLine{00228\ \ \ EXPECT\_CALL(cc,\ Method()).WillOnce(Return(42));}
+\DoxyCodeLine{00229\ \ \ EXPECT\_EQ(42,\ cc.Method());}
+\DoxyCodeLine{00230\ \}}
+\DoxyCodeLine{00231\ }
+\DoxyCodeLine{00232\ \textcolor{preprocessor}{\#undef\ Method\ \ }\textcolor{comment}{//\ Done\ with\ macro\ redefinition\ tests.}}
+\DoxyCodeLine{00233\ }
+\DoxyCodeLine{00234\ \textcolor{comment}{//\ Tests\ that\ ON\_CALL\ evaluates\ its\ arguments\ exactly\ once\ as\ promised}}
+\DoxyCodeLine{00235\ \textcolor{comment}{//\ by\ Google\ Mock.}}
+\DoxyCodeLine{00236\ TEST(OnCallSyntaxTest,\ EvaluatesFirstArgumentOnce)\ \{}
+\DoxyCodeLine{00237\ \ \ MockA\ a;}
+\DoxyCodeLine{00238\ \ \ MockA*\ pa\ =\ \&a;}
+\DoxyCodeLine{00239\ }
+\DoxyCodeLine{00240\ \ \ ON\_CALL(*pa++,\ DoA(\_));}
+\DoxyCodeLine{00241\ \ \ EXPECT\_EQ(\&a\ +\ 1,\ pa);}
+\DoxyCodeLine{00242\ \}}
+\DoxyCodeLine{00243\ }
+\DoxyCodeLine{00244\ TEST(OnCallSyntaxTest,\ EvaluatesSecondArgumentOnce)\ \{}
+\DoxyCodeLine{00245\ \ \ MockA\ a;}
+\DoxyCodeLine{00246\ \ \ \textcolor{keywordtype}{int}\ n\ =\ 0;}
+\DoxyCodeLine{00247\ }
+\DoxyCodeLine{00248\ \ \ ON\_CALL(a,\ DoA(n++));}
+\DoxyCodeLine{00249\ \ \ EXPECT\_EQ(1,\ n);}
+\DoxyCodeLine{00250\ \}}
+\DoxyCodeLine{00251\ }
+\DoxyCodeLine{00252\ \textcolor{comment}{//\ Tests\ that\ the\ syntax\ of\ ON\_CALL()\ is\ enforced\ at\ run\ time.}}
+\DoxyCodeLine{00253\ }
+\DoxyCodeLine{00254\ TEST(OnCallSyntaxTest,\ WithIsOptional)\ \{}
+\DoxyCodeLine{00255\ \ \ MockA\ a;}
+\DoxyCodeLine{00256\ }
+\DoxyCodeLine{00257\ \ \ ON\_CALL(a,\ DoA(5))}
+\DoxyCodeLine{00258\ \ \ \ \ \ \ .WillByDefault(Return());}
+\DoxyCodeLine{00259\ \ \ ON\_CALL(a,\ DoA(\_))}
+\DoxyCodeLine{00260\ \ \ \ \ \ \ .With(\_)}
+\DoxyCodeLine{00261\ \ \ \ \ \ \ .WillByDefault(Return());}
+\DoxyCodeLine{00262\ \}}
+\DoxyCodeLine{00263\ }
+\DoxyCodeLine{00264\ TEST(OnCallSyntaxTest,\ WithCanAppearAtMostOnce)\ \{}
+\DoxyCodeLine{00265\ \ \ MockA\ a;}
+\DoxyCodeLine{00266\ }
+\DoxyCodeLine{00267\ \ \ EXPECT\_NONFATAL\_FAILURE(\{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00268\ \ \ \ \ ON\_CALL(a,\ ReturnResult(\_))}
+\DoxyCodeLine{00269\ \ \ \ \ \ \ \ \ .With(\_)}
+\DoxyCodeLine{00270\ \ \ \ \ \ \ \ \ .With(\_)}
+\DoxyCodeLine{00271\ \ \ \ \ \ \ \ \ .WillByDefault(Return(Result()));}
+\DoxyCodeLine{00272\ \ \ \},\ \textcolor{stringliteral}{"{}.With()\ cannot\ appear\ more\ than\ once\ in\ an\ ON\_CALL()"{}});}
+\DoxyCodeLine{00273\ \}}
+\DoxyCodeLine{00274\ }
+\DoxyCodeLine{00275\ TEST(OnCallSyntaxTest,\ WillByDefaultIsMandatory)\ \{}
+\DoxyCodeLine{00276\ \ \ MockA\ a;}
+\DoxyCodeLine{00277\ }
+\DoxyCodeLine{00278\ \ \ EXPECT\_DEATH\_IF\_SUPPORTED(\{}
+\DoxyCodeLine{00279\ \ \ \ \ ON\_CALL(a,\ DoA(5));}
+\DoxyCodeLine{00280\ \ \ \ \ a.DoA(5);}
+\DoxyCodeLine{00281\ \ \ \},\ \textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{00282\ \}}
+\DoxyCodeLine{00283\ }
+\DoxyCodeLine{00284\ TEST(OnCallSyntaxTest,\ WillByDefaultCanAppearAtMostOnce)\ \{}
+\DoxyCodeLine{00285\ \ \ MockA\ a;}
+\DoxyCodeLine{00286\ }
+\DoxyCodeLine{00287\ \ \ EXPECT\_NONFATAL\_FAILURE(\{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00288\ \ \ \ \ ON\_CALL(a,\ DoA(5))}
+\DoxyCodeLine{00289\ \ \ \ \ \ \ \ \ .WillByDefault(Return())}
+\DoxyCodeLine{00290\ \ \ \ \ \ \ \ \ .WillByDefault(Return());}
+\DoxyCodeLine{00291\ \ \ \},\ \textcolor{stringliteral}{"{}.WillByDefault()\ must\ appear\ exactly\ once\ in\ an\ ON\_CALL()"{}});}
+\DoxyCodeLine{00292\ \}}
+\DoxyCodeLine{00293\ }
+\DoxyCodeLine{00294\ \textcolor{comment}{//\ Tests\ that\ EXPECT\_CALL\ evaluates\ its\ arguments\ exactly\ once\ as}}
+\DoxyCodeLine{00295\ \textcolor{comment}{//\ promised\ by\ Google\ Mock.}}
+\DoxyCodeLine{00296\ TEST(ExpectCallSyntaxTest,\ EvaluatesFirstArgumentOnce)\ \{}
+\DoxyCodeLine{00297\ \ \ MockA\ a;}
+\DoxyCodeLine{00298\ \ \ MockA*\ pa\ =\ \&a;}
+\DoxyCodeLine{00299\ }
+\DoxyCodeLine{00300\ \ \ EXPECT\_CALL(*pa++,\ DoA(\_));}
+\DoxyCodeLine{00301\ \ \ a.DoA(0);}
+\DoxyCodeLine{00302\ \ \ EXPECT\_EQ(\&a\ +\ 1,\ pa);}
+\DoxyCodeLine{00303\ \}}
+\DoxyCodeLine{00304\ }
+\DoxyCodeLine{00305\ TEST(ExpectCallSyntaxTest,\ EvaluatesSecondArgumentOnce)\ \{}
+\DoxyCodeLine{00306\ \ \ MockA\ a;}
+\DoxyCodeLine{00307\ \ \ \textcolor{keywordtype}{int}\ n\ =\ 0;}
+\DoxyCodeLine{00308\ }
+\DoxyCodeLine{00309\ \ \ EXPECT\_CALL(a,\ DoA(n++));}
+\DoxyCodeLine{00310\ \ \ a.DoA(0);}
+\DoxyCodeLine{00311\ \ \ EXPECT\_EQ(1,\ n);}
+\DoxyCodeLine{00312\ \}}
+\DoxyCodeLine{00313\ }
+\DoxyCodeLine{00314\ \textcolor{comment}{//\ Tests\ that\ the\ syntax\ of\ EXPECT\_CALL()\ is\ enforced\ at\ run\ time.}}
+\DoxyCodeLine{00315\ }
+\DoxyCodeLine{00316\ TEST(ExpectCallSyntaxTest,\ WithIsOptional)\ \{}
+\DoxyCodeLine{00317\ \ \ MockA\ a;}
+\DoxyCodeLine{00318\ }
+\DoxyCodeLine{00319\ \ \ EXPECT\_CALL(a,\ DoA(5))}
+\DoxyCodeLine{00320\ \ \ \ \ \ \ .Times(0);}
+\DoxyCodeLine{00321\ \ \ EXPECT\_CALL(a,\ DoA(6))}
+\DoxyCodeLine{00322\ \ \ \ \ \ \ .With(\_)}
+\DoxyCodeLine{00323\ \ \ \ \ \ \ .Times(0);}
+\DoxyCodeLine{00324\ \}}
+\DoxyCodeLine{00325\ }
+\DoxyCodeLine{00326\ TEST(ExpectCallSyntaxTest,\ WithCanAppearAtMostOnce)\ \{}
+\DoxyCodeLine{00327\ \ \ MockA\ a;}
+\DoxyCodeLine{00328\ }
+\DoxyCodeLine{00329\ \ \ EXPECT\_NONFATAL\_FAILURE(\{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00330\ \ \ \ \ EXPECT\_CALL(a,\ DoA(6))}
+\DoxyCodeLine{00331\ \ \ \ \ \ \ \ \ .With(\_)}
+\DoxyCodeLine{00332\ \ \ \ \ \ \ \ \ .With(\_);}
+\DoxyCodeLine{00333\ \ \ \},\ \textcolor{stringliteral}{"{}.With()\ cannot\ appear\ more\ than\ once\ in\ an\ EXPECT\_CALL()"{}});}
+\DoxyCodeLine{00334\ }
+\DoxyCodeLine{00335\ \ \ a.DoA(6);}
+\DoxyCodeLine{00336\ \}}
+\DoxyCodeLine{00337\ }
+\DoxyCodeLine{00338\ TEST(ExpectCallSyntaxTest,\ WithMustBeFirstClause)\ \{}
+\DoxyCodeLine{00339\ \ \ MockA\ a;}
+\DoxyCodeLine{00340\ }
+\DoxyCodeLine{00341\ \ \ EXPECT\_NONFATAL\_FAILURE(\{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00342\ \ \ \ \ EXPECT\_CALL(a,\ DoA(1))}
+\DoxyCodeLine{00343\ \ \ \ \ \ \ \ \ .Times(1)}
+\DoxyCodeLine{00344\ \ \ \ \ \ \ \ \ .With(\_);}
+\DoxyCodeLine{00345\ \ \ \},\ \textcolor{stringliteral}{"{}.With()\ must\ be\ the\ first\ clause\ in\ an\ EXPECT\_CALL()"{}});}
+\DoxyCodeLine{00346\ }
+\DoxyCodeLine{00347\ \ \ a.DoA(1);}
+\DoxyCodeLine{00348\ }
+\DoxyCodeLine{00349\ \ \ EXPECT\_NONFATAL\_FAILURE(\{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00350\ \ \ \ \ EXPECT\_CALL(a,\ DoA(2))}
+\DoxyCodeLine{00351\ \ \ \ \ \ \ \ \ .WillOnce(Return())}
+\DoxyCodeLine{00352\ \ \ \ \ \ \ \ \ .With(\_);}
+\DoxyCodeLine{00353\ \ \ \},\ \textcolor{stringliteral}{"{}.With()\ must\ be\ the\ first\ clause\ in\ an\ EXPECT\_CALL()"{}});}
+\DoxyCodeLine{00354\ }
+\DoxyCodeLine{00355\ \ \ a.DoA(2);}
+\DoxyCodeLine{00356\ \}}
+\DoxyCodeLine{00357\ }
+\DoxyCodeLine{00358\ TEST(ExpectCallSyntaxTest,\ TimesCanBeInferred)\ \{}
+\DoxyCodeLine{00359\ \ \ MockA\ a;}
+\DoxyCodeLine{00360\ }
+\DoxyCodeLine{00361\ \ \ EXPECT\_CALL(a,\ DoA(1))}
+\DoxyCodeLine{00362\ \ \ \ \ \ \ .WillOnce(Return());}
+\DoxyCodeLine{00363\ }
+\DoxyCodeLine{00364\ \ \ EXPECT\_CALL(a,\ DoA(2))}
+\DoxyCodeLine{00365\ \ \ \ \ \ \ .WillOnce(Return())}
+\DoxyCodeLine{00366\ \ \ \ \ \ \ .WillRepeatedly(Return());}
+\DoxyCodeLine{00367\ }
+\DoxyCodeLine{00368\ \ \ a.DoA(1);}
+\DoxyCodeLine{00369\ \ \ a.DoA(2);}
+\DoxyCodeLine{00370\ \ \ a.DoA(2);}
+\DoxyCodeLine{00371\ \}}
+\DoxyCodeLine{00372\ }
+\DoxyCodeLine{00373\ TEST(ExpectCallSyntaxTest,\ TimesCanAppearAtMostOnce)\ \{}
+\DoxyCodeLine{00374\ \ \ MockA\ a;}
+\DoxyCodeLine{00375\ }
+\DoxyCodeLine{00376\ \ \ EXPECT\_NONFATAL\_FAILURE(\{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00377\ \ \ \ \ EXPECT\_CALL(a,\ DoA(1))}
+\DoxyCodeLine{00378\ \ \ \ \ \ \ \ \ .Times(1)}
+\DoxyCodeLine{00379\ \ \ \ \ \ \ \ \ .Times(2);}
+\DoxyCodeLine{00380\ \ \ \},\ \textcolor{stringliteral}{"{}.Times()\ cannot\ appear\ more\ than\ once\ in\ an\ EXPECT\_CALL()"{}});}
+\DoxyCodeLine{00381\ }
+\DoxyCodeLine{00382\ \ \ a.DoA(1);}
+\DoxyCodeLine{00383\ \ \ a.DoA(1);}
+\DoxyCodeLine{00384\ \}}
+\DoxyCodeLine{00385\ }
+\DoxyCodeLine{00386\ TEST(ExpectCallSyntaxTest,\ TimesMustBeBeforeInSequence)\ \{}
+\DoxyCodeLine{00387\ \ \ MockA\ a;}
+\DoxyCodeLine{00388\ \ \ Sequence\ s;}
+\DoxyCodeLine{00389\ }
+\DoxyCodeLine{00390\ \ \ EXPECT\_NONFATAL\_FAILURE(\{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00391\ \ \ \ \ EXPECT\_CALL(a,\ DoA(1))}
+\DoxyCodeLine{00392\ \ \ \ \ \ \ \ \ .InSequence(s)}
+\DoxyCodeLine{00393\ \ \ \ \ \ \ \ \ .Times(1);}
+\DoxyCodeLine{00394\ \ \ \},\ \textcolor{stringliteral}{"{}.Times()\ cannot\ appear\ after\ "{}});}
+\DoxyCodeLine{00395\ }
+\DoxyCodeLine{00396\ \ \ a.DoA(1);}
+\DoxyCodeLine{00397\ \}}
+\DoxyCodeLine{00398\ }
+\DoxyCodeLine{00399\ TEST(ExpectCallSyntaxTest,\ InSequenceIsOptional)\ \{}
+\DoxyCodeLine{00400\ \ \ MockA\ a;}
+\DoxyCodeLine{00401\ \ \ Sequence\ s;}
+\DoxyCodeLine{00402\ }
+\DoxyCodeLine{00403\ \ \ EXPECT\_CALL(a,\ DoA(1));}
+\DoxyCodeLine{00404\ \ \ EXPECT\_CALL(a,\ DoA(2))}
+\DoxyCodeLine{00405\ \ \ \ \ \ \ .InSequence(s);}
+\DoxyCodeLine{00406\ }
+\DoxyCodeLine{00407\ \ \ a.DoA(1);}
+\DoxyCodeLine{00408\ \ \ a.DoA(2);}
+\DoxyCodeLine{00409\ \}}
+\DoxyCodeLine{00410\ }
+\DoxyCodeLine{00411\ TEST(ExpectCallSyntaxTest,\ InSequenceCanAppearMultipleTimes)\ \{}
+\DoxyCodeLine{00412\ \ \ MockA\ a;}
+\DoxyCodeLine{00413\ \ \ Sequence\ s1,\ s2;}
+\DoxyCodeLine{00414\ }
+\DoxyCodeLine{00415\ \ \ EXPECT\_CALL(a,\ DoA(1))}
+\DoxyCodeLine{00416\ \ \ \ \ \ \ .InSequence(s1,\ s2)}
+\DoxyCodeLine{00417\ \ \ \ \ \ \ .InSequence(s1);}
+\DoxyCodeLine{00418\ }
+\DoxyCodeLine{00419\ \ \ a.DoA(1);}
+\DoxyCodeLine{00420\ \}}
+\DoxyCodeLine{00421\ }
+\DoxyCodeLine{00422\ TEST(ExpectCallSyntaxTest,\ InSequenceMustBeBeforeAfter)\ \{}
+\DoxyCodeLine{00423\ \ \ MockA\ a;}
+\DoxyCodeLine{00424\ \ \ Sequence\ s;}
+\DoxyCodeLine{00425\ }
+\DoxyCodeLine{00426\ \ \ Expectation\ e\ =\ EXPECT\_CALL(a,\ DoA(1))}
+\DoxyCodeLine{00427\ \ \ \ \ \ \ .Times(AnyNumber());}
+\DoxyCodeLine{00428\ \ \ EXPECT\_NONFATAL\_FAILURE(\{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00429\ \ \ \ \ EXPECT\_CALL(a,\ DoA(2))}
+\DoxyCodeLine{00430\ \ \ \ \ \ \ \ \ .After(e)}
+\DoxyCodeLine{00431\ \ \ \ \ \ \ \ \ .InSequence(s);}
+\DoxyCodeLine{00432\ \ \ \},\ \textcolor{stringliteral}{"{}.InSequence()\ cannot\ appear\ after\ "{}});}
+\DoxyCodeLine{00433\ }
+\DoxyCodeLine{00434\ \ \ a.DoA(2);}
+\DoxyCodeLine{00435\ \}}
+\DoxyCodeLine{00436\ }
+\DoxyCodeLine{00437\ TEST(ExpectCallSyntaxTest,\ InSequenceMustBeBeforeWillOnce)\ \{}
+\DoxyCodeLine{00438\ \ \ MockA\ a;}
+\DoxyCodeLine{00439\ \ \ Sequence\ s;}
+\DoxyCodeLine{00440\ }
+\DoxyCodeLine{00441\ \ \ EXPECT\_NONFATAL\_FAILURE(\{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00442\ \ \ \ \ EXPECT\_CALL(a,\ DoA(1))}
+\DoxyCodeLine{00443\ \ \ \ \ \ \ \ \ .WillOnce(Return())}
+\DoxyCodeLine{00444\ \ \ \ \ \ \ \ \ .InSequence(s);}
+\DoxyCodeLine{00445\ \ \ \},\ \textcolor{stringliteral}{"{}.InSequence()\ cannot\ appear\ after\ "{}});}
+\DoxyCodeLine{00446\ }
+\DoxyCodeLine{00447\ \ \ a.DoA(1);}
+\DoxyCodeLine{00448\ \}}
+\DoxyCodeLine{00449\ }
+\DoxyCodeLine{00450\ TEST(ExpectCallSyntaxTest,\ AfterMustBeBeforeWillOnce)\ \{}
+\DoxyCodeLine{00451\ \ \ MockA\ a;}
+\DoxyCodeLine{00452\ }
+\DoxyCodeLine{00453\ \ \ Expectation\ e\ =\ EXPECT\_CALL(a,\ DoA(1));}
+\DoxyCodeLine{00454\ \ \ EXPECT\_NONFATAL\_FAILURE(\{}
+\DoxyCodeLine{00455\ \ \ \ \ EXPECT\_CALL(a,\ DoA(2))}
+\DoxyCodeLine{00456\ \ \ \ \ \ \ \ \ .WillOnce(Return())}
+\DoxyCodeLine{00457\ \ \ \ \ \ \ \ \ .After(e);}
+\DoxyCodeLine{00458\ \ \ \},\ \textcolor{stringliteral}{"{}.After()\ cannot\ appear\ after\ "{}});}
+\DoxyCodeLine{00459\ }
+\DoxyCodeLine{00460\ \ \ a.DoA(1);}
+\DoxyCodeLine{00461\ \ \ a.DoA(2);}
+\DoxyCodeLine{00462\ \}}
+\DoxyCodeLine{00463\ }
+\DoxyCodeLine{00464\ TEST(ExpectCallSyntaxTest,\ WillIsOptional)\ \{}
+\DoxyCodeLine{00465\ \ \ MockA\ a;}
+\DoxyCodeLine{00466\ }
+\DoxyCodeLine{00467\ \ \ EXPECT\_CALL(a,\ DoA(1));}
+\DoxyCodeLine{00468\ \ \ EXPECT\_CALL(a,\ DoA(2))}
+\DoxyCodeLine{00469\ \ \ \ \ \ \ .WillOnce(Return());}
+\DoxyCodeLine{00470\ }
+\DoxyCodeLine{00471\ \ \ a.DoA(1);}
+\DoxyCodeLine{00472\ \ \ a.DoA(2);}
+\DoxyCodeLine{00473\ \}}
+\DoxyCodeLine{00474\ }
+\DoxyCodeLine{00475\ TEST(ExpectCallSyntaxTest,\ WillCanAppearMultipleTimes)\ \{}
+\DoxyCodeLine{00476\ \ \ MockA\ a;}
+\DoxyCodeLine{00477\ }
+\DoxyCodeLine{00478\ \ \ EXPECT\_CALL(a,\ DoA(1))}
+\DoxyCodeLine{00479\ \ \ \ \ \ \ .Times(AnyNumber())}
+\DoxyCodeLine{00480\ \ \ \ \ \ \ .WillOnce(Return())}
+\DoxyCodeLine{00481\ \ \ \ \ \ \ .WillOnce(Return())}
+\DoxyCodeLine{00482\ \ \ \ \ \ \ .WillOnce(Return());}
+\DoxyCodeLine{00483\ \}}
+\DoxyCodeLine{00484\ }
+\DoxyCodeLine{00485\ TEST(ExpectCallSyntaxTest,\ WillMustBeBeforeWillRepeatedly)\ \{}
+\DoxyCodeLine{00486\ \ \ MockA\ a;}
+\DoxyCodeLine{00487\ }
+\DoxyCodeLine{00488\ \ \ EXPECT\_NONFATAL\_FAILURE(\{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00489\ \ \ \ \ EXPECT\_CALL(a,\ DoA(1))}
+\DoxyCodeLine{00490\ \ \ \ \ \ \ \ \ .WillRepeatedly(Return())}
+\DoxyCodeLine{00491\ \ \ \ \ \ \ \ \ .WillOnce(Return());}
+\DoxyCodeLine{00492\ \ \ \},\ \textcolor{stringliteral}{"{}.WillOnce()\ cannot\ appear\ after\ "{}});}
+\DoxyCodeLine{00493\ }
+\DoxyCodeLine{00494\ \ \ a.DoA(1);}
+\DoxyCodeLine{00495\ \}}
+\DoxyCodeLine{00496\ }
+\DoxyCodeLine{00497\ TEST(ExpectCallSyntaxTest,\ WillRepeatedlyIsOptional)\ \{}
+\DoxyCodeLine{00498\ \ \ MockA\ a;}
+\DoxyCodeLine{00499\ }
+\DoxyCodeLine{00500\ \ \ EXPECT\_CALL(a,\ DoA(1))}
+\DoxyCodeLine{00501\ \ \ \ \ \ \ .WillOnce(Return());}
+\DoxyCodeLine{00502\ \ \ EXPECT\_CALL(a,\ DoA(2))}
+\DoxyCodeLine{00503\ \ \ \ \ \ \ .WillOnce(Return())}
+\DoxyCodeLine{00504\ \ \ \ \ \ \ .WillRepeatedly(Return());}
+\DoxyCodeLine{00505\ }
+\DoxyCodeLine{00506\ \ \ a.DoA(1);}
+\DoxyCodeLine{00507\ \ \ a.DoA(2);}
+\DoxyCodeLine{00508\ \ \ a.DoA(2);}
+\DoxyCodeLine{00509\ \}}
+\DoxyCodeLine{00510\ }
+\DoxyCodeLine{00511\ TEST(ExpectCallSyntaxTest,\ WillRepeatedlyCannotAppearMultipleTimes)\ \{}
+\DoxyCodeLine{00512\ \ \ MockA\ a;}
+\DoxyCodeLine{00513\ }
+\DoxyCodeLine{00514\ \ \ EXPECT\_NONFATAL\_FAILURE(\{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00515\ \ \ \ \ EXPECT\_CALL(a,\ DoA(1))}
+\DoxyCodeLine{00516\ \ \ \ \ \ \ \ \ .WillRepeatedly(Return())}
+\DoxyCodeLine{00517\ \ \ \ \ \ \ \ \ .WillRepeatedly(Return());}
+\DoxyCodeLine{00518\ \ \ \},\ \textcolor{stringliteral}{"{}.WillRepeatedly()\ cannot\ appear\ more\ than\ once\ in\ an\ "{}}}
+\DoxyCodeLine{00519\ \ \ \ \ \ \textcolor{stringliteral}{"{}EXPECT\_CALL()"{}});}
+\DoxyCodeLine{00520\ \}}
+\DoxyCodeLine{00521\ }
+\DoxyCodeLine{00522\ TEST(ExpectCallSyntaxTest,\ WillRepeatedlyMustBeBeforeRetiresOnSaturation)\ \{}
+\DoxyCodeLine{00523\ \ \ MockA\ a;}
+\DoxyCodeLine{00524\ }
+\DoxyCodeLine{00525\ \ \ EXPECT\_NONFATAL\_FAILURE(\{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00526\ \ \ \ \ EXPECT\_CALL(a,\ DoA(1))}
+\DoxyCodeLine{00527\ \ \ \ \ \ \ \ \ .RetiresOnSaturation()}
+\DoxyCodeLine{00528\ \ \ \ \ \ \ \ \ .WillRepeatedly(Return());}
+\DoxyCodeLine{00529\ \ \ \},\ \textcolor{stringliteral}{"{}.WillRepeatedly()\ cannot\ appear\ after\ "{}});}
+\DoxyCodeLine{00530\ \}}
+\DoxyCodeLine{00531\ }
+\DoxyCodeLine{00532\ TEST(ExpectCallSyntaxTest,\ RetiresOnSaturationIsOptional)\ \{}
+\DoxyCodeLine{00533\ \ \ MockA\ a;}
+\DoxyCodeLine{00534\ }
+\DoxyCodeLine{00535\ \ \ EXPECT\_CALL(a,\ DoA(1));}
+\DoxyCodeLine{00536\ \ \ EXPECT\_CALL(a,\ DoA(1))}
+\DoxyCodeLine{00537\ \ \ \ \ \ \ .RetiresOnSaturation();}
+\DoxyCodeLine{00538\ }
+\DoxyCodeLine{00539\ \ \ a.DoA(1);}
+\DoxyCodeLine{00540\ \ \ a.DoA(1);}
+\DoxyCodeLine{00541\ \}}
+\DoxyCodeLine{00542\ }
+\DoxyCodeLine{00543\ TEST(ExpectCallSyntaxTest,\ RetiresOnSaturationCannotAppearMultipleTimes)\ \{}
+\DoxyCodeLine{00544\ \ \ MockA\ a;}
+\DoxyCodeLine{00545\ }
+\DoxyCodeLine{00546\ \ \ EXPECT\_NONFATAL\_FAILURE(\{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00547\ \ \ \ \ EXPECT\_CALL(a,\ DoA(1))}
+\DoxyCodeLine{00548\ \ \ \ \ \ \ \ \ .RetiresOnSaturation()}
+\DoxyCodeLine{00549\ \ \ \ \ \ \ \ \ .RetiresOnSaturation();}
+\DoxyCodeLine{00550\ \ \ \},\ \textcolor{stringliteral}{"{}.RetiresOnSaturation()\ cannot\ appear\ more\ than\ once"{}});}
+\DoxyCodeLine{00551\ }
+\DoxyCodeLine{00552\ \ \ a.DoA(1);}
+\DoxyCodeLine{00553\ \}}
+\DoxyCodeLine{00554\ }
+\DoxyCodeLine{00555\ TEST(ExpectCallSyntaxTest,\ DefaultCardinalityIsOnce)\ \{}
+\DoxyCodeLine{00556\ \ \ \{}
+\DoxyCodeLine{00557\ \ \ \ \ MockA\ a;}
+\DoxyCodeLine{00558\ \ \ \ \ EXPECT\_CALL(a,\ DoA(1));}
+\DoxyCodeLine{00559\ \ \ \ \ a.DoA(1);}
+\DoxyCodeLine{00560\ \ \ \}}
+\DoxyCodeLine{00561\ \ \ EXPECT\_NONFATAL\_FAILURE(\{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00562\ \ \ \ \ MockA\ a;}
+\DoxyCodeLine{00563\ \ \ \ \ EXPECT\_CALL(a,\ DoA(1));}
+\DoxyCodeLine{00564\ \ \ \},\ \textcolor{stringliteral}{"{}to\ be\ called\ once"{}});}
+\DoxyCodeLine{00565\ \ \ EXPECT\_NONFATAL\_FAILURE(\{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00566\ \ \ \ \ MockA\ a;}
+\DoxyCodeLine{00567\ \ \ \ \ EXPECT\_CALL(a,\ DoA(1));}
+\DoxyCodeLine{00568\ \ \ \ \ a.DoA(1);}
+\DoxyCodeLine{00569\ \ \ \ \ a.DoA(1);}
+\DoxyCodeLine{00570\ \ \ \},\ \textcolor{stringliteral}{"{}to\ be\ called\ once"{}});}
+\DoxyCodeLine{00571\ \}}
+\DoxyCodeLine{00572\ }
+\DoxyCodeLine{00573\ \textcolor{preprocessor}{\#if\ GTEST\_HAS\_STREAM\_REDIRECTION}}
+\DoxyCodeLine{00574\ }
+\DoxyCodeLine{00575\ \textcolor{comment}{//\ Tests\ that\ Google\ Mock\ doesn't\ print\ a\ warning\ when\ the\ number\ of}}
+\DoxyCodeLine{00576\ \textcolor{comment}{//\ WillOnce()\ is\ adequate.}}
+\DoxyCodeLine{00577\ TEST(ExpectCallSyntaxTest,\ DoesNotWarnOnAdequateActionCount)\ \{}
+\DoxyCodeLine{00578\ \ \ CaptureStdout();}
+\DoxyCodeLine{00579\ \ \ \{}
+\DoxyCodeLine{00580\ \ \ \ \ MockB\ b;}
+\DoxyCodeLine{00581\ }
+\DoxyCodeLine{00582\ \ \ \ \ \textcolor{comment}{//\ It's\ always\ fine\ to\ omit\ WillOnce()\ entirely.}}
+\DoxyCodeLine{00583\ \ \ \ \ EXPECT\_CALL(b,\ DoB())}
+\DoxyCodeLine{00584\ \ \ \ \ \ \ \ \ .Times(0);}
+\DoxyCodeLine{00585\ \ \ \ \ EXPECT\_CALL(b,\ DoB(1))}
+\DoxyCodeLine{00586\ \ \ \ \ \ \ \ \ .Times(AtMost(1));}
+\DoxyCodeLine{00587\ \ \ \ \ EXPECT\_CALL(b,\ DoB(2))}
+\DoxyCodeLine{00588\ \ \ \ \ \ \ \ \ .Times(1)}
+\DoxyCodeLine{00589\ \ \ \ \ \ \ \ \ .WillRepeatedly(Return(1));}
+\DoxyCodeLine{00590\ }
+\DoxyCodeLine{00591\ \ \ \ \ \textcolor{comment}{//\ It's\ fine\ for\ the\ number\ of\ WillOnce()s\ to\ equal\ the\ upper\ bound.}}
+\DoxyCodeLine{00592\ \ \ \ \ EXPECT\_CALL(b,\ DoB(3))}
+\DoxyCodeLine{00593\ \ \ \ \ \ \ \ \ .Times(Between(1,\ 2))}
+\DoxyCodeLine{00594\ \ \ \ \ \ \ \ \ .WillOnce(Return(1))}
+\DoxyCodeLine{00595\ \ \ \ \ \ \ \ \ .WillOnce(Return(2));}
+\DoxyCodeLine{00596\ }
+\DoxyCodeLine{00597\ \ \ \ \ \textcolor{comment}{//\ It's\ fine\ for\ the\ number\ of\ WillOnce()s\ to\ be\ smaller\ than\ the}}
+\DoxyCodeLine{00598\ \ \ \ \ \textcolor{comment}{//\ upper\ bound\ when\ there\ is\ a\ WillRepeatedly().}}
+\DoxyCodeLine{00599\ \ \ \ \ EXPECT\_CALL(b,\ DoB(4))}
+\DoxyCodeLine{00600\ \ \ \ \ \ \ \ \ .Times(AtMost(3))}
+\DoxyCodeLine{00601\ \ \ \ \ \ \ \ \ .WillOnce(Return(1))}
+\DoxyCodeLine{00602\ \ \ \ \ \ \ \ \ .WillRepeatedly(Return(2));}
+\DoxyCodeLine{00603\ }
+\DoxyCodeLine{00604\ \ \ \ \ \textcolor{comment}{//\ Satisfies\ the\ above\ expectations.}}
+\DoxyCodeLine{00605\ \ \ \ \ b.DoB(2);}
+\DoxyCodeLine{00606\ \ \ \ \ b.DoB(3);}
+\DoxyCodeLine{00607\ \ \ \}}
+\DoxyCodeLine{00608\ \ \ EXPECT\_STREQ(\textcolor{stringliteral}{"{}"{}},\ GetCapturedStdout().c\_str());}
+\DoxyCodeLine{00609\ \}}
+\DoxyCodeLine{00610\ }
+\DoxyCodeLine{00611\ \textcolor{comment}{//\ Tests\ that\ Google\ Mock\ warns\ on\ having\ too\ many\ actions\ in\ an}}
+\DoxyCodeLine{00612\ \textcolor{comment}{//\ expectation\ compared\ to\ its\ cardinality.}}
+\DoxyCodeLine{00613\ TEST(ExpectCallSyntaxTest,\ WarnsOnTooManyActions)\ \{}
+\DoxyCodeLine{00614\ \ \ CaptureStdout();}
+\DoxyCodeLine{00615\ \ \ \{}
+\DoxyCodeLine{00616\ \ \ \ \ MockB\ b;}
+\DoxyCodeLine{00617\ }
+\DoxyCodeLine{00618\ \ \ \ \ \textcolor{comment}{//\ Warns\ when\ the\ number\ of\ WillOnce()s\ is\ larger\ than\ the\ upper\ bound.}}
+\DoxyCodeLine{00619\ \ \ \ \ EXPECT\_CALL(b,\ DoB())}
+\DoxyCodeLine{00620\ \ \ \ \ \ \ \ \ .Times(0)}
+\DoxyCodeLine{00621\ \ \ \ \ \ \ \ \ .WillOnce(Return(1));\ \ \textcolor{comment}{//\ \#1}}
+\DoxyCodeLine{00622\ \ \ \ \ EXPECT\_CALL(b,\ DoB())}
+\DoxyCodeLine{00623\ \ \ \ \ \ \ \ \ .Times(AtMost(1))}
+\DoxyCodeLine{00624\ \ \ \ \ \ \ \ \ .WillOnce(Return(1))}
+\DoxyCodeLine{00625\ \ \ \ \ \ \ \ \ .WillOnce(Return(2));\ \ \textcolor{comment}{//\ \#2}}
+\DoxyCodeLine{00626\ \ \ \ \ EXPECT\_CALL(b,\ DoB(1))}
+\DoxyCodeLine{00627\ \ \ \ \ \ \ \ \ .Times(1)}
+\DoxyCodeLine{00628\ \ \ \ \ \ \ \ \ .WillOnce(Return(1))}
+\DoxyCodeLine{00629\ \ \ \ \ \ \ \ \ .WillOnce(Return(2))}
+\DoxyCodeLine{00630\ \ \ \ \ \ \ \ \ .RetiresOnSaturation();\ \ \textcolor{comment}{//\ \#3}}
+\DoxyCodeLine{00631\ }
+\DoxyCodeLine{00632\ \ \ \ \ \textcolor{comment}{//\ Warns\ when\ the\ number\ of\ WillOnce()s\ equals\ the\ upper\ bound\ and}}
+\DoxyCodeLine{00633\ \ \ \ \ \textcolor{comment}{//\ there\ is\ a\ WillRepeatedly().}}
+\DoxyCodeLine{00634\ \ \ \ \ EXPECT\_CALL(b,\ DoB())}
+\DoxyCodeLine{00635\ \ \ \ \ \ \ \ \ .Times(0)}
+\DoxyCodeLine{00636\ \ \ \ \ \ \ \ \ .WillRepeatedly(Return(1));\ \ \textcolor{comment}{//\ \#4}}
+\DoxyCodeLine{00637\ \ \ \ \ EXPECT\_CALL(b,\ DoB(2))}
+\DoxyCodeLine{00638\ \ \ \ \ \ \ \ \ .Times(1)}
+\DoxyCodeLine{00639\ \ \ \ \ \ \ \ \ .WillOnce(Return(1))}
+\DoxyCodeLine{00640\ \ \ \ \ \ \ \ \ .WillRepeatedly(Return(2));\ \ \textcolor{comment}{//\ \#5}}
+\DoxyCodeLine{00641\ }
+\DoxyCodeLine{00642\ \ \ \ \ \textcolor{comment}{//\ Satisfies\ the\ above\ expectations.}}
+\DoxyCodeLine{00643\ \ \ \ \ b.DoB(1);}
+\DoxyCodeLine{00644\ \ \ \ \ b.DoB(2);}
+\DoxyCodeLine{00645\ \ \ \}}
+\DoxyCodeLine{00646\ \ \ \textcolor{keyword}{const}\ std::string\ output\ =\ GetCapturedStdout();}
+\DoxyCodeLine{00647\ \ \ EXPECT\_PRED\_FORMAT2(}
+\DoxyCodeLine{00648\ \ \ \ \ \ \ IsSubstring,}
+\DoxyCodeLine{00649\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}Too\ many\ actions\ specified\ in\ EXPECT\_CALL(b,\ DoB())...\(\backslash\)n"{}}}
+\DoxyCodeLine{00650\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}Expected\ to\ be\ never\ called,\ but\ has\ 1\ WillOnce()."{}},}
+\DoxyCodeLine{00651\ \ \ \ \ \ \ output);\ \ \textcolor{comment}{//\ \#1}}
+\DoxyCodeLine{00652\ \ \ EXPECT\_PRED\_FORMAT2(}
+\DoxyCodeLine{00653\ \ \ \ \ \ \ IsSubstring,}
+\DoxyCodeLine{00654\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}Too\ many\ actions\ specified\ in\ EXPECT\_CALL(b,\ DoB())...\(\backslash\)n"{}}}
+\DoxyCodeLine{00655\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}Expected\ to\ be\ called\ at\ most\ once,\ "{}}}
+\DoxyCodeLine{00656\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}but\ has\ 2\ WillOnce()s."{}},}
+\DoxyCodeLine{00657\ \ \ \ \ \ \ output);\ \ \textcolor{comment}{//\ \#2}}
+\DoxyCodeLine{00658\ \ \ EXPECT\_PRED\_FORMAT2(}
+\DoxyCodeLine{00659\ \ \ \ \ \ \ IsSubstring,}
+\DoxyCodeLine{00660\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}Too\ many\ actions\ specified\ in\ EXPECT\_CALL(b,\ DoB(1))...\(\backslash\)n"{}}}
+\DoxyCodeLine{00661\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}Expected\ to\ be\ called\ once,\ but\ has\ 2\ WillOnce()s."{}},}
+\DoxyCodeLine{00662\ \ \ \ \ \ \ output);\ \ \textcolor{comment}{//\ \#3}}
+\DoxyCodeLine{00663\ \ \ EXPECT\_PRED\_FORMAT2(}
+\DoxyCodeLine{00664\ \ \ \ \ \ \ IsSubstring,}
+\DoxyCodeLine{00665\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}Too\ many\ actions\ specified\ in\ EXPECT\_CALL(b,\ DoB())...\(\backslash\)n"{}}}
+\DoxyCodeLine{00666\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}Expected\ to\ be\ never\ called,\ but\ has\ 0\ WillOnce()s\ "{}}}
+\DoxyCodeLine{00667\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}and\ a\ WillRepeatedly()."{}},}
+\DoxyCodeLine{00668\ \ \ \ \ \ \ output);\ \ \textcolor{comment}{//\ \#4}}
+\DoxyCodeLine{00669\ \ \ EXPECT\_PRED\_FORMAT2(}
+\DoxyCodeLine{00670\ \ \ \ \ \ \ IsSubstring,}
+\DoxyCodeLine{00671\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}Too\ many\ actions\ specified\ in\ EXPECT\_CALL(b,\ DoB(2))...\(\backslash\)n"{}}}
+\DoxyCodeLine{00672\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}Expected\ to\ be\ called\ once,\ but\ has\ 1\ WillOnce()\ "{}}}
+\DoxyCodeLine{00673\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}and\ a\ WillRepeatedly()."{}},}
+\DoxyCodeLine{00674\ \ \ \ \ \ \ output);\ \ \textcolor{comment}{//\ \#5}}
+\DoxyCodeLine{00675\ \}}
+\DoxyCodeLine{00676\ }
+\DoxyCodeLine{00677\ \textcolor{comment}{//\ Tests\ that\ Google\ Mock\ warns\ on\ having\ too\ few\ actions\ in\ an}}
+\DoxyCodeLine{00678\ \textcolor{comment}{//\ expectation\ compared\ to\ its\ cardinality.}}
+\DoxyCodeLine{00679\ TEST(ExpectCallSyntaxTest,\ WarnsOnTooFewActions)\ \{}
+\DoxyCodeLine{00680\ \ \ MockB\ b;}
+\DoxyCodeLine{00681\ }
+\DoxyCodeLine{00682\ \ \ EXPECT\_CALL(b,\ DoB())}
+\DoxyCodeLine{00683\ \ \ \ \ \ \ .Times(Between(2,\ 3))}
+\DoxyCodeLine{00684\ \ \ \ \ \ \ .WillOnce(Return(1));}
+\DoxyCodeLine{00685\ }
+\DoxyCodeLine{00686\ \ \ CaptureStdout();}
+\DoxyCodeLine{00687\ \ \ b.DoB();}
+\DoxyCodeLine{00688\ \ \ \textcolor{keyword}{const}\ std::string\ output\ =\ GetCapturedStdout();}
+\DoxyCodeLine{00689\ \ \ EXPECT\_PRED\_FORMAT2(}
+\DoxyCodeLine{00690\ \ \ \ \ \ \ IsSubstring,}
+\DoxyCodeLine{00691\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}Too\ few\ actions\ specified\ in\ EXPECT\_CALL(b,\ DoB())...\(\backslash\)n"{}}}
+\DoxyCodeLine{00692\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}Expected\ to\ be\ called\ between\ 2\ and\ 3\ times,\ "{}}}
+\DoxyCodeLine{00693\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}but\ has\ only\ 1\ WillOnce()."{}},}
+\DoxyCodeLine{00694\ \ \ \ \ \ \ output);}
+\DoxyCodeLine{00695\ \ \ b.DoB();}
+\DoxyCodeLine{00696\ \}}
+\DoxyCodeLine{00697\ }
+\DoxyCodeLine{00698\ TEST(ExpectCallSyntaxTest,\ WarningIsErrorWithFlag)\ \{}
+\DoxyCodeLine{00699\ \ \ \textcolor{keywordtype}{int}\ original\_behavior\ =\ testing::GMOCK\_FLAG(default\_mock\_behavior);}
+\DoxyCodeLine{00700\ }
+\DoxyCodeLine{00701\ \ \ testing::GMOCK\_FLAG(default\_mock\_behavior)\ =\ kAllow;}
+\DoxyCodeLine{00702\ \ \ CaptureStdout();}
+\DoxyCodeLine{00703\ \ \ \{}
+\DoxyCodeLine{00704\ \ \ \ \ MockA\ a;}
+\DoxyCodeLine{00705\ \ \ \ \ a.DoA(0);}
+\DoxyCodeLine{00706\ \ \ \}}
+\DoxyCodeLine{00707\ \ \ std::string\ output\ =\ GetCapturedStdout();}
+\DoxyCodeLine{00708\ \ \ EXPECT\_TRUE(output.empty())\ <<\ output;}
+\DoxyCodeLine{00709\ }
+\DoxyCodeLine{00710\ \ \ testing::GMOCK\_FLAG(default\_mock\_behavior)\ =\ kWarn;}
+\DoxyCodeLine{00711\ \ \ CaptureStdout();}
+\DoxyCodeLine{00712\ \ \ \{}
+\DoxyCodeLine{00713\ \ \ \ \ MockA\ a;}
+\DoxyCodeLine{00714\ \ \ \ \ a.DoA(0);}
+\DoxyCodeLine{00715\ \ \ \}}
+\DoxyCodeLine{00716\ \ \ std::string\ warning\_output\ =\ GetCapturedStdout();}
+\DoxyCodeLine{00717\ \ \ EXPECT\_PRED\_FORMAT2(IsSubstring,\ \textcolor{stringliteral}{"{}GMOCK\ WARNING"{}},\ warning\_output);}
+\DoxyCodeLine{00718\ \ \ EXPECT\_PRED\_FORMAT2(IsSubstring,\ \textcolor{stringliteral}{"{}Uninteresting\ mock\ function\ call"{}},}
+\DoxyCodeLine{00719\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ warning\_output);}
+\DoxyCodeLine{00720\ }
+\DoxyCodeLine{00721\ \ \ testing::GMOCK\_FLAG(default\_mock\_behavior)\ =\ kFail;}
+\DoxyCodeLine{00722\ \ \ EXPECT\_NONFATAL\_FAILURE(\{}
+\DoxyCodeLine{00723\ \ \ \ \ MockA\ a;}
+\DoxyCodeLine{00724\ \ \ \ \ a.DoA(0);}
+\DoxyCodeLine{00725\ \ \ \},\ \textcolor{stringliteral}{"{}Uninteresting\ mock\ function\ call"{}});}
+\DoxyCodeLine{00726\ }
+\DoxyCodeLine{00727\ \ \ \textcolor{comment}{//\ Out\ of\ bounds\ values\ are\ converted\ to\ kWarn}}
+\DoxyCodeLine{00728\ \ \ testing::GMOCK\_FLAG(default\_mock\_behavior)\ =\ -\/1;}
+\DoxyCodeLine{00729\ \ \ CaptureStdout();}
+\DoxyCodeLine{00730\ \ \ \{}
+\DoxyCodeLine{00731\ \ \ \ \ MockA\ a;}
+\DoxyCodeLine{00732\ \ \ \ \ a.DoA(0);}
+\DoxyCodeLine{00733\ \ \ \}}
+\DoxyCodeLine{00734\ \ \ warning\_output\ =\ GetCapturedStdout();}
+\DoxyCodeLine{00735\ \ \ EXPECT\_PRED\_FORMAT2(IsSubstring,\ \textcolor{stringliteral}{"{}GMOCK\ WARNING"{}},\ warning\_output);}
+\DoxyCodeLine{00736\ \ \ EXPECT\_PRED\_FORMAT2(IsSubstring,\ \textcolor{stringliteral}{"{}Uninteresting\ mock\ function\ call"{}},}
+\DoxyCodeLine{00737\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ warning\_output);}
+\DoxyCodeLine{00738\ \ \ testing::GMOCK\_FLAG(default\_mock\_behavior)\ =\ 3;}
+\DoxyCodeLine{00739\ \ \ CaptureStdout();}
+\DoxyCodeLine{00740\ \ \ \{}
+\DoxyCodeLine{00741\ \ \ \ \ MockA\ a;}
+\DoxyCodeLine{00742\ \ \ \ \ a.DoA(0);}
+\DoxyCodeLine{00743\ \ \ \}}
+\DoxyCodeLine{00744\ \ \ warning\_output\ =\ GetCapturedStdout();}
+\DoxyCodeLine{00745\ \ \ EXPECT\_PRED\_FORMAT2(IsSubstring,\ \textcolor{stringliteral}{"{}GMOCK\ WARNING"{}},\ warning\_output);}
+\DoxyCodeLine{00746\ \ \ EXPECT\_PRED\_FORMAT2(IsSubstring,\ \textcolor{stringliteral}{"{}Uninteresting\ mock\ function\ call"{}},}
+\DoxyCodeLine{00747\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ warning\_output);}
+\DoxyCodeLine{00748\ }
+\DoxyCodeLine{00749\ \ \ testing::GMOCK\_FLAG(default\_mock\_behavior)\ =\ original\_behavior;}
+\DoxyCodeLine{00750\ \}}
+\DoxyCodeLine{00751\ }
+\DoxyCodeLine{00752\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ GTEST\_HAS\_STREAM\_REDIRECTION}}
+\DoxyCodeLine{00753\ }
+\DoxyCodeLine{00754\ \textcolor{comment}{//\ Tests\ the\ semantics\ of\ ON\_CALL().}}
+\DoxyCodeLine{00755\ }
+\DoxyCodeLine{00756\ \textcolor{comment}{//\ Tests\ that\ the\ built-\/in\ default\ action\ is\ taken\ when\ no\ ON\_CALL()}}
+\DoxyCodeLine{00757\ \textcolor{comment}{//\ is\ specified.}}
+\DoxyCodeLine{00758\ TEST(OnCallTest,\ TakesBuiltInDefaultActionWhenNoOnCall)\ \{}
+\DoxyCodeLine{00759\ \ \ MockB\ b;}
+\DoxyCodeLine{00760\ \ \ EXPECT\_CALL(b,\ DoB());}
+\DoxyCodeLine{00761\ }
+\DoxyCodeLine{00762\ \ \ EXPECT\_EQ(0,\ b.DoB());}
+\DoxyCodeLine{00763\ \}}
+\DoxyCodeLine{00764\ }
+\DoxyCodeLine{00765\ \textcolor{comment}{//\ Tests\ that\ the\ built-\/in\ default\ action\ is\ taken\ when\ no\ ON\_CALL()}}
+\DoxyCodeLine{00766\ \textcolor{comment}{//\ matches\ the\ invocation.}}
+\DoxyCodeLine{00767\ TEST(OnCallTest,\ TakesBuiltInDefaultActionWhenNoOnCallMatches)\ \{}
+\DoxyCodeLine{00768\ \ \ MockB\ b;}
+\DoxyCodeLine{00769\ \ \ ON\_CALL(b,\ DoB(1))}
+\DoxyCodeLine{00770\ \ \ \ \ \ \ .WillByDefault(Return(1));}
+\DoxyCodeLine{00771\ \ \ EXPECT\_CALL(b,\ DoB(\_));}
+\DoxyCodeLine{00772\ }
+\DoxyCodeLine{00773\ \ \ EXPECT\_EQ(0,\ b.DoB(2));}
+\DoxyCodeLine{00774\ \}}
+\DoxyCodeLine{00775\ }
+\DoxyCodeLine{00776\ \textcolor{comment}{//\ Tests\ that\ the\ last\ matching\ ON\_CALL()\ action\ is\ taken.}}
+\DoxyCodeLine{00777\ TEST(OnCallTest,\ PicksLastMatchingOnCall)\ \{}
+\DoxyCodeLine{00778\ \ \ MockB\ b;}
+\DoxyCodeLine{00779\ \ \ ON\_CALL(b,\ DoB(\_))}
+\DoxyCodeLine{00780\ \ \ \ \ \ \ .WillByDefault(Return(3));}
+\DoxyCodeLine{00781\ \ \ ON\_CALL(b,\ DoB(2))}
+\DoxyCodeLine{00782\ \ \ \ \ \ \ .WillByDefault(Return(2));}
+\DoxyCodeLine{00783\ \ \ ON\_CALL(b,\ DoB(1))}
+\DoxyCodeLine{00784\ \ \ \ \ \ \ .WillByDefault(Return(1));}
+\DoxyCodeLine{00785\ \ \ EXPECT\_CALL(b,\ DoB(\_));}
+\DoxyCodeLine{00786\ }
+\DoxyCodeLine{00787\ \ \ EXPECT\_EQ(2,\ b.DoB(2));}
+\DoxyCodeLine{00788\ \}}
+\DoxyCodeLine{00789\ }
+\DoxyCodeLine{00790\ \textcolor{comment}{//\ Tests\ the\ semantics\ of\ EXPECT\_CALL().}}
+\DoxyCodeLine{00791\ }
+\DoxyCodeLine{00792\ \textcolor{comment}{//\ Tests\ that\ any\ call\ is\ allowed\ when\ no\ EXPECT\_CALL()\ is\ specified.}}
+\DoxyCodeLine{00793\ TEST(ExpectCallTest,\ AllowsAnyCallWhenNoSpec)\ \{}
+\DoxyCodeLine{00794\ \ \ MockB\ b;}
+\DoxyCodeLine{00795\ \ \ EXPECT\_CALL(b,\ DoB());}
+\DoxyCodeLine{00796\ \ \ \textcolor{comment}{//\ There\ is\ no\ expectation\ on\ DoB(int).}}
+\DoxyCodeLine{00797\ }
+\DoxyCodeLine{00798\ \ \ b.DoB();}
+\DoxyCodeLine{00799\ }
+\DoxyCodeLine{00800\ \ \ \textcolor{comment}{//\ DoB(int)\ can\ be\ called\ any\ number\ of\ times.}}
+\DoxyCodeLine{00801\ \ \ b.DoB(1);}
+\DoxyCodeLine{00802\ \ \ b.DoB(2);}
+\DoxyCodeLine{00803\ \}}
+\DoxyCodeLine{00804\ }
+\DoxyCodeLine{00805\ \textcolor{comment}{//\ Tests\ that\ the\ last\ matching\ EXPECT\_CALL()\ fires.}}
+\DoxyCodeLine{00806\ TEST(ExpectCallTest,\ PicksLastMatchingExpectCall)\ \{}
+\DoxyCodeLine{00807\ \ \ MockB\ b;}
+\DoxyCodeLine{00808\ \ \ EXPECT\_CALL(b,\ DoB(\_))}
+\DoxyCodeLine{00809\ \ \ \ \ \ \ .WillRepeatedly(Return(2));}
+\DoxyCodeLine{00810\ \ \ EXPECT\_CALL(b,\ DoB(1))}
+\DoxyCodeLine{00811\ \ \ \ \ \ \ .WillRepeatedly(Return(1));}
+\DoxyCodeLine{00812\ }
+\DoxyCodeLine{00813\ \ \ EXPECT\_EQ(1,\ b.DoB(1));}
+\DoxyCodeLine{00814\ \}}
+\DoxyCodeLine{00815\ }
+\DoxyCodeLine{00816\ \textcolor{comment}{//\ Tests\ lower-\/bound\ violation.}}
+\DoxyCodeLine{00817\ TEST(ExpectCallTest,\ CatchesTooFewCalls)\ \{}
+\DoxyCodeLine{00818\ \ \ EXPECT\_NONFATAL\_FAILURE(\{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00819\ \ \ \ \ MockB\ b;}
+\DoxyCodeLine{00820\ \ \ \ \ EXPECT\_CALL(b,\ DoB(5))}
+\DoxyCodeLine{00821\ \ \ \ \ \ \ \ \ .Times(AtLeast(2));}
+\DoxyCodeLine{00822\ }
+\DoxyCodeLine{00823\ \ \ \ \ b.DoB(5);}
+\DoxyCodeLine{00824\ \ \ \},\ \textcolor{stringliteral}{"{}Actual\ function\ call\ count\ doesn't\ match\ EXPECT\_CALL(b,\ DoB(5))...\(\backslash\)n"{}}}
+\DoxyCodeLine{00825\ \ \ \ \ \ \textcolor{stringliteral}{"{}\ \ \ \ \ \ \ \ \ Expected:\ to\ be\ called\ at\ least\ twice\(\backslash\)n"{}}}
+\DoxyCodeLine{00826\ \ \ \ \ \ \textcolor{stringliteral}{"{}\ \ \ \ \ \ \ \ \ \ \ Actual:\ called\ once\ -\/\ unsatisfied\ and\ active"{}});}
+\DoxyCodeLine{00827\ \}}
+\DoxyCodeLine{00828\ }
+\DoxyCodeLine{00829\ \textcolor{comment}{//\ Tests\ that\ the\ cardinality\ can\ be\ inferred\ when\ no\ Times(...)\ is}}
+\DoxyCodeLine{00830\ \textcolor{comment}{//\ specified.}}
+\DoxyCodeLine{00831\ TEST(ExpectCallTest,\ InfersCardinalityWhenThereIsNoWillRepeatedly)\ \{}
+\DoxyCodeLine{00832\ \ \ \{}
+\DoxyCodeLine{00833\ \ \ \ \ MockB\ b;}
+\DoxyCodeLine{00834\ \ \ \ \ EXPECT\_CALL(b,\ DoB())}
+\DoxyCodeLine{00835\ \ \ \ \ \ \ \ \ .WillOnce(Return(1))}
+\DoxyCodeLine{00836\ \ \ \ \ \ \ \ \ .WillOnce(Return(2));}
+\DoxyCodeLine{00837\ }
+\DoxyCodeLine{00838\ \ \ \ \ EXPECT\_EQ(1,\ b.DoB());}
+\DoxyCodeLine{00839\ \ \ \ \ EXPECT\_EQ(2,\ b.DoB());}
+\DoxyCodeLine{00840\ \ \ \}}
+\DoxyCodeLine{00841\ }
+\DoxyCodeLine{00842\ \ \ EXPECT\_NONFATAL\_FAILURE(\{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00843\ \ \ \ \ MockB\ b;}
+\DoxyCodeLine{00844\ \ \ \ \ EXPECT\_CALL(b,\ DoB())}
+\DoxyCodeLine{00845\ \ \ \ \ \ \ \ \ .WillOnce(Return(1))}
+\DoxyCodeLine{00846\ \ \ \ \ \ \ \ \ .WillOnce(Return(2));}
+\DoxyCodeLine{00847\ }
+\DoxyCodeLine{00848\ \ \ \ \ EXPECT\_EQ(1,\ b.DoB());}
+\DoxyCodeLine{00849\ \ \ \},\ \textcolor{stringliteral}{"{}to\ be\ called\ twice"{}});}
+\DoxyCodeLine{00850\ }
+\DoxyCodeLine{00851\ \ \ \{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00852\ \ \ \ \ MockB\ b;}
+\DoxyCodeLine{00853\ \ \ \ \ EXPECT\_CALL(b,\ DoB())}
+\DoxyCodeLine{00854\ \ \ \ \ \ \ \ \ .WillOnce(Return(1))}
+\DoxyCodeLine{00855\ \ \ \ \ \ \ \ \ .WillOnce(Return(2));}
+\DoxyCodeLine{00856\ }
+\DoxyCodeLine{00857\ \ \ \ \ EXPECT\_EQ(1,\ b.DoB());}
+\DoxyCodeLine{00858\ \ \ \ \ EXPECT\_EQ(2,\ b.DoB());}
+\DoxyCodeLine{00859\ \ \ \ \ EXPECT\_NONFATAL\_FAILURE(b.DoB(),\ \textcolor{stringliteral}{"{}to\ be\ called\ twice"{}});}
+\DoxyCodeLine{00860\ \ \ \}}
+\DoxyCodeLine{00861\ \}}
+\DoxyCodeLine{00862\ }
+\DoxyCodeLine{00863\ TEST(ExpectCallTest,\ InfersCardinality1WhenThereIsWillRepeatedly)\ \{}
+\DoxyCodeLine{00864\ \ \ \{}
+\DoxyCodeLine{00865\ \ \ \ \ MockB\ b;}
+\DoxyCodeLine{00866\ \ \ \ \ EXPECT\_CALL(b,\ DoB())}
+\DoxyCodeLine{00867\ \ \ \ \ \ \ \ \ .WillOnce(Return(1))}
+\DoxyCodeLine{00868\ \ \ \ \ \ \ \ \ .WillRepeatedly(Return(2));}
+\DoxyCodeLine{00869\ }
+\DoxyCodeLine{00870\ \ \ \ \ EXPECT\_EQ(1,\ b.DoB());}
+\DoxyCodeLine{00871\ \ \ \}}
+\DoxyCodeLine{00872\ }
+\DoxyCodeLine{00873\ \ \ \{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00874\ \ \ \ \ MockB\ b;}
+\DoxyCodeLine{00875\ \ \ \ \ EXPECT\_CALL(b,\ DoB())}
+\DoxyCodeLine{00876\ \ \ \ \ \ \ \ \ .WillOnce(Return(1))}
+\DoxyCodeLine{00877\ \ \ \ \ \ \ \ \ .WillRepeatedly(Return(2));}
+\DoxyCodeLine{00878\ }
+\DoxyCodeLine{00879\ \ \ \ \ EXPECT\_EQ(1,\ b.DoB());}
+\DoxyCodeLine{00880\ \ \ \ \ EXPECT\_EQ(2,\ b.DoB());}
+\DoxyCodeLine{00881\ \ \ \ \ EXPECT\_EQ(2,\ b.DoB());}
+\DoxyCodeLine{00882\ \ \ \}}
+\DoxyCodeLine{00883\ }
+\DoxyCodeLine{00884\ \ \ EXPECT\_NONFATAL\_FAILURE(\{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00885\ \ \ \ \ MockB\ b;}
+\DoxyCodeLine{00886\ \ \ \ \ EXPECT\_CALL(b,\ DoB())}
+\DoxyCodeLine{00887\ \ \ \ \ \ \ \ \ .WillOnce(Return(1))}
+\DoxyCodeLine{00888\ \ \ \ \ \ \ \ \ .WillRepeatedly(Return(2));}
+\DoxyCodeLine{00889\ \ \ \},\ \textcolor{stringliteral}{"{}to\ be\ called\ at\ least\ once"{}});}
+\DoxyCodeLine{00890\ \}}
+\DoxyCodeLine{00891\ }
+\DoxyCodeLine{00892\ \textcolor{comment}{//\ Tests\ that\ the\ n-\/th\ action\ is\ taken\ for\ the\ n-\/th\ matching}}
+\DoxyCodeLine{00893\ \textcolor{comment}{//\ invocation.}}
+\DoxyCodeLine{00894\ TEST(ExpectCallTest,\ NthMatchTakesNthAction)\ \{}
+\DoxyCodeLine{00895\ \ \ MockB\ b;}
+\DoxyCodeLine{00896\ \ \ EXPECT\_CALL(b,\ DoB())}
+\DoxyCodeLine{00897\ \ \ \ \ \ \ .WillOnce(Return(1))}
+\DoxyCodeLine{00898\ \ \ \ \ \ \ .WillOnce(Return(2))}
+\DoxyCodeLine{00899\ \ \ \ \ \ \ .WillOnce(Return(3));}
+\DoxyCodeLine{00900\ }
+\DoxyCodeLine{00901\ \ \ EXPECT\_EQ(1,\ b.DoB());}
+\DoxyCodeLine{00902\ \ \ EXPECT\_EQ(2,\ b.DoB());}
+\DoxyCodeLine{00903\ \ \ EXPECT\_EQ(3,\ b.DoB());}
+\DoxyCodeLine{00904\ \}}
+\DoxyCodeLine{00905\ }
+\DoxyCodeLine{00906\ \textcolor{comment}{//\ Tests\ that\ the\ WillRepeatedly()\ action\ is\ taken\ when\ the\ WillOnce(...)}}
+\DoxyCodeLine{00907\ \textcolor{comment}{//\ list\ is\ exhausted.}}
+\DoxyCodeLine{00908\ TEST(ExpectCallTest,\ TakesRepeatedActionWhenWillListIsExhausted)\ \{}
+\DoxyCodeLine{00909\ \ \ MockB\ b;}
+\DoxyCodeLine{00910\ \ \ EXPECT\_CALL(b,\ DoB())}
+\DoxyCodeLine{00911\ \ \ \ \ \ \ .WillOnce(Return(1))}
+\DoxyCodeLine{00912\ \ \ \ \ \ \ .WillRepeatedly(Return(2));}
+\DoxyCodeLine{00913\ }
+\DoxyCodeLine{00914\ \ \ EXPECT\_EQ(1,\ b.DoB());}
+\DoxyCodeLine{00915\ \ \ EXPECT\_EQ(2,\ b.DoB());}
+\DoxyCodeLine{00916\ \ \ EXPECT\_EQ(2,\ b.DoB());}
+\DoxyCodeLine{00917\ \}}
+\DoxyCodeLine{00918\ }
+\DoxyCodeLine{00919\ \textcolor{preprocessor}{\#if\ GTEST\_HAS\_STREAM\_REDIRECTION}}
+\DoxyCodeLine{00920\ }
+\DoxyCodeLine{00921\ \textcolor{comment}{//\ Tests\ that\ the\ default\ action\ is\ taken\ when\ the\ WillOnce(...)\ list\ is}}
+\DoxyCodeLine{00922\ \textcolor{comment}{//\ exhausted\ and\ there\ is\ no\ WillRepeatedly().}}
+\DoxyCodeLine{00923\ TEST(ExpectCallTest,\ TakesDefaultActionWhenWillListIsExhausted)\ \{}
+\DoxyCodeLine{00924\ \ \ MockB\ b;}
+\DoxyCodeLine{00925\ \ \ EXPECT\_CALL(b,\ DoB(\_))}
+\DoxyCodeLine{00926\ \ \ \ \ \ \ .Times(1);}
+\DoxyCodeLine{00927\ \ \ EXPECT\_CALL(b,\ DoB())}
+\DoxyCodeLine{00928\ \ \ \ \ \ \ .Times(AnyNumber())}
+\DoxyCodeLine{00929\ \ \ \ \ \ \ .WillOnce(Return(1))}
+\DoxyCodeLine{00930\ \ \ \ \ \ \ .WillOnce(Return(2));}
+\DoxyCodeLine{00931\ }
+\DoxyCodeLine{00932\ \ \ CaptureStdout();}
+\DoxyCodeLine{00933\ \ \ EXPECT\_EQ(0,\ b.DoB(1));\ \ \textcolor{comment}{//\ Shouldn't\ generate\ a\ warning\ as\ the}}
+\DoxyCodeLine{00934\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ expectation\ has\ no\ action\ clause\ at\ all.}}
+\DoxyCodeLine{00935\ \ \ EXPECT\_EQ(1,\ b.DoB());}
+\DoxyCodeLine{00936\ \ \ EXPECT\_EQ(2,\ b.DoB());}
+\DoxyCodeLine{00937\ \ \ \textcolor{keyword}{const}\ std::string\ output1\ =\ GetCapturedStdout();}
+\DoxyCodeLine{00938\ \ \ EXPECT\_STREQ(\textcolor{stringliteral}{"{}"{}},\ output1.c\_str());}
+\DoxyCodeLine{00939\ }
+\DoxyCodeLine{00940\ \ \ CaptureStdout();}
+\DoxyCodeLine{00941\ \ \ EXPECT\_EQ(0,\ b.DoB());}
+\DoxyCodeLine{00942\ \ \ EXPECT\_EQ(0,\ b.DoB());}
+\DoxyCodeLine{00943\ \ \ \textcolor{keyword}{const}\ std::string\ output2\ =\ GetCapturedStdout();}
+\DoxyCodeLine{00944\ \ \ EXPECT\_THAT(output2.c\_str(),}
+\DoxyCodeLine{00945\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ HasSubstr(\textcolor{stringliteral}{"{}Actions\ ran\ out\ in\ EXPECT\_CALL(b,\ DoB())...\(\backslash\)n"{}}}
+\DoxyCodeLine{00946\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}Called\ 3\ times,\ but\ only\ 2\ WillOnce()s\ are\ specified"{}}}
+\DoxyCodeLine{00947\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}\ -\/\ returning\ default\ value."{}}));}
+\DoxyCodeLine{00948\ \ \ EXPECT\_THAT(output2.c\_str(),}
+\DoxyCodeLine{00949\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ HasSubstr(\textcolor{stringliteral}{"{}Actions\ ran\ out\ in\ EXPECT\_CALL(b,\ DoB())...\(\backslash\)n"{}}}
+\DoxyCodeLine{00950\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}Called\ 4\ times,\ but\ only\ 2\ WillOnce()s\ are\ specified"{}}}
+\DoxyCodeLine{00951\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}\ -\/\ returning\ default\ value."{}}));}
+\DoxyCodeLine{00952\ \}}
+\DoxyCodeLine{00953\ }
+\DoxyCodeLine{00954\ TEST(FunctionMockerMessageTest,\ ReportsExpectCallLocationForExhausedActions)\ \{}
+\DoxyCodeLine{00955\ \ \ MockB\ b;}
+\DoxyCodeLine{00956\ \ \ std::string\ expect\_call\_location\ =\ FormatFileLocation(\_\_FILE\_\_,\ \_\_LINE\_\_\ +\ 1);}
+\DoxyCodeLine{00957\ \ \ EXPECT\_CALL(b,\ DoB()).Times(AnyNumber()).WillOnce(Return(1));}
+\DoxyCodeLine{00958\ }
+\DoxyCodeLine{00959\ \ \ EXPECT\_EQ(1,\ b.DoB());}
+\DoxyCodeLine{00960\ }
+\DoxyCodeLine{00961\ \ \ CaptureStdout();}
+\DoxyCodeLine{00962\ \ \ EXPECT\_EQ(0,\ b.DoB());}
+\DoxyCodeLine{00963\ \ \ \textcolor{keyword}{const}\ std::string\ output\ =\ GetCapturedStdout();}
+\DoxyCodeLine{00964\ \ \ \textcolor{comment}{//\ The\ warning\ message\ should\ contain\ the\ call\ location.}}
+\DoxyCodeLine{00965\ \ \ EXPECT\_PRED\_FORMAT2(IsSubstring,\ expect\_call\_location,\ output);}
+\DoxyCodeLine{00966\ \}}
+\DoxyCodeLine{00967\ }
+\DoxyCodeLine{00968\ TEST(FunctionMockerMessageTest,}
+\DoxyCodeLine{00969\ \ \ \ \ \ ReportsDefaultActionLocationOfUninterestingCallsForNaggyMock)\ \{}
+\DoxyCodeLine{00970\ \ \ std::string\ on\_call\_location;}
+\DoxyCodeLine{00971\ \ \ CaptureStdout();}
+\DoxyCodeLine{00972\ \ \ \{}
+\DoxyCodeLine{00973\ \ \ \ \ NaggyMock<MockB>\ b;}
+\DoxyCodeLine{00974\ \ \ \ \ on\_call\_location\ =\ FormatFileLocation(\_\_FILE\_\_,\ \_\_LINE\_\_\ +\ 1);}
+\DoxyCodeLine{00975\ \ \ \ \ ON\_CALL(b,\ DoB(\_)).WillByDefault(Return(0));}
+\DoxyCodeLine{00976\ \ \ \ \ b.DoB(0);}
+\DoxyCodeLine{00977\ \ \ \}}
+\DoxyCodeLine{00978\ \ \ EXPECT\_PRED\_FORMAT2(IsSubstring,\ on\_call\_location,\ GetCapturedStdout());}
+\DoxyCodeLine{00979\ \}}
+\DoxyCodeLine{00980\ }
+\DoxyCodeLine{00981\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ GTEST\_HAS\_STREAM\_REDIRECTION}}
+\DoxyCodeLine{00982\ }
+\DoxyCodeLine{00983\ \textcolor{comment}{//\ Tests\ that\ an\ uninteresting\ call\ performs\ the\ default\ action.}}
+\DoxyCodeLine{00984\ TEST(UninterestingCallTest,\ DoesDefaultAction)\ \{}
+\DoxyCodeLine{00985\ \ \ \textcolor{comment}{//\ When\ there\ is\ an\ ON\_CALL()\ statement,\ the\ action\ specified\ by\ it}}
+\DoxyCodeLine{00986\ \ \ \textcolor{comment}{//\ should\ be\ taken.}}
+\DoxyCodeLine{00987\ \ \ MockA\ a;}
+\DoxyCodeLine{00988\ \ \ ON\_CALL(a,\ Binary(\_,\ \_))}
+\DoxyCodeLine{00989\ \ \ \ \ \ \ .WillByDefault(Return(\textcolor{keyword}{true}));}
+\DoxyCodeLine{00990\ \ \ EXPECT\_TRUE(a.Binary(1,\ 2));}
+\DoxyCodeLine{00991\ }
+\DoxyCodeLine{00992\ \ \ \textcolor{comment}{//\ When\ there\ is\ no\ ON\_CALL(),\ the\ default\ value\ for\ the\ return\ type}}
+\DoxyCodeLine{00993\ \ \ \textcolor{comment}{//\ should\ be\ returned.}}
+\DoxyCodeLine{00994\ \ \ MockB\ b;}
+\DoxyCodeLine{00995\ \ \ EXPECT\_EQ(0,\ b.DoB());}
+\DoxyCodeLine{00996\ \}}
+\DoxyCodeLine{00997\ }
+\DoxyCodeLine{00998\ \textcolor{comment}{//\ Tests\ that\ an\ unexpected\ call\ performs\ the\ default\ action.}}
+\DoxyCodeLine{00999\ TEST(UnexpectedCallTest,\ DoesDefaultAction)\ \{}
+\DoxyCodeLine{01000\ \ \ \textcolor{comment}{//\ When\ there\ is\ an\ ON\_CALL()\ statement,\ the\ action\ specified\ by\ it}}
+\DoxyCodeLine{01001\ \ \ \textcolor{comment}{//\ should\ be\ taken.}}
+\DoxyCodeLine{01002\ \ \ MockA\ a;}
+\DoxyCodeLine{01003\ \ \ ON\_CALL(a,\ Binary(\_,\ \_))}
+\DoxyCodeLine{01004\ \ \ \ \ \ \ .WillByDefault(Return(\textcolor{keyword}{true}));}
+\DoxyCodeLine{01005\ \ \ EXPECT\_CALL(a,\ Binary(0,\ 0));}
+\DoxyCodeLine{01006\ \ \ a.Binary(0,\ 0);}
+\DoxyCodeLine{01007\ \ \ \textcolor{keywordtype}{bool}\ result\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{01008\ \ \ EXPECT\_NONFATAL\_FAILURE(result\ =\ a.Binary(1,\ 2),}
+\DoxyCodeLine{01009\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}Unexpected\ mock\ function\ call"{}});}
+\DoxyCodeLine{01010\ \ \ EXPECT\_TRUE(result);}
+\DoxyCodeLine{01011\ }
+\DoxyCodeLine{01012\ \ \ \textcolor{comment}{//\ When\ there\ is\ no\ ON\_CALL(),\ the\ default\ value\ for\ the\ return\ type}}
+\DoxyCodeLine{01013\ \ \ \textcolor{comment}{//\ should\ be\ returned.}}
+\DoxyCodeLine{01014\ \ \ MockB\ b;}
+\DoxyCodeLine{01015\ \ \ EXPECT\_CALL(b,\ DoB(0))}
+\DoxyCodeLine{01016\ \ \ \ \ \ \ .Times(0);}
+\DoxyCodeLine{01017\ \ \ \textcolor{keywordtype}{int}\ n\ =\ -\/1;}
+\DoxyCodeLine{01018\ \ \ EXPECT\_NONFATAL\_FAILURE(n\ =\ b.DoB(1),}
+\DoxyCodeLine{01019\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}Unexpected\ mock\ function\ call"{}});}
+\DoxyCodeLine{01020\ \ \ EXPECT\_EQ(0,\ n);}
+\DoxyCodeLine{01021\ \}}
+\DoxyCodeLine{01022\ }
+\DoxyCodeLine{01023\ \textcolor{comment}{//\ Tests\ that\ when\ an\ unexpected\ void\ function\ generates\ the\ right}}
+\DoxyCodeLine{01024\ \textcolor{comment}{//\ failure\ message.}}
+\DoxyCodeLine{01025\ TEST(UnexpectedCallTest,\ GeneratesFailureForVoidFunction)\ \{}
+\DoxyCodeLine{01026\ \ \ \textcolor{comment}{//\ First,\ tests\ the\ message\ when\ there\ is\ only\ one\ EXPECT\_CALL().}}
+\DoxyCodeLine{01027\ \ \ MockA\ a1;}
+\DoxyCodeLine{01028\ \ \ EXPECT\_CALL(a1,\ DoA(1));}
+\DoxyCodeLine{01029\ \ \ a1.DoA(1);}
+\DoxyCodeLine{01030\ \ \ \textcolor{comment}{//\ Ideally\ we\ should\ match\ the\ failure\ message\ against\ a\ regex,\ but}}
+\DoxyCodeLine{01031\ \ \ \textcolor{comment}{//\ EXPECT\_NONFATAL\_FAILURE\ doesn't\ support\ that,\ so\ we\ test\ for}}
+\DoxyCodeLine{01032\ \ \ \textcolor{comment}{//\ multiple\ sub-\/strings\ instead.}}
+\DoxyCodeLine{01033\ \ \ EXPECT\_NONFATAL\_FAILURE(}
+\DoxyCodeLine{01034\ \ \ \ \ \ \ a1.DoA(9),}
+\DoxyCodeLine{01035\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}Unexpected\ mock\ function\ call\ -\/\ returning\ directly.\(\backslash\)n"{}}}
+\DoxyCodeLine{01036\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}\ \ \ \ Function\ call:\ DoA(9)\(\backslash\)n"{}}}
+\DoxyCodeLine{01037\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}Google\ Mock\ tried\ the\ following\ 1\ expectation,\ but\ it\ didn't\ match:"{}});}
+\DoxyCodeLine{01038\ \ \ EXPECT\_NONFATAL\_FAILURE(}
+\DoxyCodeLine{01039\ \ \ \ \ \ \ a1.DoA(9),}
+\DoxyCodeLine{01040\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}\ \ Expected\ arg\ \#0:\ is\ equal\ to\ 1\(\backslash\)n"{}}}
+\DoxyCodeLine{01041\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}\ \ \ \ \ \ \ \ \ \ \ Actual:\ 9\(\backslash\)n"{}}}
+\DoxyCodeLine{01042\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}\ \ \ \ \ \ \ \ \ Expected:\ to\ be\ called\ once\(\backslash\)n"{}}}
+\DoxyCodeLine{01043\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}\ \ \ \ \ \ \ \ \ \ \ Actual:\ called\ once\ -\/\ saturated\ and\ active"{}});}
+\DoxyCodeLine{01044\ }
+\DoxyCodeLine{01045\ \ \ \textcolor{comment}{//\ Next,\ tests\ the\ message\ when\ there\ are\ more\ than\ one\ EXPECT\_CALL().}}
+\DoxyCodeLine{01046\ \ \ MockA\ a2;}
+\DoxyCodeLine{01047\ \ \ EXPECT\_CALL(a2,\ DoA(1));}
+\DoxyCodeLine{01048\ \ \ EXPECT\_CALL(a2,\ DoA(3));}
+\DoxyCodeLine{01049\ \ \ a2.DoA(1);}
+\DoxyCodeLine{01050\ \ \ EXPECT\_NONFATAL\_FAILURE(}
+\DoxyCodeLine{01051\ \ \ \ \ \ \ a2.DoA(2),}
+\DoxyCodeLine{01052\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}Unexpected\ mock\ function\ call\ -\/\ returning\ directly.\(\backslash\)n"{}}}
+\DoxyCodeLine{01053\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}\ \ \ \ Function\ call:\ DoA(2)\(\backslash\)n"{}}}
+\DoxyCodeLine{01054\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}Google\ Mock\ tried\ the\ following\ 2\ expectations,\ but\ none\ matched:"{}});}
+\DoxyCodeLine{01055\ \ \ EXPECT\_NONFATAL\_FAILURE(}
+\DoxyCodeLine{01056\ \ \ \ \ \ \ a2.DoA(2),}
+\DoxyCodeLine{01057\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}tried\ expectation\ \#0:\ EXPECT\_CALL(a2,\ DoA(1))...\(\backslash\)n"{}}}
+\DoxyCodeLine{01058\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}\ \ Expected\ arg\ \#0:\ is\ equal\ to\ 1\(\backslash\)n"{}}}
+\DoxyCodeLine{01059\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}\ \ \ \ \ \ \ \ \ \ \ Actual:\ 2\(\backslash\)n"{}}}
+\DoxyCodeLine{01060\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}\ \ \ \ \ \ \ \ \ Expected:\ to\ be\ called\ once\(\backslash\)n"{}}}
+\DoxyCodeLine{01061\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}\ \ \ \ \ \ \ \ \ \ \ Actual:\ called\ once\ -\/\ saturated\ and\ active"{}});}
+\DoxyCodeLine{01062\ \ \ EXPECT\_NONFATAL\_FAILURE(}
+\DoxyCodeLine{01063\ \ \ \ \ \ \ a2.DoA(2),}
+\DoxyCodeLine{01064\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}tried\ expectation\ \#1:\ EXPECT\_CALL(a2,\ DoA(3))...\(\backslash\)n"{}}}
+\DoxyCodeLine{01065\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}\ \ Expected\ arg\ \#0:\ is\ equal\ to\ 3\(\backslash\)n"{}}}
+\DoxyCodeLine{01066\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}\ \ \ \ \ \ \ \ \ \ \ Actual:\ 2\(\backslash\)n"{}}}
+\DoxyCodeLine{01067\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}\ \ \ \ \ \ \ \ \ Expected:\ to\ be\ called\ once\(\backslash\)n"{}}}
+\DoxyCodeLine{01068\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}\ \ \ \ \ \ \ \ \ \ \ Actual:\ never\ called\ -\/\ unsatisfied\ and\ active"{}});}
+\DoxyCodeLine{01069\ \ \ a2.DoA(3);}
+\DoxyCodeLine{01070\ \}}
+\DoxyCodeLine{01071\ }
+\DoxyCodeLine{01072\ \textcolor{comment}{//\ Tests\ that\ an\ unexpected\ non-\/void\ function\ generates\ the\ right}}
+\DoxyCodeLine{01073\ \textcolor{comment}{//\ failure\ message.}}
+\DoxyCodeLine{01074\ TEST(UnexpectedCallTest,\ GeneartesFailureForNonVoidFunction)\ \{}
+\DoxyCodeLine{01075\ \ \ MockB\ b1;}
+\DoxyCodeLine{01076\ \ \ EXPECT\_CALL(b1,\ DoB(1));}
+\DoxyCodeLine{01077\ \ \ b1.DoB(1);}
+\DoxyCodeLine{01078\ \ \ EXPECT\_NONFATAL\_FAILURE(}
+\DoxyCodeLine{01079\ \ \ \ \ \ \ b1.DoB(2),}
+\DoxyCodeLine{01080\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}Unexpected\ mock\ function\ call\ -\/\ returning\ default\ value.\(\backslash\)n"{}}}
+\DoxyCodeLine{01081\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}\ \ \ \ Function\ call:\ DoB(2)\(\backslash\)n"{}}}
+\DoxyCodeLine{01082\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}\ \ \ \ \ \ \ \ \ \ Returns:\ 0\(\backslash\)n"{}}}
+\DoxyCodeLine{01083\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}Google\ Mock\ tried\ the\ following\ 1\ expectation,\ but\ it\ didn't\ match:"{}});}
+\DoxyCodeLine{01084\ \ \ EXPECT\_NONFATAL\_FAILURE(}
+\DoxyCodeLine{01085\ \ \ \ \ \ \ b1.DoB(2),}
+\DoxyCodeLine{01086\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}\ \ Expected\ arg\ \#0:\ is\ equal\ to\ 1\(\backslash\)n"{}}}
+\DoxyCodeLine{01087\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}\ \ \ \ \ \ \ \ \ \ \ Actual:\ 2\(\backslash\)n"{}}}
+\DoxyCodeLine{01088\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}\ \ \ \ \ \ \ \ \ Expected:\ to\ be\ called\ once\(\backslash\)n"{}}}
+\DoxyCodeLine{01089\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}\ \ \ \ \ \ \ \ \ \ \ Actual:\ called\ once\ -\/\ saturated\ and\ active"{}});}
+\DoxyCodeLine{01090\ \}}
+\DoxyCodeLine{01091\ }
+\DoxyCodeLine{01092\ \textcolor{comment}{//\ Tests\ that\ Google\ Mock\ explains\ that\ an\ retired\ expectation\ doesn't}}
+\DoxyCodeLine{01093\ \textcolor{comment}{//\ match\ the\ call.}}
+\DoxyCodeLine{01094\ TEST(UnexpectedCallTest,\ RetiredExpectation)\ \{}
+\DoxyCodeLine{01095\ \ \ MockB\ b;}
+\DoxyCodeLine{01096\ \ \ EXPECT\_CALL(b,\ DoB(1))}
+\DoxyCodeLine{01097\ \ \ \ \ \ \ .RetiresOnSaturation();}
+\DoxyCodeLine{01098\ }
+\DoxyCodeLine{01099\ \ \ b.DoB(1);}
+\DoxyCodeLine{01100\ \ \ EXPECT\_NONFATAL\_FAILURE(}
+\DoxyCodeLine{01101\ \ \ \ \ \ \ b.DoB(1),}
+\DoxyCodeLine{01102\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}\ \ \ \ \ \ \ \ \ Expected:\ the\ expectation\ is\ active\(\backslash\)n"{}}}
+\DoxyCodeLine{01103\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}\ \ \ \ \ \ \ \ \ \ \ Actual:\ it\ is\ retired"{}});}
+\DoxyCodeLine{01104\ \}}
+\DoxyCodeLine{01105\ }
+\DoxyCodeLine{01106\ \textcolor{comment}{//\ Tests\ that\ Google\ Mock\ explains\ that\ an\ expectation\ that\ doesn't}}
+\DoxyCodeLine{01107\ \textcolor{comment}{//\ match\ the\ arguments\ doesn't\ match\ the\ call.}}
+\DoxyCodeLine{01108\ TEST(UnexpectedCallTest,\ UnmatchedArguments)\ \{}
+\DoxyCodeLine{01109\ \ \ MockB\ b;}
+\DoxyCodeLine{01110\ \ \ EXPECT\_CALL(b,\ DoB(1));}
+\DoxyCodeLine{01111\ }
+\DoxyCodeLine{01112\ \ \ EXPECT\_NONFATAL\_FAILURE(}
+\DoxyCodeLine{01113\ \ \ \ \ \ \ b.DoB(2),}
+\DoxyCodeLine{01114\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}\ \ Expected\ arg\ \#0:\ is\ equal\ to\ 1\(\backslash\)n"{}}}
+\DoxyCodeLine{01115\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}\ \ \ \ \ \ \ \ \ \ \ Actual:\ 2\(\backslash\)n"{}});}
+\DoxyCodeLine{01116\ \ \ b.DoB(1);}
+\DoxyCodeLine{01117\ \}}
+\DoxyCodeLine{01118\ }
+\DoxyCodeLine{01119\ \textcolor{comment}{//\ Tests\ that\ Google\ Mock\ explains\ that\ an\ expectation\ with}}
+\DoxyCodeLine{01120\ \textcolor{comment}{//\ unsatisfied\ pre-\/requisites\ doesn't\ match\ the\ call.}}
+\DoxyCodeLine{01121\ TEST(UnexpectedCallTest,\ UnsatisifiedPrerequisites)\ \{}
+\DoxyCodeLine{01122\ \ \ Sequence\ s1,\ s2;}
+\DoxyCodeLine{01123\ \ \ MockB\ b;}
+\DoxyCodeLine{01124\ \ \ EXPECT\_CALL(b,\ DoB(1))}
+\DoxyCodeLine{01125\ \ \ \ \ \ \ .InSequence(s1);}
+\DoxyCodeLine{01126\ \ \ EXPECT\_CALL(b,\ DoB(2))}
+\DoxyCodeLine{01127\ \ \ \ \ \ \ .Times(AnyNumber())}
+\DoxyCodeLine{01128\ \ \ \ \ \ \ .InSequence(s1);}
+\DoxyCodeLine{01129\ \ \ EXPECT\_CALL(b,\ DoB(3))}
+\DoxyCodeLine{01130\ \ \ \ \ \ \ .InSequence(s2);}
+\DoxyCodeLine{01131\ \ \ EXPECT\_CALL(b,\ DoB(4))}
+\DoxyCodeLine{01132\ \ \ \ \ \ \ .InSequence(s1,\ s2);}
+\DoxyCodeLine{01133\ }
+\DoxyCodeLine{01134\ \ \ ::testing::TestPartResultArray\ failures;}
+\DoxyCodeLine{01135\ \ \ \{}
+\DoxyCodeLine{01136\ \ \ \ \ ::testing::ScopedFakeTestPartResultReporter\ reporter(\&failures);}
+\DoxyCodeLine{01137\ \ \ \ \ b.DoB(4);}
+\DoxyCodeLine{01138\ \ \ \ \ \textcolor{comment}{//\ Now\ 'failures'\ contains\ the\ Google\ Test\ failures\ generated\ by}}
+\DoxyCodeLine{01139\ \ \ \ \ \textcolor{comment}{//\ the\ above\ statement.}}
+\DoxyCodeLine{01140\ \ \ \}}
+\DoxyCodeLine{01141\ }
+\DoxyCodeLine{01142\ \ \ \textcolor{comment}{//\ There\ should\ be\ one\ non-\/fatal\ failure.}}
+\DoxyCodeLine{01143\ \ \ ASSERT\_EQ(1,\ failures.size());}
+\DoxyCodeLine{01144\ \ \ const\ ::testing::TestPartResult\&\ r\ =\ failures.GetTestPartResult(0);}
+\DoxyCodeLine{01145\ \ \ EXPECT\_EQ(::testing::TestPartResult::kNonFatalFailure,\ r.type());}
+\DoxyCodeLine{01146\ }
+\DoxyCodeLine{01147\ \ \ \textcolor{comment}{//\ Verifies\ that\ the\ failure\ message\ contains\ the\ two\ unsatisfied}}
+\DoxyCodeLine{01148\ \ \ \textcolor{comment}{//\ pre-\/requisites\ but\ not\ the\ satisfied\ one.}}
+\DoxyCodeLine{01149\ \textcolor{preprocessor}{\#if\ GTEST\_USES\_PCRE}}
+\DoxyCodeLine{01150\ \ \ EXPECT\_THAT(r.message(),\ ContainsRegex(}
+\DoxyCodeLine{01151\ \ \ \ \ \ \ \textcolor{comment}{//\ PCRE\ has\ trouble\ using\ (.|\(\backslash\)n)\ to\ match\ any\ character,\ but}}
+\DoxyCodeLine{01152\ \ \ \ \ \ \ \textcolor{comment}{//\ supports\ the\ (?s)\ prefix\ for\ using\ .\ to\ match\ any\ character.}}
+\DoxyCodeLine{01153\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}(?s)the\ following\ immediate\ pre-\/requisites\ are\ not\ satisfied:\(\backslash\)n"{}}}
+\DoxyCodeLine{01154\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}.*:\ pre-\/requisite\ \#0\(\backslash\)n"{}}}
+\DoxyCodeLine{01155\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}.*:\ pre-\/requisite\ \#1"{}}));}
+\DoxyCodeLine{01156\ \textcolor{preprocessor}{\#elif\ GTEST\_USES\_POSIX\_RE}}
+\DoxyCodeLine{01157\ \ \ EXPECT\_THAT(r.message(),\ ContainsRegex(}
+\DoxyCodeLine{01158\ \ \ \ \ \ \ \textcolor{comment}{//\ POSIX\ RE\ doesn't\ understand\ the\ (?s)\ prefix,\ but\ has\ no\ trouble}}
+\DoxyCodeLine{01159\ \ \ \ \ \ \ \textcolor{comment}{//\ with\ (.|\(\backslash\)n).}}
+\DoxyCodeLine{01160\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}the\ following\ immediate\ pre-\/requisites\ are\ not\ satisfied:\(\backslash\)n"{}}}
+\DoxyCodeLine{01161\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}(.|\(\backslash\)n)*:\ pre-\/requisite\ \#0\(\backslash\)n"{}}}
+\DoxyCodeLine{01162\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}(.|\(\backslash\)n)*:\ pre-\/requisite\ \#1"{}}));}
+\DoxyCodeLine{01163\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{01164\ \ \ \textcolor{comment}{//\ We\ can\ only\ use\ Google\ Test's\ own\ simple\ regex.}}
+\DoxyCodeLine{01165\ \ \ EXPECT\_THAT(r.message(),\ ContainsRegex(}
+\DoxyCodeLine{01166\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}the\ following\ immediate\ pre-\/requisites\ are\ not\ satisfied:"{}}));}
+\DoxyCodeLine{01167\ \ \ EXPECT\_THAT(r.message(),\ ContainsRegex(\textcolor{stringliteral}{"{}:\ pre-\/requisite\ \#0"{}}));}
+\DoxyCodeLine{01168\ \ \ EXPECT\_THAT(r.message(),\ ContainsRegex(\textcolor{stringliteral}{"{}:\ pre-\/requisite\ \#1"{}}));}
+\DoxyCodeLine{01169\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ GTEST\_USES\_PCRE}}
+\DoxyCodeLine{01170\ }
+\DoxyCodeLine{01171\ \ \ b.DoB(1);}
+\DoxyCodeLine{01172\ \ \ b.DoB(3);}
+\DoxyCodeLine{01173\ \ \ b.DoB(4);}
+\DoxyCodeLine{01174\ \}}
+\DoxyCodeLine{01175\ }
+\DoxyCodeLine{01176\ TEST(UndefinedReturnValueTest,}
+\DoxyCodeLine{01177\ \ \ \ \ \ ReturnValueIsMandatoryWhenNotDefaultConstructible)\ \{}
+\DoxyCodeLine{01178\ \ \ MockA\ a;}
+\DoxyCodeLine{01179\ \ \ \textcolor{comment}{//\ FIXME:\ We\ should\ really\ verify\ the\ output\ message,}}
+\DoxyCodeLine{01180\ \ \ \textcolor{comment}{//\ but\ we\ cannot\ yet\ due\ to\ that\ EXPECT\_DEATH\ only\ captures\ stderr}}
+\DoxyCodeLine{01181\ \ \ \textcolor{comment}{//\ while\ Google\ Mock\ logs\ to\ stdout.}}
+\DoxyCodeLine{01182\ \textcolor{preprocessor}{\#if\ GTEST\_HAS\_EXCEPTIONS}}
+\DoxyCodeLine{01183\ \ \ EXPECT\_ANY\_THROW(a.ReturnNonDefaultConstructible());}
+\DoxyCodeLine{01184\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{01185\ \ \ EXPECT\_DEATH\_IF\_SUPPORTED(a.ReturnNonDefaultConstructible(),\ \textcolor{stringliteral}{"{}"{}});}
+\DoxyCodeLine{01186\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{01187\ \}}
+\DoxyCodeLine{01188\ }
+\DoxyCodeLine{01189\ \textcolor{comment}{//\ Tests\ that\ an\ excessive\ call\ (one\ whose\ arguments\ match\ the}}
+\DoxyCodeLine{01190\ \textcolor{comment}{//\ matchers\ but\ is\ called\ too\ many\ times)\ performs\ the\ default\ action.}}
+\DoxyCodeLine{01191\ TEST(ExcessiveCallTest,\ DoesDefaultAction)\ \{}
+\DoxyCodeLine{01192\ \ \ \textcolor{comment}{//\ When\ there\ is\ an\ ON\_CALL()\ statement,\ the\ action\ specified\ by\ it}}
+\DoxyCodeLine{01193\ \ \ \textcolor{comment}{//\ should\ be\ taken.}}
+\DoxyCodeLine{01194\ \ \ MockA\ a;}
+\DoxyCodeLine{01195\ \ \ ON\_CALL(a,\ Binary(\_,\ \_))}
+\DoxyCodeLine{01196\ \ \ \ \ \ \ .WillByDefault(Return(\textcolor{keyword}{true}));}
+\DoxyCodeLine{01197\ \ \ EXPECT\_CALL(a,\ Binary(0,\ 0));}
+\DoxyCodeLine{01198\ \ \ a.Binary(0,\ 0);}
+\DoxyCodeLine{01199\ \ \ \textcolor{keywordtype}{bool}\ result\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{01200\ \ \ EXPECT\_NONFATAL\_FAILURE(result\ =\ a.Binary(0,\ 0),}
+\DoxyCodeLine{01201\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}Mock\ function\ called\ more\ times\ than\ expected"{}});}
+\DoxyCodeLine{01202\ \ \ EXPECT\_TRUE(result);}
+\DoxyCodeLine{01203\ }
+\DoxyCodeLine{01204\ \ \ \textcolor{comment}{//\ When\ there\ is\ no\ ON\_CALL(),\ the\ default\ value\ for\ the\ return\ type}}
+\DoxyCodeLine{01205\ \ \ \textcolor{comment}{//\ should\ be\ returned.}}
+\DoxyCodeLine{01206\ \ \ MockB\ b;}
+\DoxyCodeLine{01207\ \ \ EXPECT\_CALL(b,\ DoB(0))}
+\DoxyCodeLine{01208\ \ \ \ \ \ \ .Times(0);}
+\DoxyCodeLine{01209\ \ \ \textcolor{keywordtype}{int}\ n\ =\ -\/1;}
+\DoxyCodeLine{01210\ \ \ EXPECT\_NONFATAL\_FAILURE(n\ =\ b.DoB(0),}
+\DoxyCodeLine{01211\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}Mock\ function\ called\ more\ times\ than\ expected"{}});}
+\DoxyCodeLine{01212\ \ \ EXPECT\_EQ(0,\ n);}
+\DoxyCodeLine{01213\ \}}
+\DoxyCodeLine{01214\ }
+\DoxyCodeLine{01215\ \textcolor{comment}{//\ Tests\ that\ when\ a\ void\ function\ is\ called\ too\ many\ times,}}
+\DoxyCodeLine{01216\ \textcolor{comment}{//\ the\ failure\ message\ contains\ the\ argument\ values.}}
+\DoxyCodeLine{01217\ TEST(ExcessiveCallTest,\ GeneratesFailureForVoidFunction)\ \{}
+\DoxyCodeLine{01218\ \ \ MockA\ a;}
+\DoxyCodeLine{01219\ \ \ EXPECT\_CALL(a,\ DoA(\_))}
+\DoxyCodeLine{01220\ \ \ \ \ \ \ .Times(0);}
+\DoxyCodeLine{01221\ \ \ EXPECT\_NONFATAL\_FAILURE(}
+\DoxyCodeLine{01222\ \ \ \ \ \ \ a.DoA(9),}
+\DoxyCodeLine{01223\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}Mock\ function\ called\ more\ times\ than\ expected\ -\/\ returning\ directly.\(\backslash\)n"{}}}
+\DoxyCodeLine{01224\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}\ \ \ \ Function\ call:\ DoA(9)\(\backslash\)n"{}}}
+\DoxyCodeLine{01225\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}\ \ \ \ \ \ \ \ \ Expected:\ to\ be\ never\ called\(\backslash\)n"{}}}
+\DoxyCodeLine{01226\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}\ \ \ \ \ \ \ \ \ \ \ Actual:\ called\ once\ -\/\ over-\/saturated\ and\ active"{}});}
+\DoxyCodeLine{01227\ \}}
+\DoxyCodeLine{01228\ }
+\DoxyCodeLine{01229\ \textcolor{comment}{//\ Tests\ that\ when\ a\ non-\/void\ function\ is\ called\ too\ many\ times,\ the}}
+\DoxyCodeLine{01230\ \textcolor{comment}{//\ failure\ message\ contains\ the\ argument\ values\ and\ the\ return\ value.}}
+\DoxyCodeLine{01231\ TEST(ExcessiveCallTest,\ GeneratesFailureForNonVoidFunction)\ \{}
+\DoxyCodeLine{01232\ \ \ MockB\ b;}
+\DoxyCodeLine{01233\ \ \ EXPECT\_CALL(b,\ DoB(\_));}
+\DoxyCodeLine{01234\ \ \ b.DoB(1);}
+\DoxyCodeLine{01235\ \ \ EXPECT\_NONFATAL\_FAILURE(}
+\DoxyCodeLine{01236\ \ \ \ \ \ \ b.DoB(2),}
+\DoxyCodeLine{01237\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}Mock\ function\ called\ more\ times\ than\ expected\ -\/\ "{}}}
+\DoxyCodeLine{01238\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}returning\ default\ value.\(\backslash\)n"{}}}
+\DoxyCodeLine{01239\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}\ \ \ \ Function\ call:\ DoB(2)\(\backslash\)n"{}}}
+\DoxyCodeLine{01240\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}\ \ \ \ \ \ \ \ \ \ Returns:\ 0\(\backslash\)n"{}}}
+\DoxyCodeLine{01241\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}\ \ \ \ \ \ \ \ \ Expected:\ to\ be\ called\ once\(\backslash\)n"{}}}
+\DoxyCodeLine{01242\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}\ \ \ \ \ \ \ \ \ \ \ Actual:\ called\ twice\ -\/\ over-\/saturated\ and\ active"{}});}
+\DoxyCodeLine{01243\ \}}
+\DoxyCodeLine{01244\ }
+\DoxyCodeLine{01245\ \textcolor{comment}{//\ Tests\ using\ sequences.}}
+\DoxyCodeLine{01246\ }
+\DoxyCodeLine{01247\ TEST(InSequenceTest,\ AllExpectationInScopeAreInSequence)\ \{}
+\DoxyCodeLine{01248\ \ \ MockA\ a;}
+\DoxyCodeLine{01249\ \ \ \{}
+\DoxyCodeLine{01250\ \ \ \ \ InSequence\ dummy;}
+\DoxyCodeLine{01251\ }
+\DoxyCodeLine{01252\ \ \ \ \ EXPECT\_CALL(a,\ DoA(1));}
+\DoxyCodeLine{01253\ \ \ \ \ EXPECT\_CALL(a,\ DoA(2));}
+\DoxyCodeLine{01254\ \ \ \}}
+\DoxyCodeLine{01255\ }
+\DoxyCodeLine{01256\ \ \ EXPECT\_NONFATAL\_FAILURE(\{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{01257\ \ \ \ \ a.DoA(2);}
+\DoxyCodeLine{01258\ \ \ \},\ \textcolor{stringliteral}{"{}Unexpected\ mock\ function\ call"{}});}
+\DoxyCodeLine{01259\ }
+\DoxyCodeLine{01260\ \ \ a.DoA(1);}
+\DoxyCodeLine{01261\ \ \ a.DoA(2);}
+\DoxyCodeLine{01262\ \}}
+\DoxyCodeLine{01263\ }
+\DoxyCodeLine{01264\ TEST(InSequenceTest,\ NestedInSequence)\ \{}
+\DoxyCodeLine{01265\ \ \ MockA\ a;}
+\DoxyCodeLine{01266\ \ \ \{}
+\DoxyCodeLine{01267\ \ \ \ \ InSequence\ dummy;}
+\DoxyCodeLine{01268\ }
+\DoxyCodeLine{01269\ \ \ \ \ EXPECT\_CALL(a,\ DoA(1));}
+\DoxyCodeLine{01270\ \ \ \ \ \{}
+\DoxyCodeLine{01271\ \ \ \ \ \ \ InSequence\ dummy2;}
+\DoxyCodeLine{01272\ }
+\DoxyCodeLine{01273\ \ \ \ \ \ \ EXPECT\_CALL(a,\ DoA(2));}
+\DoxyCodeLine{01274\ \ \ \ \ \ \ EXPECT\_CALL(a,\ DoA(3));}
+\DoxyCodeLine{01275\ \ \ \ \ \}}
+\DoxyCodeLine{01276\ \ \ \}}
+\DoxyCodeLine{01277\ }
+\DoxyCodeLine{01278\ \ \ EXPECT\_NONFATAL\_FAILURE(\{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{01279\ \ \ \ \ a.DoA(1);}
+\DoxyCodeLine{01280\ \ \ \ \ a.DoA(3);}
+\DoxyCodeLine{01281\ \ \ \},\ \textcolor{stringliteral}{"{}Unexpected\ mock\ function\ call"{}});}
+\DoxyCodeLine{01282\ }
+\DoxyCodeLine{01283\ \ \ a.DoA(2);}
+\DoxyCodeLine{01284\ \ \ a.DoA(3);}
+\DoxyCodeLine{01285\ \}}
+\DoxyCodeLine{01286\ }
+\DoxyCodeLine{01287\ TEST(InSequenceTest,\ ExpectationsOutOfScopeAreNotAffected)\ \{}
+\DoxyCodeLine{01288\ \ \ MockA\ a;}
+\DoxyCodeLine{01289\ \ \ \{}
+\DoxyCodeLine{01290\ \ \ \ \ InSequence\ dummy;}
+\DoxyCodeLine{01291\ }
+\DoxyCodeLine{01292\ \ \ \ \ EXPECT\_CALL(a,\ DoA(1));}
+\DoxyCodeLine{01293\ \ \ \ \ EXPECT\_CALL(a,\ DoA(2));}
+\DoxyCodeLine{01294\ \ \ \}}
+\DoxyCodeLine{01295\ \ \ EXPECT\_CALL(a,\ DoA(3));}
+\DoxyCodeLine{01296\ }
+\DoxyCodeLine{01297\ \ \ EXPECT\_NONFATAL\_FAILURE(\{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{01298\ \ \ \ \ a.DoA(2);}
+\DoxyCodeLine{01299\ \ \ \},\ \textcolor{stringliteral}{"{}Unexpected\ mock\ function\ call"{}});}
+\DoxyCodeLine{01300\ }
+\DoxyCodeLine{01301\ \ \ a.DoA(3);}
+\DoxyCodeLine{01302\ \ \ a.DoA(1);}
+\DoxyCodeLine{01303\ \ \ a.DoA(2);}
+\DoxyCodeLine{01304\ \}}
+\DoxyCodeLine{01305\ }
+\DoxyCodeLine{01306\ \textcolor{comment}{//\ Tests\ that\ any\ order\ is\ allowed\ when\ no\ sequence\ is\ used.}}
+\DoxyCodeLine{01307\ TEST(SequenceTest,\ AnyOrderIsOkByDefault)\ \{}
+\DoxyCodeLine{01308\ \ \ \{}
+\DoxyCodeLine{01309\ \ \ \ \ MockA\ a;}
+\DoxyCodeLine{01310\ \ \ \ \ MockB\ b;}
+\DoxyCodeLine{01311\ }
+\DoxyCodeLine{01312\ \ \ \ \ EXPECT\_CALL(a,\ DoA(1));}
+\DoxyCodeLine{01313\ \ \ \ \ EXPECT\_CALL(b,\ DoB())}
+\DoxyCodeLine{01314\ \ \ \ \ \ \ \ \ .Times(AnyNumber());}
+\DoxyCodeLine{01315\ }
+\DoxyCodeLine{01316\ \ \ \ \ a.DoA(1);}
+\DoxyCodeLine{01317\ \ \ \ \ b.DoB();}
+\DoxyCodeLine{01318\ \ \ \}}
+\DoxyCodeLine{01319\ }
+\DoxyCodeLine{01320\ \ \ \{\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{01321\ \ \ \ \ MockA\ a;}
+\DoxyCodeLine{01322\ \ \ \ \ MockB\ b;}
+\DoxyCodeLine{01323\ }
+\DoxyCodeLine{01324\ \ \ \ \ EXPECT\_CALL(a,\ DoA(1));}
+\DoxyCodeLine{01325\ \ \ \ \ EXPECT\_CALL(b,\ DoB())}
+\DoxyCodeLine{01326\ \ \ \ \ \ \ \ \ .Times(AnyNumber());}
+\DoxyCodeLine{01327\ }
+\DoxyCodeLine{01328\ \ \ \ \ b.DoB();}
+\DoxyCodeLine{01329\ \ \ \ \ a.DoA(1);}
+\DoxyCodeLine{01330\ \ \ \}}
+\DoxyCodeLine{01331\ \}}
+\DoxyCodeLine{01332\ }
+\DoxyCodeLine{01333\ \textcolor{comment}{//\ Tests\ that\ the\ calls\ must\ be\ in\ strict\ order\ when\ a\ complete\ order}}
+\DoxyCodeLine{01334\ \textcolor{comment}{//\ is\ specified.}}
+\DoxyCodeLine{01335\ TEST(SequenceTest,\ CallsMustBeInStrictOrderWhenSaidSo1)\ \{}
+\DoxyCodeLine{01336\ \ \ MockA\ a;}
+\DoxyCodeLine{01337\ \ \ ON\_CALL(a,\ ReturnResult(\_))}
+\DoxyCodeLine{01338\ \ \ \ \ \ \ .WillByDefault(Return(Result()));}
+\DoxyCodeLine{01339\ }
+\DoxyCodeLine{01340\ \ \ Sequence\ s;}
+\DoxyCodeLine{01341\ \ \ EXPECT\_CALL(a,\ ReturnResult(1))}
+\DoxyCodeLine{01342\ \ \ \ \ \ \ .InSequence(s);}
+\DoxyCodeLine{01343\ \ \ EXPECT\_CALL(a,\ ReturnResult(2))}
+\DoxyCodeLine{01344\ \ \ \ \ \ \ .InSequence(s);}
+\DoxyCodeLine{01345\ \ \ EXPECT\_CALL(a,\ ReturnResult(3))}
+\DoxyCodeLine{01346\ \ \ \ \ \ \ .InSequence(s);}
+\DoxyCodeLine{01347\ }
+\DoxyCodeLine{01348\ \ \ a.ReturnResult(1);}
+\DoxyCodeLine{01349\ }
+\DoxyCodeLine{01350\ \ \ \textcolor{comment}{//\ May\ only\ be\ called\ after\ a.ReturnResult(2).}}
+\DoxyCodeLine{01351\ \ \ EXPECT\_NONFATAL\_FAILURE(a.ReturnResult(3),\ \textcolor{stringliteral}{"{}Unexpected\ mock\ function\ call"{}});}
+\DoxyCodeLine{01352\ }
+\DoxyCodeLine{01353\ \ \ a.ReturnResult(2);}
+\DoxyCodeLine{01354\ \ \ a.ReturnResult(3);}
+\DoxyCodeLine{01355\ \}}
+\DoxyCodeLine{01356\ }
+\DoxyCodeLine{01357\ \textcolor{comment}{//\ Tests\ that\ the\ calls\ must\ be\ in\ strict\ order\ when\ a\ complete\ order}}
+\DoxyCodeLine{01358\ \textcolor{comment}{//\ is\ specified.}}
+\DoxyCodeLine{01359\ TEST(SequenceTest,\ CallsMustBeInStrictOrderWhenSaidSo2)\ \{}
+\DoxyCodeLine{01360\ \ \ MockA\ a;}
+\DoxyCodeLine{01361\ \ \ ON\_CALL(a,\ ReturnResult(\_))}
+\DoxyCodeLine{01362\ \ \ \ \ \ \ .WillByDefault(Return(Result()));}
+\DoxyCodeLine{01363\ }
+\DoxyCodeLine{01364\ \ \ Sequence\ s;}
+\DoxyCodeLine{01365\ \ \ EXPECT\_CALL(a,\ ReturnResult(1))}
+\DoxyCodeLine{01366\ \ \ \ \ \ \ .InSequence(s);}
+\DoxyCodeLine{01367\ \ \ EXPECT\_CALL(a,\ ReturnResult(2))}
+\DoxyCodeLine{01368\ \ \ \ \ \ \ .InSequence(s);}
+\DoxyCodeLine{01369\ }
+\DoxyCodeLine{01370\ \ \ \textcolor{comment}{//\ May\ only\ be\ called\ after\ a.ReturnResult(1).}}
+\DoxyCodeLine{01371\ \ \ EXPECT\_NONFATAL\_FAILURE(a.ReturnResult(2),\ \textcolor{stringliteral}{"{}Unexpected\ mock\ function\ call"{}});}
+\DoxyCodeLine{01372\ }
+\DoxyCodeLine{01373\ \ \ a.ReturnResult(1);}
+\DoxyCodeLine{01374\ \ \ a.ReturnResult(2);}
+\DoxyCodeLine{01375\ \}}
+\DoxyCodeLine{01376\ }
+\DoxyCodeLine{01377\ \textcolor{comment}{//\ Tests\ specifying\ a\ DAG\ using\ multiple\ sequences.}}
+\DoxyCodeLine{01378\ \textcolor{keyword}{class\ }PartialOrderTest\ :\ \textcolor{keyword}{public}\ \mbox{\hyperlink{classtesting_1_1_test}{testing::Test}}\ \{}
+\DoxyCodeLine{01379\ \ \textcolor{keyword}{protected}:}
+\DoxyCodeLine{01380\ \ \ PartialOrderTest()\ \{}
+\DoxyCodeLine{01381\ \ \ \ \ ON\_CALL(a\_,\ ReturnResult(\_))}
+\DoxyCodeLine{01382\ \ \ \ \ \ \ \ \ .WillByDefault(Return(Result()));}
+\DoxyCodeLine{01383\ }
+\DoxyCodeLine{01384\ \ \ \ \ \textcolor{comment}{//\ Specifies\ this\ partial\ ordering:}}
+\DoxyCodeLine{01385\ \ \ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{01386\ \ \ \ \ \textcolor{comment}{//\ a.ReturnResult(1)\ ==>}}
+\DoxyCodeLine{01387\ \ \ \ \ \textcolor{comment}{//\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ a.ReturnResult(2)\ *\ n\ \ ==>\ \ a.ReturnResult(3)}}
+\DoxyCodeLine{01388\ \ \ \ \ \textcolor{comment}{//\ b.DoB()\ *\ 2\ \ \ \ \ \ \ ==>}}
+\DoxyCodeLine{01389\ \ \ \ \ Sequence\ x,\ y;}
+\DoxyCodeLine{01390\ \ \ \ \ EXPECT\_CALL(a\_,\ ReturnResult(1))}
+\DoxyCodeLine{01391\ \ \ \ \ \ \ \ \ .InSequence(x);}
+\DoxyCodeLine{01392\ \ \ \ \ EXPECT\_CALL(b\_,\ DoB())}
+\DoxyCodeLine{01393\ \ \ \ \ \ \ \ \ .Times(2)}
+\DoxyCodeLine{01394\ \ \ \ \ \ \ \ \ .InSequence(y);}
+\DoxyCodeLine{01395\ \ \ \ \ EXPECT\_CALL(a\_,\ ReturnResult(2))}
+\DoxyCodeLine{01396\ \ \ \ \ \ \ \ \ .Times(AnyNumber())}
+\DoxyCodeLine{01397\ \ \ \ \ \ \ \ \ .InSequence(x,\ y);}
+\DoxyCodeLine{01398\ \ \ \ \ EXPECT\_CALL(a\_,\ ReturnResult(3))}
+\DoxyCodeLine{01399\ \ \ \ \ \ \ \ \ .InSequence(x);}
+\DoxyCodeLine{01400\ \ \ \}}
+\DoxyCodeLine{01401\ }
+\DoxyCodeLine{01402\ \ \ MockA\ a\_;}
+\DoxyCodeLine{01403\ \ \ MockB\ b\_;}
+\DoxyCodeLine{01404\ \};}
+\DoxyCodeLine{01405\ }
+\DoxyCodeLine{01406\ TEST\_F(PartialOrderTest,\ CallsMustConformToSpecifiedDag1)\ \{}
+\DoxyCodeLine{01407\ \ \ a\_.ReturnResult(1);}
+\DoxyCodeLine{01408\ \ \ b\_.DoB();}
+\DoxyCodeLine{01409\ }
+\DoxyCodeLine{01410\ \ \ \textcolor{comment}{//\ May\ only\ be\ called\ after\ the\ second\ DoB().}}
+\DoxyCodeLine{01411\ \ \ EXPECT\_NONFATAL\_FAILURE(a\_.ReturnResult(2),\ \textcolor{stringliteral}{"{}Unexpected\ mock\ function\ call"{}});}
+\DoxyCodeLine{01412\ }
+\DoxyCodeLine{01413\ \ \ b\_.DoB();}
+\DoxyCodeLine{01414\ \ \ a\_.ReturnResult(3);}
+\DoxyCodeLine{01415\ \}}
+\DoxyCodeLine{01416\ }
+\DoxyCodeLine{01417\ TEST\_F(PartialOrderTest,\ CallsMustConformToSpecifiedDag2)\ \{}
+\DoxyCodeLine{01418\ \ \ \textcolor{comment}{//\ May\ only\ be\ called\ after\ ReturnResult(1).}}
+\DoxyCodeLine{01419\ \ \ EXPECT\_NONFATAL\_FAILURE(a\_.ReturnResult(2),\ \textcolor{stringliteral}{"{}Unexpected\ mock\ function\ call"{}});}
+\DoxyCodeLine{01420\ }
+\DoxyCodeLine{01421\ \ \ a\_.ReturnResult(1);}
+\DoxyCodeLine{01422\ \ \ b\_.DoB();}
+\DoxyCodeLine{01423\ \ \ b\_.DoB();}
+\DoxyCodeLine{01424\ \ \ a\_.ReturnResult(3);}
+\DoxyCodeLine{01425\ \}}
+\DoxyCodeLine{01426\ }
+\DoxyCodeLine{01427\ TEST\_F(PartialOrderTest,\ CallsMustConformToSpecifiedDag3)\ \{}
+\DoxyCodeLine{01428\ \ \ \textcolor{comment}{//\ May\ only\ be\ called\ last.}}
+\DoxyCodeLine{01429\ \ \ EXPECT\_NONFATAL\_FAILURE(a\_.ReturnResult(3),\ \textcolor{stringliteral}{"{}Unexpected\ mock\ function\ call"{}});}
+\DoxyCodeLine{01430\ }
+\DoxyCodeLine{01431\ \ \ a\_.ReturnResult(1);}
+\DoxyCodeLine{01432\ \ \ b\_.DoB();}
+\DoxyCodeLine{01433\ \ \ b\_.DoB();}
+\DoxyCodeLine{01434\ \ \ a\_.ReturnResult(3);}
+\DoxyCodeLine{01435\ \}}
+\DoxyCodeLine{01436\ }
+\DoxyCodeLine{01437\ TEST\_F(PartialOrderTest,\ CallsMustConformToSpecifiedDag4)\ \{}
+\DoxyCodeLine{01438\ \ \ a\_.ReturnResult(1);}
+\DoxyCodeLine{01439\ \ \ b\_.DoB();}
+\DoxyCodeLine{01440\ \ \ b\_.DoB();}
+\DoxyCodeLine{01441\ \ \ a\_.ReturnResult(3);}
+\DoxyCodeLine{01442\ }
+\DoxyCodeLine{01443\ \ \ \textcolor{comment}{//\ May\ only\ be\ called\ before\ ReturnResult(3).}}
+\DoxyCodeLine{01444\ \ \ EXPECT\_NONFATAL\_FAILURE(a\_.ReturnResult(2),\ \textcolor{stringliteral}{"{}Unexpected\ mock\ function\ call"{}});}
+\DoxyCodeLine{01445\ \}}
+\DoxyCodeLine{01446\ }
+\DoxyCodeLine{01447\ TEST(SequenceTest,\ Retirement)\ \{}
+\DoxyCodeLine{01448\ \ \ MockA\ a;}
+\DoxyCodeLine{01449\ \ \ Sequence\ s;}
+\DoxyCodeLine{01450\ }
+\DoxyCodeLine{01451\ \ \ EXPECT\_CALL(a,\ DoA(1))}
+\DoxyCodeLine{01452\ \ \ \ \ \ \ .InSequence(s);}
+\DoxyCodeLine{01453\ \ \ EXPECT\_CALL(a,\ DoA(\_))}
+\DoxyCodeLine{01454\ \ \ \ \ \ \ .InSequence(s)}
+\DoxyCodeLine{01455\ \ \ \ \ \ \ .RetiresOnSaturation();}
+\DoxyCodeLine{01456\ \ \ EXPECT\_CALL(a,\ DoA(1))}
+\DoxyCodeLine{01457\ \ \ \ \ \ \ .InSequence(s);}
+\DoxyCodeLine{01458\ }
+\DoxyCodeLine{01459\ \ \ a.DoA(1);}
+\DoxyCodeLine{01460\ \ \ a.DoA(2);}
+\DoxyCodeLine{01461\ \ \ a.DoA(1);}
+\DoxyCodeLine{01462\ \}}
+\DoxyCodeLine{01463\ }
+\DoxyCodeLine{01464\ \textcolor{comment}{//\ Tests\ Expectation.}}
+\DoxyCodeLine{01465\ }
+\DoxyCodeLine{01466\ TEST(ExpectationTest,\ ConstrutorsWork)\ \{}
+\DoxyCodeLine{01467\ \ \ MockA\ a;}
+\DoxyCodeLine{01468\ \ \ Expectation\ e1;\ \ \textcolor{comment}{//\ Default\ ctor.}}
+\DoxyCodeLine{01469\ }
+\DoxyCodeLine{01470\ \ \ \textcolor{comment}{//\ Ctor\ from\ various\ forms\ of\ EXPECT\_CALL.}}
+\DoxyCodeLine{01471\ \ \ Expectation\ e2\ =\ EXPECT\_CALL(a,\ DoA(2));}
+\DoxyCodeLine{01472\ \ \ Expectation\ e3\ =\ EXPECT\_CALL(a,\ DoA(3)).With(\_);}
+\DoxyCodeLine{01473\ \ \ \{}
+\DoxyCodeLine{01474\ \ \ \ \ Sequence\ s;}
+\DoxyCodeLine{01475\ \ \ \ \ Expectation\ e4\ =\ EXPECT\_CALL(a,\ DoA(4)).Times(1);}
+\DoxyCodeLine{01476\ \ \ \ \ Expectation\ e5\ =\ EXPECT\_CALL(a,\ DoA(5)).InSequence(s);}
+\DoxyCodeLine{01477\ \ \ \}}
+\DoxyCodeLine{01478\ \ \ Expectation\ e6\ =\ EXPECT\_CALL(a,\ DoA(6)).After(e2);}
+\DoxyCodeLine{01479\ \ \ Expectation\ e7\ =\ EXPECT\_CALL(a,\ DoA(7)).WillOnce(Return());}
+\DoxyCodeLine{01480\ \ \ Expectation\ e8\ =\ EXPECT\_CALL(a,\ DoA(8)).WillRepeatedly(Return());}
+\DoxyCodeLine{01481\ \ \ Expectation\ e9\ =\ EXPECT\_CALL(a,\ DoA(9)).RetiresOnSaturation();}
+\DoxyCodeLine{01482\ }
+\DoxyCodeLine{01483\ \ \ Expectation\ e10\ =\ e2;\ \ \textcolor{comment}{//\ Copy\ ctor.}}
+\DoxyCodeLine{01484\ }
+\DoxyCodeLine{01485\ \ \ EXPECT\_THAT(e1,\ Ne(e2));}
+\DoxyCodeLine{01486\ \ \ EXPECT\_THAT(e2,\ Eq(e10));}
+\DoxyCodeLine{01487\ }
+\DoxyCodeLine{01488\ \ \ a.DoA(2);}
+\DoxyCodeLine{01489\ \ \ a.DoA(3);}
+\DoxyCodeLine{01490\ \ \ a.DoA(4);}
+\DoxyCodeLine{01491\ \ \ a.DoA(5);}
+\DoxyCodeLine{01492\ \ \ a.DoA(6);}
+\DoxyCodeLine{01493\ \ \ a.DoA(7);}
+\DoxyCodeLine{01494\ \ \ a.DoA(8);}
+\DoxyCodeLine{01495\ \ \ a.DoA(9);}
+\DoxyCodeLine{01496\ \}}
+\DoxyCodeLine{01497\ }
+\DoxyCodeLine{01498\ TEST(ExpectationTest,\ AssignmentWorks)\ \{}
+\DoxyCodeLine{01499\ \ \ MockA\ a;}
+\DoxyCodeLine{01500\ \ \ Expectation\ e1;}
+\DoxyCodeLine{01501\ \ \ Expectation\ e2\ =\ EXPECT\_CALL(a,\ DoA(1));}
+\DoxyCodeLine{01502\ }
+\DoxyCodeLine{01503\ \ \ EXPECT\_THAT(e1,\ Ne(e2));}
+\DoxyCodeLine{01504\ }
+\DoxyCodeLine{01505\ \ \ e1\ =\ e2;}
+\DoxyCodeLine{01506\ \ \ EXPECT\_THAT(e1,\ Eq(e2));}
+\DoxyCodeLine{01507\ }
+\DoxyCodeLine{01508\ \ \ a.DoA(1);}
+\DoxyCodeLine{01509\ \}}
+\DoxyCodeLine{01510\ }
+\DoxyCodeLine{01511\ \textcolor{comment}{//\ Tests\ ExpectationSet.}}
+\DoxyCodeLine{01512\ }
+\DoxyCodeLine{01513\ TEST(ExpectationSetTest,\ MemberTypesAreCorrect)\ \{}
+\DoxyCodeLine{01514\ \ \ ::testing::StaticAssertTypeEq<Expectation,\ ExpectationSet::value\_type>();}
+\DoxyCodeLine{01515\ \}}
+\DoxyCodeLine{01516\ }
+\DoxyCodeLine{01517\ TEST(ExpectationSetTest,\ ConstructorsWork)\ \{}
+\DoxyCodeLine{01518\ \ \ MockA\ a;}
+\DoxyCodeLine{01519\ }
+\DoxyCodeLine{01520\ \ \ Expectation\ e1;}
+\DoxyCodeLine{01521\ \ \ \textcolor{keyword}{const}\ Expectation\ e2;}
+\DoxyCodeLine{01522\ \ \ ExpectationSet\ es1;\ \ \textcolor{comment}{//\ Default\ ctor.}}
+\DoxyCodeLine{01523\ \ \ ExpectationSet\ es2\ =\ EXPECT\_CALL(a,\ DoA(1));\ \ \textcolor{comment}{//\ Ctor\ from\ EXPECT\_CALL.}}
+\DoxyCodeLine{01524\ \ \ ExpectationSet\ es3\ =\ e1;\ \ \textcolor{comment}{//\ Ctor\ from\ Expectation.}}
+\DoxyCodeLine{01525\ \ \ ExpectationSet\ es4(e1);\ \ \ \textcolor{comment}{//\ Ctor\ from\ Expectation;\ alternative\ syntax.}}
+\DoxyCodeLine{01526\ \ \ ExpectationSet\ es5\ =\ e2;\ \ \textcolor{comment}{//\ Ctor\ from\ const\ Expectation.}}
+\DoxyCodeLine{01527\ \ \ ExpectationSet\ es6(e2);\ \ \ \textcolor{comment}{//\ Ctor\ from\ const\ Expectation;\ alternative\ syntax.}}
+\DoxyCodeLine{01528\ \ \ ExpectationSet\ es7\ =\ es2;\ \ \textcolor{comment}{//\ Copy\ ctor.}}
+\DoxyCodeLine{01529\ }
+\DoxyCodeLine{01530\ \ \ EXPECT\_EQ(0,\ es1.size());}
+\DoxyCodeLine{01531\ \ \ EXPECT\_EQ(1,\ es2.size());}
+\DoxyCodeLine{01532\ \ \ EXPECT\_EQ(1,\ es3.size());}
+\DoxyCodeLine{01533\ \ \ EXPECT\_EQ(1,\ es4.size());}
+\DoxyCodeLine{01534\ \ \ EXPECT\_EQ(1,\ es5.size());}
+\DoxyCodeLine{01535\ \ \ EXPECT\_EQ(1,\ es6.size());}
+\DoxyCodeLine{01536\ \ \ EXPECT\_EQ(1,\ es7.size());}
+\DoxyCodeLine{01537\ }
+\DoxyCodeLine{01538\ \ \ EXPECT\_THAT(es3,\ Ne(es2));}
+\DoxyCodeLine{01539\ \ \ EXPECT\_THAT(es4,\ Eq(es3));}
+\DoxyCodeLine{01540\ \ \ EXPECT\_THAT(es5,\ Eq(es4));}
+\DoxyCodeLine{01541\ \ \ EXPECT\_THAT(es6,\ Eq(es5));}
+\DoxyCodeLine{01542\ \ \ EXPECT\_THAT(es7,\ Eq(es2));}
+\DoxyCodeLine{01543\ \ \ a.DoA(1);}
+\DoxyCodeLine{01544\ \}}
+\DoxyCodeLine{01545\ }
+\DoxyCodeLine{01546\ TEST(ExpectationSetTest,\ AssignmentWorks)\ \{}
+\DoxyCodeLine{01547\ \ \ ExpectationSet\ es1;}
+\DoxyCodeLine{01548\ \ \ ExpectationSet\ es2\ =\ Expectation();}
+\DoxyCodeLine{01549\ }
+\DoxyCodeLine{01550\ \ \ es1\ =\ es2;}
+\DoxyCodeLine{01551\ \ \ EXPECT\_EQ(1,\ es1.size());}
+\DoxyCodeLine{01552\ \ \ EXPECT\_THAT(*(es1.begin()),\ Eq(Expectation()));}
+\DoxyCodeLine{01553\ \ \ EXPECT\_THAT(es1,\ Eq(es2));}
+\DoxyCodeLine{01554\ \}}
+\DoxyCodeLine{01555\ }
+\DoxyCodeLine{01556\ TEST(ExpectationSetTest,\ InsertionWorks)\ \{}
+\DoxyCodeLine{01557\ \ \ ExpectationSet\ es1;}
+\DoxyCodeLine{01558\ \ \ Expectation\ e1;}
+\DoxyCodeLine{01559\ \ \ es1\ +=\ e1;}
+\DoxyCodeLine{01560\ \ \ EXPECT\_EQ(1,\ es1.size());}
+\DoxyCodeLine{01561\ \ \ EXPECT\_THAT(*(es1.begin()),\ Eq(e1));}
+\DoxyCodeLine{01562\ }
+\DoxyCodeLine{01563\ \ \ MockA\ a;}
+\DoxyCodeLine{01564\ \ \ Expectation\ e2\ =\ EXPECT\_CALL(a,\ DoA(1));}
+\DoxyCodeLine{01565\ \ \ es1\ +=\ e2;}
+\DoxyCodeLine{01566\ \ \ EXPECT\_EQ(2,\ es1.size());}
+\DoxyCodeLine{01567\ }
+\DoxyCodeLine{01568\ \ \ ExpectationSet::const\_iterator\ it1\ =\ es1.begin();}
+\DoxyCodeLine{01569\ \ \ ExpectationSet::const\_iterator\ it2\ =\ it1;}
+\DoxyCodeLine{01570\ \ \ ++it2;}
+\DoxyCodeLine{01571\ \ \ EXPECT\_TRUE(*it1\ ==\ e1\ ||\ *it2\ ==\ e1);\ \ \textcolor{comment}{//\ e1\ must\ be\ in\ the\ set.}}
+\DoxyCodeLine{01572\ \ \ EXPECT\_TRUE(*it1\ ==\ e2\ ||\ *it2\ ==\ e2);\ \ \textcolor{comment}{//\ e2\ must\ be\ in\ the\ set\ too.}}
+\DoxyCodeLine{01573\ \ \ a.DoA(1);}
+\DoxyCodeLine{01574\ \}}
+\DoxyCodeLine{01575\ }
+\DoxyCodeLine{01576\ TEST(ExpectationSetTest,\ SizeWorks)\ \{}
+\DoxyCodeLine{01577\ \ \ ExpectationSet\ es;}
+\DoxyCodeLine{01578\ \ \ EXPECT\_EQ(0,\ es.size());}
+\DoxyCodeLine{01579\ }
+\DoxyCodeLine{01580\ \ \ es\ +=\ Expectation();}
+\DoxyCodeLine{01581\ \ \ EXPECT\_EQ(1,\ es.size());}
+\DoxyCodeLine{01582\ }
+\DoxyCodeLine{01583\ \ \ MockA\ a;}
+\DoxyCodeLine{01584\ \ \ es\ +=\ EXPECT\_CALL(a,\ DoA(1));}
+\DoxyCodeLine{01585\ \ \ EXPECT\_EQ(2,\ es.size());}
+\DoxyCodeLine{01586\ }
+\DoxyCodeLine{01587\ \ \ a.DoA(1);}
+\DoxyCodeLine{01588\ \}}
+\DoxyCodeLine{01589\ }
+\DoxyCodeLine{01590\ TEST(ExpectationSetTest,\ IsEnumerable)\ \{}
+\DoxyCodeLine{01591\ \ \ ExpectationSet\ es;}
+\DoxyCodeLine{01592\ \ \ EXPECT\_TRUE(es.begin()\ ==\ es.end());}
+\DoxyCodeLine{01593\ }
+\DoxyCodeLine{01594\ \ \ es\ +=\ Expectation();}
+\DoxyCodeLine{01595\ \ \ ExpectationSet::const\_iterator\ it\ =\ es.begin();}
+\DoxyCodeLine{01596\ \ \ EXPECT\_TRUE(it\ !=\ es.end());}
+\DoxyCodeLine{01597\ \ \ EXPECT\_THAT(*it,\ Eq(Expectation()));}
+\DoxyCodeLine{01598\ \ \ ++it;}
+\DoxyCodeLine{01599\ \ \ EXPECT\_TRUE(it==\ es.end());}
+\DoxyCodeLine{01600\ \}}
+\DoxyCodeLine{01601\ }
+\DoxyCodeLine{01602\ \textcolor{comment}{//\ Tests\ the\ .After()\ clause.}}
+\DoxyCodeLine{01603\ }
+\DoxyCodeLine{01604\ TEST(AfterTest,\ SucceedsWhenPartialOrderIsSatisfied)\ \{}
+\DoxyCodeLine{01605\ \ \ MockA\ a;}
+\DoxyCodeLine{01606\ \ \ ExpectationSet\ es;}
+\DoxyCodeLine{01607\ \ \ es\ +=\ EXPECT\_CALL(a,\ DoA(1));}
+\DoxyCodeLine{01608\ \ \ es\ +=\ EXPECT\_CALL(a,\ DoA(2));}
+\DoxyCodeLine{01609\ \ \ EXPECT\_CALL(a,\ DoA(3))}
+\DoxyCodeLine{01610\ \ \ \ \ \ \ .After(es);}
+\DoxyCodeLine{01611\ }
+\DoxyCodeLine{01612\ \ \ a.DoA(1);}
+\DoxyCodeLine{01613\ \ \ a.DoA(2);}
+\DoxyCodeLine{01614\ \ \ a.DoA(3);}
+\DoxyCodeLine{01615\ \}}
+\DoxyCodeLine{01616\ }
+\DoxyCodeLine{01617\ TEST(AfterTest,\ SucceedsWhenTotalOrderIsSatisfied)\ \{}
+\DoxyCodeLine{01618\ \ \ MockA\ a;}
+\DoxyCodeLine{01619\ \ \ MockB\ b;}
+\DoxyCodeLine{01620\ \ \ \textcolor{comment}{//\ The\ following\ also\ verifies\ that\ const\ Expectation\ objects\ work}}
+\DoxyCodeLine{01621\ \ \ \textcolor{comment}{//\ too.\ \ Do\ not\ remove\ the\ const\ modifiers.}}
+\DoxyCodeLine{01622\ \ \ \textcolor{keyword}{const}\ Expectation\ e1\ =\ EXPECT\_CALL(a,\ DoA(1));}
+\DoxyCodeLine{01623\ \ \ \textcolor{keyword}{const}\ Expectation\ e2\ =\ EXPECT\_CALL(b,\ DoB())}
+\DoxyCodeLine{01624\ \ \ \ \ \ \ .Times(2)}
+\DoxyCodeLine{01625\ \ \ \ \ \ \ .After(e1);}
+\DoxyCodeLine{01626\ \ \ EXPECT\_CALL(a,\ DoA(2)).After(e2);}
+\DoxyCodeLine{01627\ }
+\DoxyCodeLine{01628\ \ \ a.DoA(1);}
+\DoxyCodeLine{01629\ \ \ b.DoB();}
+\DoxyCodeLine{01630\ \ \ b.DoB();}
+\DoxyCodeLine{01631\ \ \ a.DoA(2);}
+\DoxyCodeLine{01632\ \}}
+\DoxyCodeLine{01633\ }
+\DoxyCodeLine{01634\ \textcolor{comment}{//\ Calls\ must\ be\ in\ strict\ order\ when\ specified\ so\ using\ .After().}}
+\DoxyCodeLine{01635\ TEST(AfterTest,\ CallsMustBeInStrictOrderWhenSpecifiedSo1)\ \{}
+\DoxyCodeLine{01636\ \ \ MockA\ a;}
+\DoxyCodeLine{01637\ \ \ MockB\ b;}
+\DoxyCodeLine{01638\ }
+\DoxyCodeLine{01639\ \ \ \textcolor{comment}{//\ Define\ ordering:}}
+\DoxyCodeLine{01640\ \ \ \textcolor{comment}{//\ \ \ a.DoA(1)\ ==>\ b.DoB()\ ==>\ a.DoA(2)}}
+\DoxyCodeLine{01641\ \ \ Expectation\ e1\ =\ EXPECT\_CALL(a,\ DoA(1));}
+\DoxyCodeLine{01642\ \ \ Expectation\ e2\ =\ EXPECT\_CALL(b,\ DoB())}
+\DoxyCodeLine{01643\ \ \ \ \ \ \ .After(e1);}
+\DoxyCodeLine{01644\ \ \ EXPECT\_CALL(a,\ DoA(2))}
+\DoxyCodeLine{01645\ \ \ \ \ \ \ .After(e2);}
+\DoxyCodeLine{01646\ }
+\DoxyCodeLine{01647\ \ \ a.DoA(1);}
+\DoxyCodeLine{01648\ }
+\DoxyCodeLine{01649\ \ \ \textcolor{comment}{//\ May\ only\ be\ called\ after\ DoB().}}
+\DoxyCodeLine{01650\ \ \ EXPECT\_NONFATAL\_FAILURE(a.DoA(2),\ \textcolor{stringliteral}{"{}Unexpected\ mock\ function\ call"{}});}
+\DoxyCodeLine{01651\ }
+\DoxyCodeLine{01652\ \ \ b.DoB();}
+\DoxyCodeLine{01653\ \ \ a.DoA(2);}
+\DoxyCodeLine{01654\ \}}
+\DoxyCodeLine{01655\ }
+\DoxyCodeLine{01656\ \textcolor{comment}{//\ Calls\ must\ be\ in\ strict\ order\ when\ specified\ so\ using\ .After().}}
+\DoxyCodeLine{01657\ TEST(AfterTest,\ CallsMustBeInStrictOrderWhenSpecifiedSo2)\ \{}
+\DoxyCodeLine{01658\ \ \ MockA\ a;}
+\DoxyCodeLine{01659\ \ \ MockB\ b;}
+\DoxyCodeLine{01660\ }
+\DoxyCodeLine{01661\ \ \ \textcolor{comment}{//\ Define\ ordering:}}
+\DoxyCodeLine{01662\ \ \ \textcolor{comment}{//\ \ \ a.DoA(1)\ ==>\ b.DoB()\ *\ 2\ ==>\ a.DoA(2)}}
+\DoxyCodeLine{01663\ \ \ Expectation\ e1\ =\ EXPECT\_CALL(a,\ DoA(1));}
+\DoxyCodeLine{01664\ \ \ Expectation\ e2\ =\ EXPECT\_CALL(b,\ DoB())}
+\DoxyCodeLine{01665\ \ \ \ \ \ \ .Times(2)}
+\DoxyCodeLine{01666\ \ \ \ \ \ \ .After(e1);}
+\DoxyCodeLine{01667\ \ \ EXPECT\_CALL(a,\ DoA(2))}
+\DoxyCodeLine{01668\ \ \ \ \ \ \ .After(e2);}
+\DoxyCodeLine{01669\ }
+\DoxyCodeLine{01670\ \ \ a.DoA(1);}
+\DoxyCodeLine{01671\ \ \ b.DoB();}
+\DoxyCodeLine{01672\ }
+\DoxyCodeLine{01673\ \ \ \textcolor{comment}{//\ May\ only\ be\ called\ after\ the\ second\ DoB().}}
+\DoxyCodeLine{01674\ \ \ EXPECT\_NONFATAL\_FAILURE(a.DoA(2),\ \textcolor{stringliteral}{"{}Unexpected\ mock\ function\ call"{}});}
+\DoxyCodeLine{01675\ }
+\DoxyCodeLine{01676\ \ \ b.DoB();}
+\DoxyCodeLine{01677\ \ \ a.DoA(2);}
+\DoxyCodeLine{01678\ \}}
+\DoxyCodeLine{01679\ }
+\DoxyCodeLine{01680\ \textcolor{comment}{//\ Calls\ must\ satisfy\ the\ partial\ order\ when\ specified\ so.}}
+\DoxyCodeLine{01681\ TEST(AfterTest,\ CallsMustSatisfyPartialOrderWhenSpecifiedSo)\ \{}
+\DoxyCodeLine{01682\ \ \ MockA\ a;}
+\DoxyCodeLine{01683\ \ \ ON\_CALL(a,\ ReturnResult(\_))}
+\DoxyCodeLine{01684\ \ \ \ \ \ \ .WillByDefault(Return(Result()));}
+\DoxyCodeLine{01685\ }
+\DoxyCodeLine{01686\ \ \ \textcolor{comment}{//\ Define\ ordering:}}
+\DoxyCodeLine{01687\ \ \ \textcolor{comment}{//\ \ \ a.DoA(1)\ ==>}}
+\DoxyCodeLine{01688\ \ \ \textcolor{comment}{//\ \ \ a.DoA(2)\ ==>\ a.ReturnResult(3)}}
+\DoxyCodeLine{01689\ \ \ Expectation\ e\ =\ EXPECT\_CALL(a,\ DoA(1));}
+\DoxyCodeLine{01690\ \ \ \textcolor{keyword}{const}\ ExpectationSet\ es\ =\ EXPECT\_CALL(a,\ DoA(2));}
+\DoxyCodeLine{01691\ \ \ EXPECT\_CALL(a,\ ReturnResult(3))}
+\DoxyCodeLine{01692\ \ \ \ \ \ \ .After(e,\ es);}
+\DoxyCodeLine{01693\ }
+\DoxyCodeLine{01694\ \ \ \textcolor{comment}{//\ May\ only\ be\ called\ last.}}
+\DoxyCodeLine{01695\ \ \ EXPECT\_NONFATAL\_FAILURE(a.ReturnResult(3),\ \textcolor{stringliteral}{"{}Unexpected\ mock\ function\ call"{}});}
+\DoxyCodeLine{01696\ }
+\DoxyCodeLine{01697\ \ \ a.DoA(2);}
+\DoxyCodeLine{01698\ \ \ a.DoA(1);}
+\DoxyCodeLine{01699\ \ \ a.ReturnResult(3);}
+\DoxyCodeLine{01700\ \}}
+\DoxyCodeLine{01701\ }
+\DoxyCodeLine{01702\ \textcolor{comment}{//\ Calls\ must\ satisfy\ the\ partial\ order\ when\ specified\ so.}}
+\DoxyCodeLine{01703\ TEST(AfterTest,\ CallsMustSatisfyPartialOrderWhenSpecifiedSo2)\ \{}
+\DoxyCodeLine{01704\ \ \ MockA\ a;}
+\DoxyCodeLine{01705\ }
+\DoxyCodeLine{01706\ \ \ \textcolor{comment}{//\ Define\ ordering:}}
+\DoxyCodeLine{01707\ \ \ \textcolor{comment}{//\ \ \ a.DoA(1)\ ==>}}
+\DoxyCodeLine{01708\ \ \ \textcolor{comment}{//\ \ \ a.DoA(2)\ ==>\ a.DoA(3)}}
+\DoxyCodeLine{01709\ \ \ Expectation\ e\ =\ EXPECT\_CALL(a,\ DoA(1));}
+\DoxyCodeLine{01710\ \ \ \textcolor{keyword}{const}\ ExpectationSet\ es\ =\ EXPECT\_CALL(a,\ DoA(2));}
+\DoxyCodeLine{01711\ \ \ EXPECT\_CALL(a,\ DoA(3))}
+\DoxyCodeLine{01712\ \ \ \ \ \ \ .After(e,\ es);}
+\DoxyCodeLine{01713\ }
+\DoxyCodeLine{01714\ \ \ a.DoA(2);}
+\DoxyCodeLine{01715\ }
+\DoxyCodeLine{01716\ \ \ \textcolor{comment}{//\ May\ only\ be\ called\ last.}}
+\DoxyCodeLine{01717\ \ \ EXPECT\_NONFATAL\_FAILURE(a.DoA(3),\ \textcolor{stringliteral}{"{}Unexpected\ mock\ function\ call"{}});}
+\DoxyCodeLine{01718\ }
+\DoxyCodeLine{01719\ \ \ a.DoA(1);}
+\DoxyCodeLine{01720\ \ \ a.DoA(3);}
+\DoxyCodeLine{01721\ \}}
+\DoxyCodeLine{01722\ }
+\DoxyCodeLine{01723\ \textcolor{comment}{//\ .After()\ can\ be\ combined\ with\ .InSequence().}}
+\DoxyCodeLine{01724\ TEST(AfterTest,\ CanBeUsedWithInSequence)\ \{}
+\DoxyCodeLine{01725\ \ \ MockA\ a;}
+\DoxyCodeLine{01726\ \ \ Sequence\ s;}
+\DoxyCodeLine{01727\ \ \ Expectation\ e\ =\ EXPECT\_CALL(a,\ DoA(1));}
+\DoxyCodeLine{01728\ \ \ EXPECT\_CALL(a,\ DoA(2)).InSequence(s);}
+\DoxyCodeLine{01729\ \ \ EXPECT\_CALL(a,\ DoA(3))}
+\DoxyCodeLine{01730\ \ \ \ \ \ \ .InSequence(s)}
+\DoxyCodeLine{01731\ \ \ \ \ \ \ .After(e);}
+\DoxyCodeLine{01732\ }
+\DoxyCodeLine{01733\ \ \ a.DoA(1);}
+\DoxyCodeLine{01734\ }
+\DoxyCodeLine{01735\ \ \ \textcolor{comment}{//\ May\ only\ be\ after\ DoA(2).}}
+\DoxyCodeLine{01736\ \ \ EXPECT\_NONFATAL\_FAILURE(a.DoA(3),\ \textcolor{stringliteral}{"{}Unexpected\ mock\ function\ call"{}});}
+\DoxyCodeLine{01737\ }
+\DoxyCodeLine{01738\ \ \ a.DoA(2);}
+\DoxyCodeLine{01739\ \ \ a.DoA(3);}
+\DoxyCodeLine{01740\ \}}
+\DoxyCodeLine{01741\ }
+\DoxyCodeLine{01742\ \textcolor{comment}{//\ .After()\ can\ be\ called\ multiple\ times.}}
+\DoxyCodeLine{01743\ TEST(AfterTest,\ CanBeCalledManyTimes)\ \{}
+\DoxyCodeLine{01744\ \ \ MockA\ a;}
+\DoxyCodeLine{01745\ \ \ Expectation\ e1\ =\ EXPECT\_CALL(a,\ DoA(1));}
+\DoxyCodeLine{01746\ \ \ Expectation\ e2\ =\ EXPECT\_CALL(a,\ DoA(2));}
+\DoxyCodeLine{01747\ \ \ Expectation\ e3\ =\ EXPECT\_CALL(a,\ DoA(3));}
+\DoxyCodeLine{01748\ \ \ EXPECT\_CALL(a,\ DoA(4))}
+\DoxyCodeLine{01749\ \ \ \ \ \ \ .After(e1)}
+\DoxyCodeLine{01750\ \ \ \ \ \ \ .After(e2)}
+\DoxyCodeLine{01751\ \ \ \ \ \ \ .After(e3);}
+\DoxyCodeLine{01752\ }
+\DoxyCodeLine{01753\ \ \ a.DoA(3);}
+\DoxyCodeLine{01754\ \ \ a.DoA(1);}
+\DoxyCodeLine{01755\ \ \ a.DoA(2);}
+\DoxyCodeLine{01756\ \ \ a.DoA(4);}
+\DoxyCodeLine{01757\ \}}
+\DoxyCodeLine{01758\ }
+\DoxyCodeLine{01759\ \textcolor{comment}{//\ .After()\ accepts\ up\ to\ 5\ arguments.}}
+\DoxyCodeLine{01760\ TEST(AfterTest,\ AcceptsUpToFiveArguments)\ \{}
+\DoxyCodeLine{01761\ \ \ MockA\ a;}
+\DoxyCodeLine{01762\ \ \ Expectation\ e1\ =\ EXPECT\_CALL(a,\ DoA(1));}
+\DoxyCodeLine{01763\ \ \ Expectation\ e2\ =\ EXPECT\_CALL(a,\ DoA(2));}
+\DoxyCodeLine{01764\ \ \ Expectation\ e3\ =\ EXPECT\_CALL(a,\ DoA(3));}
+\DoxyCodeLine{01765\ \ \ ExpectationSet\ es1\ =\ EXPECT\_CALL(a,\ DoA(4));}
+\DoxyCodeLine{01766\ \ \ ExpectationSet\ es2\ =\ EXPECT\_CALL(a,\ DoA(5));}
+\DoxyCodeLine{01767\ \ \ EXPECT\_CALL(a,\ DoA(6))}
+\DoxyCodeLine{01768\ \ \ \ \ \ \ .After(e1,\ e2,\ e3,\ es1,\ es2);}
+\DoxyCodeLine{01769\ }
+\DoxyCodeLine{01770\ \ \ a.DoA(5);}
+\DoxyCodeLine{01771\ \ \ a.DoA(2);}
+\DoxyCodeLine{01772\ \ \ a.DoA(4);}
+\DoxyCodeLine{01773\ \ \ a.DoA(1);}
+\DoxyCodeLine{01774\ \ \ a.DoA(3);}
+\DoxyCodeLine{01775\ \ \ a.DoA(6);}
+\DoxyCodeLine{01776\ \}}
+\DoxyCodeLine{01777\ }
+\DoxyCodeLine{01778\ \textcolor{comment}{//\ .After()\ allows\ input\ to\ contain\ duplicated\ Expectations.}}
+\DoxyCodeLine{01779\ TEST(AfterTest,\ AcceptsDuplicatedInput)\ \{}
+\DoxyCodeLine{01780\ \ \ MockA\ a;}
+\DoxyCodeLine{01781\ \ \ ON\_CALL(a,\ ReturnResult(\_))}
+\DoxyCodeLine{01782\ \ \ \ \ \ \ .WillByDefault(Return(Result()));}
+\DoxyCodeLine{01783\ }
+\DoxyCodeLine{01784\ \ \ \textcolor{comment}{//\ Define\ ordering:}}
+\DoxyCodeLine{01785\ \ \ \textcolor{comment}{//\ \ \ DoA(1)\ ==>}}
+\DoxyCodeLine{01786\ \ \ \textcolor{comment}{//\ \ \ DoA(2)\ ==>\ ReturnResult(3)}}
+\DoxyCodeLine{01787\ \ \ Expectation\ e1\ =\ EXPECT\_CALL(a,\ DoA(1));}
+\DoxyCodeLine{01788\ \ \ Expectation\ e2\ =\ EXPECT\_CALL(a,\ DoA(2));}
+\DoxyCodeLine{01789\ \ \ ExpectationSet\ es;}
+\DoxyCodeLine{01790\ \ \ es\ +=\ e1;}
+\DoxyCodeLine{01791\ \ \ es\ +=\ e2;}
+\DoxyCodeLine{01792\ \ \ EXPECT\_CALL(a,\ ReturnResult(3))}
+\DoxyCodeLine{01793\ \ \ \ \ \ \ .After(e1,\ e2,\ es,\ e1);}
+\DoxyCodeLine{01794\ }
+\DoxyCodeLine{01795\ \ \ a.DoA(1);}
+\DoxyCodeLine{01796\ }
+\DoxyCodeLine{01797\ \ \ \textcolor{comment}{//\ May\ only\ be\ after\ DoA(2).}}
+\DoxyCodeLine{01798\ \ \ EXPECT\_NONFATAL\_FAILURE(a.ReturnResult(3),\ \textcolor{stringliteral}{"{}Unexpected\ mock\ function\ call"{}});}
+\DoxyCodeLine{01799\ }
+\DoxyCodeLine{01800\ \ \ a.DoA(2);}
+\DoxyCodeLine{01801\ \ \ a.ReturnResult(3);}
+\DoxyCodeLine{01802\ \}}
+\DoxyCodeLine{01803\ }
+\DoxyCodeLine{01804\ \textcolor{comment}{//\ An\ Expectation\ added\ to\ an\ ExpectationSet\ after\ it\ has\ been\ used\ in}}
+\DoxyCodeLine{01805\ \textcolor{comment}{//\ an\ .After()\ has\ no\ effect.}}
+\DoxyCodeLine{01806\ TEST(AfterTest,\ ChangesToExpectationSetHaveNoEffectAfterwards)\ \{}
+\DoxyCodeLine{01807\ \ \ MockA\ a;}
+\DoxyCodeLine{01808\ \ \ ExpectationSet\ es1\ =\ EXPECT\_CALL(a,\ DoA(1));}
+\DoxyCodeLine{01809\ \ \ Expectation\ e2\ =\ EXPECT\_CALL(a,\ DoA(2));}
+\DoxyCodeLine{01810\ \ \ EXPECT\_CALL(a,\ DoA(3))}
+\DoxyCodeLine{01811\ \ \ \ \ \ \ .After(es1);}
+\DoxyCodeLine{01812\ \ \ es1\ +=\ e2;}
+\DoxyCodeLine{01813\ }
+\DoxyCodeLine{01814\ \ \ a.DoA(1);}
+\DoxyCodeLine{01815\ \ \ a.DoA(3);}
+\DoxyCodeLine{01816\ \ \ a.DoA(2);}
+\DoxyCodeLine{01817\ \}}
+\DoxyCodeLine{01818\ }
+\DoxyCodeLine{01819\ \textcolor{comment}{//\ Tests\ that\ Google\ Mock\ correctly\ handles\ calls\ to\ mock\ functions}}
+\DoxyCodeLine{01820\ \textcolor{comment}{//\ after\ a\ mock\ object\ owning\ one\ of\ their\ pre-\/requisites\ has\ died.}}
+\DoxyCodeLine{01821\ }
+\DoxyCodeLine{01822\ \textcolor{comment}{//\ Tests\ that\ calls\ that\ satisfy\ the\ original\ spec\ are\ successful.}}
+\DoxyCodeLine{01823\ TEST(DeletingMockEarlyTest,\ Success1)\ \{}
+\DoxyCodeLine{01824\ \ \ MockB*\ \textcolor{keyword}{const}\ b1\ =\ \textcolor{keyword}{new}\ MockB;}
+\DoxyCodeLine{01825\ \ \ MockA*\ \textcolor{keyword}{const}\ a\ =\ \textcolor{keyword}{new}\ MockA;}
+\DoxyCodeLine{01826\ \ \ MockB*\ \textcolor{keyword}{const}\ b2\ =\ \textcolor{keyword}{new}\ MockB;}
+\DoxyCodeLine{01827\ }
+\DoxyCodeLine{01828\ \ \ \{}
+\DoxyCodeLine{01829\ \ \ \ \ InSequence\ dummy;}
+\DoxyCodeLine{01830\ \ \ \ \ EXPECT\_CALL(*b1,\ DoB(\_))}
+\DoxyCodeLine{01831\ \ \ \ \ \ \ \ \ .WillOnce(Return(1));}
+\DoxyCodeLine{01832\ \ \ \ \ EXPECT\_CALL(*a,\ Binary(\_,\ \_))}
+\DoxyCodeLine{01833\ \ \ \ \ \ \ \ \ .Times(AnyNumber())}
+\DoxyCodeLine{01834\ \ \ \ \ \ \ \ \ .WillRepeatedly(Return(\textcolor{keyword}{true}));}
+\DoxyCodeLine{01835\ \ \ \ \ EXPECT\_CALL(*b2,\ DoB(\_))}
+\DoxyCodeLine{01836\ \ \ \ \ \ \ \ \ .Times(AnyNumber())}
+\DoxyCodeLine{01837\ \ \ \ \ \ \ \ \ .WillRepeatedly(Return(2));}
+\DoxyCodeLine{01838\ \ \ \}}
+\DoxyCodeLine{01839\ }
+\DoxyCodeLine{01840\ \ \ EXPECT\_EQ(1,\ b1-\/>DoB(1));}
+\DoxyCodeLine{01841\ \ \ \textcolor{keyword}{delete}\ b1;}
+\DoxyCodeLine{01842\ \ \ \textcolor{comment}{//\ a's\ pre-\/requisite\ has\ died.}}
+\DoxyCodeLine{01843\ \ \ EXPECT\_TRUE(a-\/>Binary(0,\ 1));}
+\DoxyCodeLine{01844\ \ \ \textcolor{keyword}{delete}\ b2;}
+\DoxyCodeLine{01845\ \ \ \textcolor{comment}{//\ a's\ successor\ has\ died.}}
+\DoxyCodeLine{01846\ \ \ EXPECT\_TRUE(a-\/>Binary(1,\ 2));}
+\DoxyCodeLine{01847\ \ \ \textcolor{keyword}{delete}\ a;}
+\DoxyCodeLine{01848\ \}}
+\DoxyCodeLine{01849\ }
+\DoxyCodeLine{01850\ \textcolor{comment}{//\ Tests\ that\ calls\ that\ satisfy\ the\ original\ spec\ are\ successful.}}
+\DoxyCodeLine{01851\ TEST(DeletingMockEarlyTest,\ Success2)\ \{}
+\DoxyCodeLine{01852\ \ \ MockB*\ \textcolor{keyword}{const}\ b1\ =\ \textcolor{keyword}{new}\ MockB;}
+\DoxyCodeLine{01853\ \ \ MockA*\ \textcolor{keyword}{const}\ a\ =\ \textcolor{keyword}{new}\ MockA;}
+\DoxyCodeLine{01854\ \ \ MockB*\ \textcolor{keyword}{const}\ b2\ =\ \textcolor{keyword}{new}\ MockB;}
+\DoxyCodeLine{01855\ }
+\DoxyCodeLine{01856\ \ \ \{}
+\DoxyCodeLine{01857\ \ \ \ \ InSequence\ dummy;}
+\DoxyCodeLine{01858\ \ \ \ \ EXPECT\_CALL(*b1,\ DoB(\_))}
+\DoxyCodeLine{01859\ \ \ \ \ \ \ \ \ .WillOnce(Return(1));}
+\DoxyCodeLine{01860\ \ \ \ \ EXPECT\_CALL(*a,\ Binary(\_,\ \_))}
+\DoxyCodeLine{01861\ \ \ \ \ \ \ \ \ .Times(AnyNumber());}
+\DoxyCodeLine{01862\ \ \ \ \ EXPECT\_CALL(*b2,\ DoB(\_))}
+\DoxyCodeLine{01863\ \ \ \ \ \ \ \ \ .Times(AnyNumber())}
+\DoxyCodeLine{01864\ \ \ \ \ \ \ \ \ .WillRepeatedly(Return(2));}
+\DoxyCodeLine{01865\ \ \ \}}
+\DoxyCodeLine{01866\ }
+\DoxyCodeLine{01867\ \ \ \textcolor{keyword}{delete}\ a;\ \ \textcolor{comment}{//\ a\ is\ trivially\ satisfied.}}
+\DoxyCodeLine{01868\ \ \ EXPECT\_EQ(1,\ b1-\/>DoB(1));}
+\DoxyCodeLine{01869\ \ \ EXPECT\_EQ(2,\ b2-\/>DoB(2));}
+\DoxyCodeLine{01870\ \ \ \textcolor{keyword}{delete}\ b1;}
+\DoxyCodeLine{01871\ \ \ \textcolor{keyword}{delete}\ b2;}
+\DoxyCodeLine{01872\ \}}
+\DoxyCodeLine{01873\ }
+\DoxyCodeLine{01874\ \textcolor{comment}{//\ Tests\ that\ it's\ OK\ to\ delete\ a\ mock\ object\ itself\ in\ its\ action.}}
+\DoxyCodeLine{01875\ }
+\DoxyCodeLine{01876\ \textcolor{comment}{//\ Suppresses\ warning\ on\ unreferenced\ formal\ parameter\ in\ MSVC\ with}}
+\DoxyCodeLine{01877\ \textcolor{comment}{//\ -\/W4.}}
+\DoxyCodeLine{01878\ \textcolor{preprocessor}{\#ifdef\ \_MSC\_VER}}
+\DoxyCodeLine{01879\ \textcolor{preprocessor}{\#\ pragma\ warning(push)}}
+\DoxyCodeLine{01880\ \textcolor{preprocessor}{\#\ pragma\ warning(disable:4100)}}
+\DoxyCodeLine{01881\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{01882\ }
+\DoxyCodeLine{01883\ ACTION\_P(Delete,\ ptr)\ \{\ \textcolor{keyword}{delete}\ ptr;\ \}}
+\DoxyCodeLine{01884\ }
+\DoxyCodeLine{01885\ \textcolor{preprocessor}{\#ifdef\ \_MSC\_VER}}
+\DoxyCodeLine{01886\ \textcolor{preprocessor}{\#\ pragma\ warning(pop)}}
+\DoxyCodeLine{01887\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{01888\ }
+\DoxyCodeLine{01889\ TEST(DeletingMockEarlyTest,\ CanDeleteSelfInActionReturningVoid)\ \{}
+\DoxyCodeLine{01890\ \ \ MockA*\ \textcolor{keyword}{const}\ a\ =\ \textcolor{keyword}{new}\ MockA;}
+\DoxyCodeLine{01891\ \ \ EXPECT\_CALL(*a,\ DoA(\_)).WillOnce(Delete(a));}
+\DoxyCodeLine{01892\ \ \ a-\/>DoA(42);\ \ \textcolor{comment}{//\ This\ will\ cause\ a\ to\ be\ deleted.}}
+\DoxyCodeLine{01893\ \}}
+\DoxyCodeLine{01894\ }
+\DoxyCodeLine{01895\ TEST(DeletingMockEarlyTest,\ CanDeleteSelfInActionReturningValue)\ \{}
+\DoxyCodeLine{01896\ \ \ MockA*\ \textcolor{keyword}{const}\ a\ =\ \textcolor{keyword}{new}\ MockA;}
+\DoxyCodeLine{01897\ \ \ EXPECT\_CALL(*a,\ ReturnResult(\_))}
+\DoxyCodeLine{01898\ \ \ \ \ \ \ .WillOnce(DoAll(Delete(a),\ Return(Result())));}
+\DoxyCodeLine{01899\ \ \ a-\/>ReturnResult(42);\ \ \textcolor{comment}{//\ This\ will\ cause\ a\ to\ be\ deleted.}}
+\DoxyCodeLine{01900\ \}}
+\DoxyCodeLine{01901\ }
+\DoxyCodeLine{01902\ \textcolor{comment}{//\ Tests\ that\ calls\ that\ violate\ the\ original\ spec\ yield\ failures.}}
+\DoxyCodeLine{01903\ TEST(DeletingMockEarlyTest,\ Failure1)\ \{}
+\DoxyCodeLine{01904\ \ \ MockB*\ \textcolor{keyword}{const}\ b1\ =\ \textcolor{keyword}{new}\ MockB;}
+\DoxyCodeLine{01905\ \ \ MockA*\ \textcolor{keyword}{const}\ a\ =\ \textcolor{keyword}{new}\ MockA;}
+\DoxyCodeLine{01906\ \ \ MockB*\ \textcolor{keyword}{const}\ b2\ =\ \textcolor{keyword}{new}\ MockB;}
+\DoxyCodeLine{01907\ }
+\DoxyCodeLine{01908\ \ \ \{}
+\DoxyCodeLine{01909\ \ \ \ \ InSequence\ dummy;}
+\DoxyCodeLine{01910\ \ \ \ \ EXPECT\_CALL(*b1,\ DoB(\_))}
+\DoxyCodeLine{01911\ \ \ \ \ \ \ \ \ .WillOnce(Return(1));}
+\DoxyCodeLine{01912\ \ \ \ \ EXPECT\_CALL(*a,\ Binary(\_,\ \_))}
+\DoxyCodeLine{01913\ \ \ \ \ \ \ \ \ .Times(AnyNumber());}
+\DoxyCodeLine{01914\ \ \ \ \ EXPECT\_CALL(*b2,\ DoB(\_))}
+\DoxyCodeLine{01915\ \ \ \ \ \ \ \ \ .Times(AnyNumber())}
+\DoxyCodeLine{01916\ \ \ \ \ \ \ \ \ .WillRepeatedly(Return(2));}
+\DoxyCodeLine{01917\ \ \ \}}
+\DoxyCodeLine{01918\ }
+\DoxyCodeLine{01919\ \ \ \textcolor{keyword}{delete}\ a;\ \ \textcolor{comment}{//\ a\ is\ trivially\ satisfied.}}
+\DoxyCodeLine{01920\ \ \ EXPECT\_NONFATAL\_FAILURE(\{}
+\DoxyCodeLine{01921\ \ \ \ \ b2-\/>DoB(2);}
+\DoxyCodeLine{01922\ \ \ \},\ \textcolor{stringliteral}{"{}Unexpected\ mock\ function\ call"{}});}
+\DoxyCodeLine{01923\ \ \ EXPECT\_EQ(1,\ b1-\/>DoB(1));}
+\DoxyCodeLine{01924\ \ \ \textcolor{keyword}{delete}\ b1;}
+\DoxyCodeLine{01925\ \ \ \textcolor{keyword}{delete}\ b2;}
+\DoxyCodeLine{01926\ \}}
+\DoxyCodeLine{01927\ }
+\DoxyCodeLine{01928\ \textcolor{comment}{//\ Tests\ that\ calls\ that\ violate\ the\ original\ spec\ yield\ failures.}}
+\DoxyCodeLine{01929\ TEST(DeletingMockEarlyTest,\ Failure2)\ \{}
+\DoxyCodeLine{01930\ \ \ MockB*\ \textcolor{keyword}{const}\ b1\ =\ \textcolor{keyword}{new}\ MockB;}
+\DoxyCodeLine{01931\ \ \ MockA*\ \textcolor{keyword}{const}\ a\ =\ \textcolor{keyword}{new}\ MockA;}
+\DoxyCodeLine{01932\ \ \ MockB*\ \textcolor{keyword}{const}\ b2\ =\ \textcolor{keyword}{new}\ MockB;}
+\DoxyCodeLine{01933\ }
+\DoxyCodeLine{01934\ \ \ \{}
+\DoxyCodeLine{01935\ \ \ \ \ InSequence\ dummy;}
+\DoxyCodeLine{01936\ \ \ \ \ EXPECT\_CALL(*b1,\ DoB(\_));}
+\DoxyCodeLine{01937\ \ \ \ \ EXPECT\_CALL(*a,\ Binary(\_,\ \_))}
+\DoxyCodeLine{01938\ \ \ \ \ \ \ \ \ .Times(AnyNumber());}
+\DoxyCodeLine{01939\ \ \ \ \ EXPECT\_CALL(*b2,\ DoB(\_))}
+\DoxyCodeLine{01940\ \ \ \ \ \ \ \ \ .Times(AnyNumber());}
+\DoxyCodeLine{01941\ \ \ \}}
+\DoxyCodeLine{01942\ }
+\DoxyCodeLine{01943\ \ \ EXPECT\_NONFATAL\_FAILURE(\textcolor{keyword}{delete}\ b1,}
+\DoxyCodeLine{01944\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}Actual:\ never\ called"{}});}
+\DoxyCodeLine{01945\ \ \ EXPECT\_NONFATAL\_FAILURE(a-\/>Binary(0,\ 1),}
+\DoxyCodeLine{01946\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}Unexpected\ mock\ function\ call"{}});}
+\DoxyCodeLine{01947\ \ \ EXPECT\_NONFATAL\_FAILURE(b2-\/>DoB(1),}
+\DoxyCodeLine{01948\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}Unexpected\ mock\ function\ call"{}});}
+\DoxyCodeLine{01949\ \ \ \textcolor{keyword}{delete}\ a;}
+\DoxyCodeLine{01950\ \ \ \textcolor{keyword}{delete}\ b2;}
+\DoxyCodeLine{01951\ \}}
+\DoxyCodeLine{01952\ }
+\DoxyCodeLine{01953\ \textcolor{keyword}{class\ }EvenNumberCardinality\ :\ \textcolor{keyword}{public}\ CardinalityInterface\ \{}
+\DoxyCodeLine{01954\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{01955\ \ \ \textcolor{comment}{//\ Returns\ true\ if\ and\ only\ if\ call\_count\ calls\ will\ satisfy\ this}}
+\DoxyCodeLine{01956\ \ \ \textcolor{comment}{//\ cardinality.}}
+\DoxyCodeLine{01957\ \ \ \textcolor{keywordtype}{bool}\ IsSatisfiedByCallCount(\textcolor{keywordtype}{int}\ call\_count)\textcolor{keyword}{\ const\ override\ }\{}
+\DoxyCodeLine{01958\ \ \ \ \ \textcolor{keywordflow}{return}\ call\_count\ \%\ 2\ ==\ 0;}
+\DoxyCodeLine{01959\ \ \ \}}
+\DoxyCodeLine{01960\ }
+\DoxyCodeLine{01961\ \ \ \textcolor{comment}{//\ Returns\ true\ if\ and\ only\ if\ call\_count\ calls\ will\ saturate\ this}}
+\DoxyCodeLine{01962\ \ \ \textcolor{comment}{//\ cardinality.}}
+\DoxyCodeLine{01963\ \ \ \textcolor{keywordtype}{bool}\ IsSaturatedByCallCount(\textcolor{keywordtype}{int}\ \textcolor{comment}{/*\ call\_count\ */})\textcolor{keyword}{\ const\ override\ }\{}
+\DoxyCodeLine{01964\ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{01965\ \ \ \}}
+\DoxyCodeLine{01966\ }
+\DoxyCodeLine{01967\ \ \ \textcolor{comment}{//\ Describes\ self\ to\ an\ ostream.}}
+\DoxyCodeLine{01968\ \ \ \textcolor{keywordtype}{void}\ DescribeTo(::std::ostream*\ os)\textcolor{keyword}{\ const\ override\ }\{}
+\DoxyCodeLine{01969\ \ \ \ \ *os\ <<\ \textcolor{stringliteral}{"{}called\ even\ number\ of\ times"{}};}
+\DoxyCodeLine{01970\ \ \ \}}
+\DoxyCodeLine{01971\ \};}
+\DoxyCodeLine{01972\ }
+\DoxyCodeLine{01973\ Cardinality\ EvenNumber()\ \{}
+\DoxyCodeLine{01974\ \ \ \textcolor{keywordflow}{return}\ Cardinality(\textcolor{keyword}{new}\ EvenNumberCardinality);}
+\DoxyCodeLine{01975\ \}}
+\DoxyCodeLine{01976\ }
+\DoxyCodeLine{01977\ TEST(ExpectationBaseTest,}
+\DoxyCodeLine{01978\ \ \ \ \ \ AllPrerequisitesAreSatisfiedWorksForNonMonotonicCardinality)\ \{}
+\DoxyCodeLine{01979\ \ \ MockA*\ a\ =\ \textcolor{keyword}{new}\ MockA;}
+\DoxyCodeLine{01980\ \ \ Sequence\ s;}
+\DoxyCodeLine{01981\ }
+\DoxyCodeLine{01982\ \ \ EXPECT\_CALL(*a,\ DoA(1))}
+\DoxyCodeLine{01983\ \ \ \ \ \ \ .Times(EvenNumber())}
+\DoxyCodeLine{01984\ \ \ \ \ \ \ .InSequence(s);}
+\DoxyCodeLine{01985\ \ \ EXPECT\_CALL(*a,\ DoA(2))}
+\DoxyCodeLine{01986\ \ \ \ \ \ \ .Times(AnyNumber())}
+\DoxyCodeLine{01987\ \ \ \ \ \ \ .InSequence(s);}
+\DoxyCodeLine{01988\ \ \ EXPECT\_CALL(*a,\ DoA(3))}
+\DoxyCodeLine{01989\ \ \ \ \ \ \ .Times(AnyNumber());}
+\DoxyCodeLine{01990\ }
+\DoxyCodeLine{01991\ \ \ a-\/>DoA(3);}
+\DoxyCodeLine{01992\ \ \ a-\/>DoA(1);}
+\DoxyCodeLine{01993\ \ \ EXPECT\_NONFATAL\_FAILURE(a-\/>DoA(2),\ \textcolor{stringliteral}{"{}Unexpected\ mock\ function\ call"{}});}
+\DoxyCodeLine{01994\ \ \ EXPECT\_NONFATAL\_FAILURE(\textcolor{keyword}{delete}\ a,\ \textcolor{stringliteral}{"{}to\ be\ called\ even\ number\ of\ times"{}});}
+\DoxyCodeLine{01995\ \}}
+\DoxyCodeLine{01996\ }
+\DoxyCodeLine{01997\ \textcolor{comment}{//\ The\ following\ tests\ verify\ the\ message\ generated\ when\ a\ mock}}
+\DoxyCodeLine{01998\ \textcolor{comment}{//\ function\ is\ called.}}
+\DoxyCodeLine{01999\ }
+\DoxyCodeLine{02000\ \textcolor{keyword}{struct\ }Printable\ \{}
+\DoxyCodeLine{02001\ \};}
+\DoxyCodeLine{02002\ }
+\DoxyCodeLine{02003\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ operator<<(::std::ostream\&\ os,\ \textcolor{keyword}{const}\ Printable\&)\ \{}
+\DoxyCodeLine{02004\ \ \ os\ <<\ \textcolor{stringliteral}{"{}Printable"{}};}
+\DoxyCodeLine{02005\ \}}
+\DoxyCodeLine{02006\ }
+\DoxyCodeLine{02007\ \textcolor{keyword}{struct\ }Unprintable\ \{}
+\DoxyCodeLine{02008\ \ \ Unprintable()\ :\ value(0)\ \{\}}
+\DoxyCodeLine{02009\ \ \ \textcolor{keywordtype}{int}\ value;}
+\DoxyCodeLine{02010\ \};}
+\DoxyCodeLine{02011\ }
+\DoxyCodeLine{02012\ \textcolor{keyword}{class\ }MockC\ \{}
+\DoxyCodeLine{02013\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{02014\ \ \ MockC()\ \{\}}
+\DoxyCodeLine{02015\ }
+\DoxyCodeLine{02016\ \ \ MOCK\_METHOD6(VoidMethod,\ \textcolor{keywordtype}{void}(\textcolor{keywordtype}{bool}\ cond,\ \textcolor{keywordtype}{int}\ n,\ std::string\ s,\ \textcolor{keywordtype}{void}*\ p,}
+\DoxyCodeLine{02017\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ Printable\&\ x,\ Unprintable\ y));}
+\DoxyCodeLine{02018\ \ \ MOCK\_METHOD0(NonVoidMethod,\ \textcolor{keywordtype}{int}());\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{02019\ }
+\DoxyCodeLine{02020\ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{02021\ \ \ GTEST\_DISALLOW\_COPY\_AND\_ASSIGN\_(MockC);}
+\DoxyCodeLine{02022\ \};}
+\DoxyCodeLine{02023\ }
+\DoxyCodeLine{02024\ \textcolor{keyword}{class\ }VerboseFlagPreservingFixture\ :\ \textcolor{keyword}{public}\ \mbox{\hyperlink{classtesting_1_1_test}{testing::Test}}\ \{}
+\DoxyCodeLine{02025\ \ \textcolor{keyword}{protected}:}
+\DoxyCodeLine{02026\ \ \ VerboseFlagPreservingFixture()}
+\DoxyCodeLine{02027\ \ \ \ \ \ \ :\ saved\_verbose\_flag\_(GMOCK\_FLAG(verbose))\ \{\}}
+\DoxyCodeLine{02028\ }
+\DoxyCodeLine{02029\ \ \ \string~VerboseFlagPreservingFixture()\textcolor{keyword}{\ override\ }\{}
+\DoxyCodeLine{02030\ \ \ \ \ GMOCK\_FLAG(verbose)\ =\ saved\_verbose\_flag\_;}
+\DoxyCodeLine{02031\ \ \ \}}
+\DoxyCodeLine{02032\ }
+\DoxyCodeLine{02033\ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{02034\ \ \ \textcolor{keyword}{const}\ std::string\ saved\_verbose\_flag\_;}
+\DoxyCodeLine{02035\ }
+\DoxyCodeLine{02036\ \ \ GTEST\_DISALLOW\_COPY\_AND\_ASSIGN\_(VerboseFlagPreservingFixture);}
+\DoxyCodeLine{02037\ \};}
+\DoxyCodeLine{02038\ }
+\DoxyCodeLine{02039\ \textcolor{preprocessor}{\#if\ GTEST\_HAS\_STREAM\_REDIRECTION}}
+\DoxyCodeLine{02040\ }
+\DoxyCodeLine{02041\ \textcolor{comment}{//\ Tests\ that\ an\ uninteresting\ mock\ function\ call\ on\ a\ naggy\ mock}}
+\DoxyCodeLine{02042\ \textcolor{comment}{//\ generates\ a\ warning\ without\ the\ stack\ trace\ when}}
+\DoxyCodeLine{02043\ \textcolor{comment}{//\ -\/-\/gmock\_verbose=warning\ is\ specified.}}
+\DoxyCodeLine{02044\ TEST(FunctionCallMessageTest,}
+\DoxyCodeLine{02045\ \ \ \ \ \ UninterestingCallOnNaggyMockGeneratesNoStackTraceWhenVerboseWarning)\ \{}
+\DoxyCodeLine{02046\ \ \ GMOCK\_FLAG(verbose)\ =\ kWarningVerbosity;}
+\DoxyCodeLine{02047\ \ \ NaggyMock<MockC>\ c;}
+\DoxyCodeLine{02048\ \ \ CaptureStdout();}
+\DoxyCodeLine{02049\ \ \ c.VoidMethod(\textcolor{keyword}{false},\ 5,\ \textcolor{stringliteral}{"{}Hi"{}},\ \textcolor{keyword}{nullptr},\ Printable(),\ Unprintable());}
+\DoxyCodeLine{02050\ \ \ \textcolor{keyword}{const}\ std::string\ output\ =\ GetCapturedStdout();}
+\DoxyCodeLine{02051\ \ \ EXPECT\_PRED\_FORMAT2(IsSubstring,\ \textcolor{stringliteral}{"{}GMOCK\ WARNING"{}},\ output);}
+\DoxyCodeLine{02052\ \ \ EXPECT\_PRED\_FORMAT2(IsNotSubstring,\ \textcolor{stringliteral}{"{}Stack\ trace:"{}},\ output);}
+\DoxyCodeLine{02053\ \}}
+\DoxyCodeLine{02054\ }
+\DoxyCodeLine{02055\ \textcolor{comment}{//\ Tests\ that\ an\ uninteresting\ mock\ function\ call\ on\ a\ naggy\ mock}}
+\DoxyCodeLine{02056\ \textcolor{comment}{//\ generates\ a\ warning\ containing\ the\ stack\ trace\ when}}
+\DoxyCodeLine{02057\ \textcolor{comment}{//\ -\/-\/gmock\_verbose=info\ is\ specified.}}
+\DoxyCodeLine{02058\ TEST(FunctionCallMessageTest,}
+\DoxyCodeLine{02059\ \ \ \ \ \ UninterestingCallOnNaggyMockGeneratesFyiWithStackTraceWhenVerboseInfo)\ \{}
+\DoxyCodeLine{02060\ \ \ GMOCK\_FLAG(verbose)\ =\ kInfoVerbosity;}
+\DoxyCodeLine{02061\ \ \ NaggyMock<MockC>\ c;}
+\DoxyCodeLine{02062\ \ \ CaptureStdout();}
+\DoxyCodeLine{02063\ \ \ c.VoidMethod(\textcolor{keyword}{false},\ 5,\ \textcolor{stringliteral}{"{}Hi"{}},\ \textcolor{keyword}{nullptr},\ Printable(),\ Unprintable());}
+\DoxyCodeLine{02064\ \ \ \textcolor{keyword}{const}\ std::string\ output\ =\ GetCapturedStdout();}
+\DoxyCodeLine{02065\ \ \ EXPECT\_PRED\_FORMAT2(IsSubstring,\ \textcolor{stringliteral}{"{}GMOCK\ WARNING"{}},\ output);}
+\DoxyCodeLine{02066\ \ \ EXPECT\_PRED\_FORMAT2(IsSubstring,\ \textcolor{stringliteral}{"{}Stack\ trace:"{}},\ output);}
+\DoxyCodeLine{02067\ }
+\DoxyCodeLine{02068\ \textcolor{preprocessor}{\#\ ifndef\ NDEBUG}}
+\DoxyCodeLine{02069\ }
+\DoxyCodeLine{02070\ \ \ \textcolor{comment}{//\ We\ check\ the\ stack\ trace\ content\ in\ dbg-\/mode\ only,\ as\ opt-\/mode}}
+\DoxyCodeLine{02071\ \ \ \textcolor{comment}{//\ may\ inline\ the\ call\ we\ are\ interested\ in\ seeing.}}
+\DoxyCodeLine{02072\ }
+\DoxyCodeLine{02073\ \ \ \textcolor{comment}{//\ Verifies\ that\ a\ void\ mock\ function's\ name\ appears\ in\ the\ stack}}
+\DoxyCodeLine{02074\ \ \ \textcolor{comment}{//\ trace.}}
+\DoxyCodeLine{02075\ \ \ EXPECT\_PRED\_FORMAT2(IsSubstring,\ \textcolor{stringliteral}{"{}VoidMethod("{}},\ output);}
+\DoxyCodeLine{02076\ }
+\DoxyCodeLine{02077\ \ \ \textcolor{comment}{//\ Verifies\ that\ a\ non-\/void\ mock\ function's\ name\ appears\ in\ the}}
+\DoxyCodeLine{02078\ \ \ \textcolor{comment}{//\ stack\ trace.}}
+\DoxyCodeLine{02079\ \ \ CaptureStdout();}
+\DoxyCodeLine{02080\ \ \ c.NonVoidMethod();}
+\DoxyCodeLine{02081\ \ \ \textcolor{keyword}{const}\ std::string\ output2\ =\ GetCapturedStdout();}
+\DoxyCodeLine{02082\ \ \ EXPECT\_PRED\_FORMAT2(IsSubstring,\ \textcolor{stringliteral}{"{}NonVoidMethod("{}},\ output2);}
+\DoxyCodeLine{02083\ }
+\DoxyCodeLine{02084\ \textcolor{preprocessor}{\#\ endif\ \ }\textcolor{comment}{//\ NDEBUG}}
+\DoxyCodeLine{02085\ \}}
+\DoxyCodeLine{02086\ }
+\DoxyCodeLine{02087\ \textcolor{comment}{//\ Tests\ that\ an\ uninteresting\ mock\ function\ call\ on\ a\ naggy\ mock}}
+\DoxyCodeLine{02088\ \textcolor{comment}{//\ causes\ the\ function\ arguments\ and\ return\ value\ to\ be\ printed.}}
+\DoxyCodeLine{02089\ TEST(FunctionCallMessageTest,}
+\DoxyCodeLine{02090\ \ \ \ \ \ UninterestingCallOnNaggyMockPrintsArgumentsAndReturnValue)\ \{}
+\DoxyCodeLine{02091\ \ \ \textcolor{comment}{//\ A\ non-\/void\ mock\ function.}}
+\DoxyCodeLine{02092\ \ \ NaggyMock<MockB>\ b;}
+\DoxyCodeLine{02093\ \ \ CaptureStdout();}
+\DoxyCodeLine{02094\ \ \ b.DoB();}
+\DoxyCodeLine{02095\ \ \ \textcolor{keyword}{const}\ std::string\ output1\ =\ GetCapturedStdout();}
+\DoxyCodeLine{02096\ \ \ EXPECT\_PRED\_FORMAT2(}
+\DoxyCodeLine{02097\ \ \ \ \ \ \ IsSubstring,}
+\DoxyCodeLine{02098\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}Uninteresting\ mock\ function\ call\ -\/\ returning\ default\ value.\(\backslash\)n"{}}}
+\DoxyCodeLine{02099\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}\ \ \ \ Function\ call:\ DoB()\(\backslash\)n"{}}}
+\DoxyCodeLine{02100\ \ \ \ \ \ \ \textcolor{stringliteral}{"{}\ \ \ \ \ \ \ \ \ \ Returns:\ 0\(\backslash\)n"{}},\ output1.c\_str());}
+\DoxyCodeLine{02101\ \ \ \textcolor{comment}{//\ Makes\ sure\ the\ return\ value\ is\ printed.}}
+\DoxyCodeLine{02102\ }
+\DoxyCodeLine{02103\ \ \ \textcolor{comment}{//\ A\ void\ mock\ function.}}
+\DoxyCodeLine{02104\ \ \ NaggyMock<MockC>\ c;}
+\DoxyCodeLine{02105\ \ \ CaptureStdout();}
+\DoxyCodeLine{02106\ \ \ c.VoidMethod(\textcolor{keyword}{false},\ 5,\ \textcolor{stringliteral}{"{}Hi"{}},\ \textcolor{keyword}{nullptr},\ Printable(),\ Unprintable());}
+\DoxyCodeLine{02107\ \ \ \textcolor{keyword}{const}\ std::string\ output2\ =\ GetCapturedStdout();}
+\DoxyCodeLine{02108\ \ \ EXPECT\_THAT(output2.c\_str(),}
+\DoxyCodeLine{02109\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ContainsRegex(}
+\DoxyCodeLine{02110\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}Uninteresting\ mock\ function\ call\ -\/\ returning\ directly\(\backslash\)\(\backslash\).\(\backslash\)n"{}}}
+\DoxyCodeLine{02111\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}\ \ \ \ Function\ call:\ VoidMethod"{}}}
+\DoxyCodeLine{02112\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}\(\backslash\)\(\backslash\)(false,\ 5,\ \(\backslash\)"{}Hi\(\backslash\)"{},\ NULL,\ @.+\ "{}}}
+\DoxyCodeLine{02113\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}Printable,\ 4-\/byte\ object\ <00-\/00\ 00-\/00>\(\backslash\)\(\backslash\))"{}}));}
+\DoxyCodeLine{02114\ \ \ \textcolor{comment}{//\ A\ void\ function\ has\ no\ return\ value\ to\ print.}}
+\DoxyCodeLine{02115\ \}}
+\DoxyCodeLine{02116\ }
+\DoxyCodeLine{02117\ \textcolor{comment}{//\ Tests\ how\ the\ -\/-\/gmock\_verbose\ flag\ affects\ Google\ Mock's\ output.}}
+\DoxyCodeLine{02118\ }
+\DoxyCodeLine{02119\ \textcolor{keyword}{class\ }GMockVerboseFlagTest\ :\ \textcolor{keyword}{public}\ VerboseFlagPreservingFixture\ \{}
+\DoxyCodeLine{02120\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{02121\ \ \ \textcolor{comment}{//\ Verifies\ that\ the\ given\ Google\ Mock\ output\ is\ correct.\ \ (When}}
+\DoxyCodeLine{02122\ \ \ \textcolor{comment}{//\ should\_print\ is\ true,\ the\ output\ should\ match\ the\ given\ regex\ and}}
+\DoxyCodeLine{02123\ \ \ \textcolor{comment}{//\ contain\ the\ given\ function\ name\ in\ the\ stack\ trace.\ \ When\ it's}}
+\DoxyCodeLine{02124\ \ \ \textcolor{comment}{//\ false,\ the\ output\ should\ be\ empty.)}}
+\DoxyCodeLine{02125\ \ \ \textcolor{keywordtype}{void}\ VerifyOutput(\textcolor{keyword}{const}\ std::string\&\ output,\ \textcolor{keywordtype}{bool}\ should\_print,}
+\DoxyCodeLine{02126\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ std::string\&\ expected\_substring,}
+\DoxyCodeLine{02127\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ std::string\&\ function\_name)\ \{}
+\DoxyCodeLine{02128\ \ \ \ \ \textcolor{keywordflow}{if}\ (should\_print)\ \{}
+\DoxyCodeLine{02129\ \ \ \ \ \ \ EXPECT\_THAT(output.c\_str(),\ HasSubstr(expected\_substring));}
+\DoxyCodeLine{02130\ \textcolor{preprocessor}{\#\ ifndef\ NDEBUG}}
+\DoxyCodeLine{02131\ \ \ \ \ \ \ \textcolor{comment}{//\ We\ check\ the\ stack\ trace\ content\ in\ dbg-\/mode\ only,\ as\ opt-\/mode}}
+\DoxyCodeLine{02132\ \ \ \ \ \ \ \textcolor{comment}{//\ may\ inline\ the\ call\ we\ are\ interested\ in\ seeing.}}
+\DoxyCodeLine{02133\ \ \ \ \ \ \ EXPECT\_THAT(output.c\_str(),\ HasSubstr(function\_name));}
+\DoxyCodeLine{02134\ \textcolor{preprocessor}{\#\ else}}
+\DoxyCodeLine{02135\ \ \ \ \ \ \ \textcolor{comment}{//\ Suppresses\ 'unused\ function\ parameter'\ warnings.}}
+\DoxyCodeLine{02136\ \ \ \ \ \ \ \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{void}\textcolor{keyword}{>}(function\_name);}
+\DoxyCodeLine{02137\ \textcolor{preprocessor}{\#\ endif\ \ }\textcolor{comment}{//\ NDEBUG}}
+\DoxyCodeLine{02138\ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{02139\ \ \ \ \ \ \ EXPECT\_STREQ(\textcolor{stringliteral}{"{}"{}},\ output.c\_str());}
+\DoxyCodeLine{02140\ \ \ \ \ \}}
+\DoxyCodeLine{02141\ \ \ \}}
+\DoxyCodeLine{02142\ }
+\DoxyCodeLine{02143\ \ \ \textcolor{comment}{//\ Tests\ how\ the\ flag\ affects\ expected\ calls.}}
+\DoxyCodeLine{02144\ \ \ \textcolor{keywordtype}{void}\ TestExpectedCall(\textcolor{keywordtype}{bool}\ should\_print)\ \{}
+\DoxyCodeLine{02145\ \ \ \ \ MockA\ a;}
+\DoxyCodeLine{02146\ \ \ \ \ EXPECT\_CALL(a,\ DoA(5));}
+\DoxyCodeLine{02147\ \ \ \ \ EXPECT\_CALL(a,\ Binary(\_,\ 1))}
+\DoxyCodeLine{02148\ \ \ \ \ \ \ \ \ .WillOnce(Return(\textcolor{keyword}{true}));}
+\DoxyCodeLine{02149\ }
+\DoxyCodeLine{02150\ \ \ \ \ \textcolor{comment}{//\ A\ void-\/returning\ function.}}
+\DoxyCodeLine{02151\ \ \ \ \ CaptureStdout();}
+\DoxyCodeLine{02152\ \ \ \ \ a.DoA(5);}
+\DoxyCodeLine{02153\ \ \ \ \ VerifyOutput(}
+\DoxyCodeLine{02154\ \ \ \ \ \ \ \ \ GetCapturedStdout(),}
+\DoxyCodeLine{02155\ \ \ \ \ \ \ \ \ should\_print,}
+\DoxyCodeLine{02156\ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}Mock\ function\ call\ matches\ EXPECT\_CALL(a,\ DoA(5))...\(\backslash\)n"{}}}
+\DoxyCodeLine{02157\ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}\ \ \ \ Function\ call:\ DoA(5)\(\backslash\)n"{}}}
+\DoxyCodeLine{02158\ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}Stack\ trace:\(\backslash\)n"{}},}
+\DoxyCodeLine{02159\ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}DoA"{}});}
+\DoxyCodeLine{02160\ }
+\DoxyCodeLine{02161\ \ \ \ \ \textcolor{comment}{//\ A\ non-\/void-\/returning\ function.}}
+\DoxyCodeLine{02162\ \ \ \ \ CaptureStdout();}
+\DoxyCodeLine{02163\ \ \ \ \ a.Binary(2,\ 1);}
+\DoxyCodeLine{02164\ \ \ \ \ VerifyOutput(}
+\DoxyCodeLine{02165\ \ \ \ \ \ \ \ \ GetCapturedStdout(),}
+\DoxyCodeLine{02166\ \ \ \ \ \ \ \ \ should\_print,}
+\DoxyCodeLine{02167\ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}Mock\ function\ call\ matches\ EXPECT\_CALL(a,\ Binary(\_,\ 1))...\(\backslash\)n"{}}}
+\DoxyCodeLine{02168\ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}\ \ \ \ Function\ call:\ Binary(2,\ 1)\(\backslash\)n"{}}}
+\DoxyCodeLine{02169\ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}\ \ \ \ \ \ \ \ \ \ Returns:\ true\(\backslash\)n"{}}}
+\DoxyCodeLine{02170\ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}Stack\ trace:\(\backslash\)n"{}},}
+\DoxyCodeLine{02171\ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}Binary"{}});}
+\DoxyCodeLine{02172\ \ \ \}}
+\DoxyCodeLine{02173\ }
+\DoxyCodeLine{02174\ \ \ \textcolor{comment}{//\ Tests\ how\ the\ flag\ affects\ uninteresting\ calls\ on\ a\ naggy\ mock.}}
+\DoxyCodeLine{02175\ \ \ \textcolor{keywordtype}{void}\ TestUninterestingCallOnNaggyMock(\textcolor{keywordtype}{bool}\ should\_print)\ \{}
+\DoxyCodeLine{02176\ \ \ \ \ NaggyMock<MockA>\ a;}
+\DoxyCodeLine{02177\ \ \ \ \ \textcolor{keyword}{const}\ std::string\ note\ =}
+\DoxyCodeLine{02178\ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}NOTE:\ You\ can\ safely\ ignore\ the\ above\ warning\ unless\ this\ "{}}}
+\DoxyCodeLine{02179\ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}call\ should\ not\ happen.\ \ Do\ not\ suppress\ it\ by\ blindly\ adding\ "{}}}
+\DoxyCodeLine{02180\ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}an\ EXPECT\_CALL()\ if\ you\ don't\ mean\ to\ enforce\ the\ call.\ \ "{}}}
+\DoxyCodeLine{02181\ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}See\ "{}}}
+\DoxyCodeLine{02182\ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}https://github.com/google/googletest/blob/master/docs/"{}}}
+\DoxyCodeLine{02183\ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}gmock\_cook\_book.md\#"{}}}
+\DoxyCodeLine{02184\ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}knowing-\/when-\/to-\/expect\ for\ details."{}};}
+\DoxyCodeLine{02185\ }
+\DoxyCodeLine{02186\ \ \ \ \ \textcolor{comment}{//\ A\ void-\/returning\ function.}}
+\DoxyCodeLine{02187\ \ \ \ \ CaptureStdout();}
+\DoxyCodeLine{02188\ \ \ \ \ a.DoA(5);}
+\DoxyCodeLine{02189\ \ \ \ \ VerifyOutput(}
+\DoxyCodeLine{02190\ \ \ \ \ \ \ \ \ GetCapturedStdout(),}
+\DoxyCodeLine{02191\ \ \ \ \ \ \ \ \ should\_print,}
+\DoxyCodeLine{02192\ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}\(\backslash\)nGMOCK\ WARNING:\(\backslash\)n"{}}}
+\DoxyCodeLine{02193\ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}Uninteresting\ mock\ function\ call\ -\/\ returning\ directly.\(\backslash\)n"{}}}
+\DoxyCodeLine{02194\ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}\ \ \ \ Function\ call:\ DoA(5)\(\backslash\)n"{}}\ +}
+\DoxyCodeLine{02195\ \ \ \ \ \ \ \ \ note,}
+\DoxyCodeLine{02196\ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}DoA"{}});}
+\DoxyCodeLine{02197\ }
+\DoxyCodeLine{02198\ \ \ \ \ \textcolor{comment}{//\ A\ non-\/void-\/returning\ function.}}
+\DoxyCodeLine{02199\ \ \ \ \ CaptureStdout();}
+\DoxyCodeLine{02200\ \ \ \ \ a.Binary(2,\ 1);}
+\DoxyCodeLine{02201\ \ \ \ \ VerifyOutput(}
+\DoxyCodeLine{02202\ \ \ \ \ \ \ \ \ GetCapturedStdout(),}
+\DoxyCodeLine{02203\ \ \ \ \ \ \ \ \ should\_print,}
+\DoxyCodeLine{02204\ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}\(\backslash\)nGMOCK\ WARNING:\(\backslash\)n"{}}}
+\DoxyCodeLine{02205\ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}Uninteresting\ mock\ function\ call\ -\/\ returning\ default\ value.\(\backslash\)n"{}}}
+\DoxyCodeLine{02206\ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}\ \ \ \ Function\ call:\ Binary(2,\ 1)\(\backslash\)n"{}}}
+\DoxyCodeLine{02207\ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}\ \ \ \ \ \ \ \ \ \ Returns:\ false\(\backslash\)n"{}}\ +}
+\DoxyCodeLine{02208\ \ \ \ \ \ \ \ \ note,}
+\DoxyCodeLine{02209\ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}Binary"{}});}
+\DoxyCodeLine{02210\ \ \ \}}
+\DoxyCodeLine{02211\ \};}
+\DoxyCodeLine{02212\ }
+\DoxyCodeLine{02213\ \textcolor{comment}{//\ Tests\ that\ -\/-\/gmock\_verbose=info\ causes\ both\ expected\ and}}
+\DoxyCodeLine{02214\ \textcolor{comment}{//\ uninteresting\ calls\ to\ be\ reported.}}
+\DoxyCodeLine{02215\ TEST\_F(GMockVerboseFlagTest,\ Info)\ \{}
+\DoxyCodeLine{02216\ \ \ GMOCK\_FLAG(verbose)\ =\ kInfoVerbosity;}
+\DoxyCodeLine{02217\ \ \ TestExpectedCall(\textcolor{keyword}{true});}
+\DoxyCodeLine{02218\ \ \ TestUninterestingCallOnNaggyMock(\textcolor{keyword}{true});}
+\DoxyCodeLine{02219\ \}}
+\DoxyCodeLine{02220\ }
+\DoxyCodeLine{02221\ \textcolor{comment}{//\ Tests\ that\ -\/-\/gmock\_verbose=warning\ causes\ uninteresting\ calls\ to\ be}}
+\DoxyCodeLine{02222\ \textcolor{comment}{//\ reported.}}
+\DoxyCodeLine{02223\ TEST\_F(GMockVerboseFlagTest,\ Warning)\ \{}
+\DoxyCodeLine{02224\ \ \ GMOCK\_FLAG(verbose)\ =\ kWarningVerbosity;}
+\DoxyCodeLine{02225\ \ \ TestExpectedCall(\textcolor{keyword}{false});}
+\DoxyCodeLine{02226\ \ \ TestUninterestingCallOnNaggyMock(\textcolor{keyword}{true});}
+\DoxyCodeLine{02227\ \}}
+\DoxyCodeLine{02228\ }
+\DoxyCodeLine{02229\ \textcolor{comment}{//\ Tests\ that\ -\/-\/gmock\_verbose=warning\ causes\ neither\ expected\ nor}}
+\DoxyCodeLine{02230\ \textcolor{comment}{//\ uninteresting\ calls\ to\ be\ reported.}}
+\DoxyCodeLine{02231\ TEST\_F(GMockVerboseFlagTest,\ Error)\ \{}
+\DoxyCodeLine{02232\ \ \ GMOCK\_FLAG(verbose)\ =\ kErrorVerbosity;}
+\DoxyCodeLine{02233\ \ \ TestExpectedCall(\textcolor{keyword}{false});}
+\DoxyCodeLine{02234\ \ \ TestUninterestingCallOnNaggyMock(\textcolor{keyword}{false});}
+\DoxyCodeLine{02235\ \}}
+\DoxyCodeLine{02236\ }
+\DoxyCodeLine{02237\ \textcolor{comment}{//\ Tests\ that\ -\/-\/gmock\_verbose=SOME\_INVALID\_VALUE\ has\ the\ same\ effect}}
+\DoxyCodeLine{02238\ \textcolor{comment}{//\ as\ -\/-\/gmock\_verbose=warning.}}
+\DoxyCodeLine{02239\ TEST\_F(GMockVerboseFlagTest,\ InvalidFlagIsTreatedAsWarning)\ \{}
+\DoxyCodeLine{02240\ \ \ GMOCK\_FLAG(verbose)\ =\ \textcolor{stringliteral}{"{}invalid"{}};\ \ \textcolor{comment}{//\ Treated\ as\ "{}warning"{}.}}
+\DoxyCodeLine{02241\ \ \ TestExpectedCall(\textcolor{keyword}{false});}
+\DoxyCodeLine{02242\ \ \ TestUninterestingCallOnNaggyMock(\textcolor{keyword}{true});}
+\DoxyCodeLine{02243\ \}}
+\DoxyCodeLine{02244\ }
+\DoxyCodeLine{02245\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ GTEST\_HAS\_STREAM\_REDIRECTION}}
+\DoxyCodeLine{02246\ }
+\DoxyCodeLine{02247\ \textcolor{comment}{//\ A\ helper\ class\ that\ generates\ a\ failure\ when\ printed.\ \ We\ use\ it\ to}}
+\DoxyCodeLine{02248\ \textcolor{comment}{//\ ensure\ that\ Google\ Mock\ doesn't\ print\ a\ value\ (even\ to\ an\ internal}}
+\DoxyCodeLine{02249\ \textcolor{comment}{//\ buffer)\ when\ it\ is\ not\ supposed\ to\ do\ so.}}
+\DoxyCodeLine{02250\ \textcolor{keyword}{class\ }PrintMeNot\ \{\};}
+\DoxyCodeLine{02251\ }
+\DoxyCodeLine{02252\ \textcolor{keywordtype}{void}\ PrintTo(PrintMeNot\ \textcolor{comment}{/*\ dummy\ */},\ ::std::ostream*\ \textcolor{comment}{/*\ os\ */})\ \{}
+\DoxyCodeLine{02253\ \ \ ADD\_FAILURE()\ <<\ \textcolor{stringliteral}{"{}Google\ Mock\ is\ printing\ a\ value\ that\ shouldn't\ be\ "{}}}
+\DoxyCodeLine{02254\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{}printed\ even\ to\ an\ internal\ buffer."{}};}
+\DoxyCodeLine{02255\ \}}
+\DoxyCodeLine{02256\ }
+\DoxyCodeLine{02257\ \textcolor{keyword}{class\ }LogTestHelper\ \{}
+\DoxyCodeLine{02258\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{02259\ \ \ LogTestHelper()\ \{\}}
+\DoxyCodeLine{02260\ }
+\DoxyCodeLine{02261\ \ \ MOCK\_METHOD1(Foo,\ PrintMeNot(PrintMeNot));}
+\DoxyCodeLine{02262\ }
+\DoxyCodeLine{02263\ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{02264\ \ \ GTEST\_DISALLOW\_COPY\_AND\_ASSIGN\_(LogTestHelper);}
+\DoxyCodeLine{02265\ \};}
+\DoxyCodeLine{02266\ }
+\DoxyCodeLine{02267\ \textcolor{keyword}{class\ }GMockLogTest\ :\ \textcolor{keyword}{public}\ VerboseFlagPreservingFixture\ \{}
+\DoxyCodeLine{02268\ \ \textcolor{keyword}{protected}:}
+\DoxyCodeLine{02269\ \ \ LogTestHelper\ helper\_;}
+\DoxyCodeLine{02270\ \};}
+\DoxyCodeLine{02271\ }
+\DoxyCodeLine{02272\ TEST\_F(GMockLogTest,\ DoesNotPrintGoodCallInternallyIfVerbosityIsWarning)\ \{}
+\DoxyCodeLine{02273\ \ \ GMOCK\_FLAG(verbose)\ =\ kWarningVerbosity;}
+\DoxyCodeLine{02274\ \ \ EXPECT\_CALL(helper\_,\ Foo(\_))}
+\DoxyCodeLine{02275\ \ \ \ \ \ \ .WillOnce(Return(PrintMeNot()));}
+\DoxyCodeLine{02276\ \ \ helper\_.Foo(PrintMeNot());\ \ \textcolor{comment}{//\ This\ is\ an\ expected\ call.}}
+\DoxyCodeLine{02277\ \}}
+\DoxyCodeLine{02278\ }
+\DoxyCodeLine{02279\ TEST\_F(GMockLogTest,\ DoesNotPrintGoodCallInternallyIfVerbosityIsError)\ \{}
+\DoxyCodeLine{02280\ \ \ GMOCK\_FLAG(verbose)\ =\ kErrorVerbosity;}
+\DoxyCodeLine{02281\ \ \ EXPECT\_CALL(helper\_,\ Foo(\_))}
+\DoxyCodeLine{02282\ \ \ \ \ \ \ .WillOnce(Return(PrintMeNot()));}
+\DoxyCodeLine{02283\ \ \ helper\_.Foo(PrintMeNot());\ \ \textcolor{comment}{//\ This\ is\ an\ expected\ call.}}
+\DoxyCodeLine{02284\ \}}
+\DoxyCodeLine{02285\ }
+\DoxyCodeLine{02286\ TEST\_F(GMockLogTest,\ DoesNotPrintWarningInternallyIfVerbosityIsError)\ \{}
+\DoxyCodeLine{02287\ \ \ GMOCK\_FLAG(verbose)\ =\ kErrorVerbosity;}
+\DoxyCodeLine{02288\ \ \ ON\_CALL(helper\_,\ Foo(\_))}
+\DoxyCodeLine{02289\ \ \ \ \ \ \ .WillByDefault(Return(PrintMeNot()));}
+\DoxyCodeLine{02290\ \ \ helper\_.Foo(PrintMeNot());\ \ \textcolor{comment}{//\ This\ should\ generate\ a\ warning.}}
+\DoxyCodeLine{02291\ \}}
+\DoxyCodeLine{02292\ }
+\DoxyCodeLine{02293\ \textcolor{comment}{//\ Tests\ Mock::AllowLeak().}}
+\DoxyCodeLine{02294\ }
+\DoxyCodeLine{02295\ TEST(AllowLeakTest,\ AllowsLeakingUnusedMockObject)\ \{}
+\DoxyCodeLine{02296\ \ \ MockA*\ a\ =\ \textcolor{keyword}{new}\ MockA;}
+\DoxyCodeLine{02297\ \ \ Mock::AllowLeak(a);}
+\DoxyCodeLine{02298\ \}}
+\DoxyCodeLine{02299\ }
+\DoxyCodeLine{02300\ TEST(AllowLeakTest,\ CanBeCalledBeforeOnCall)\ \{}
+\DoxyCodeLine{02301\ \ \ MockA*\ a\ =\ \textcolor{keyword}{new}\ MockA;}
+\DoxyCodeLine{02302\ \ \ Mock::AllowLeak(a);}
+\DoxyCodeLine{02303\ \ \ ON\_CALL(*a,\ DoA(\_)).WillByDefault(Return());}
+\DoxyCodeLine{02304\ \ \ a-\/>DoA(0);}
+\DoxyCodeLine{02305\ \}}
+\DoxyCodeLine{02306\ }
+\DoxyCodeLine{02307\ TEST(AllowLeakTest,\ CanBeCalledAfterOnCall)\ \{}
+\DoxyCodeLine{02308\ \ \ MockA*\ a\ =\ \textcolor{keyword}{new}\ MockA;}
+\DoxyCodeLine{02309\ \ \ ON\_CALL(*a,\ DoA(\_)).WillByDefault(Return());}
+\DoxyCodeLine{02310\ \ \ Mock::AllowLeak(a);}
+\DoxyCodeLine{02311\ \}}
+\DoxyCodeLine{02312\ }
+\DoxyCodeLine{02313\ TEST(AllowLeakTest,\ CanBeCalledBeforeExpectCall)\ \{}
+\DoxyCodeLine{02314\ \ \ MockA*\ a\ =\ \textcolor{keyword}{new}\ MockA;}
+\DoxyCodeLine{02315\ \ \ Mock::AllowLeak(a);}
+\DoxyCodeLine{02316\ \ \ EXPECT\_CALL(*a,\ DoA(\_));}
+\DoxyCodeLine{02317\ \ \ a-\/>DoA(0);}
+\DoxyCodeLine{02318\ \}}
+\DoxyCodeLine{02319\ }
+\DoxyCodeLine{02320\ TEST(AllowLeakTest,\ CanBeCalledAfterExpectCall)\ \{}
+\DoxyCodeLine{02321\ \ \ MockA*\ a\ =\ \textcolor{keyword}{new}\ MockA;}
+\DoxyCodeLine{02322\ \ \ EXPECT\_CALL(*a,\ DoA(\_)).Times(AnyNumber());}
+\DoxyCodeLine{02323\ \ \ Mock::AllowLeak(a);}
+\DoxyCodeLine{02324\ \}}
+\DoxyCodeLine{02325\ }
+\DoxyCodeLine{02326\ TEST(AllowLeakTest,\ WorksWhenBothOnCallAndExpectCallArePresent)\ \{}
+\DoxyCodeLine{02327\ \ \ MockA*\ a\ =\ \textcolor{keyword}{new}\ MockA;}
+\DoxyCodeLine{02328\ \ \ ON\_CALL(*a,\ DoA(\_)).WillByDefault(Return());}
+\DoxyCodeLine{02329\ \ \ EXPECT\_CALL(*a,\ DoA(\_)).Times(AnyNumber());}
+\DoxyCodeLine{02330\ \ \ Mock::AllowLeak(a);}
+\DoxyCodeLine{02331\ \}}
+\DoxyCodeLine{02332\ }
+\DoxyCodeLine{02333\ \textcolor{comment}{//\ Tests\ that\ we\ can\ verify\ and\ clear\ a\ mock\ object's\ expectations}}
+\DoxyCodeLine{02334\ \textcolor{comment}{//\ when\ none\ of\ its\ methods\ has\ expectations.}}
+\DoxyCodeLine{02335\ TEST(VerifyAndClearExpectationsTest,\ NoMethodHasExpectations)\ \{}
+\DoxyCodeLine{02336\ \ \ MockB\ b;}
+\DoxyCodeLine{02337\ \ \ ASSERT\_TRUE(Mock::VerifyAndClearExpectations(\&b));}
+\DoxyCodeLine{02338\ }
+\DoxyCodeLine{02339\ \ \ \textcolor{comment}{//\ There\ should\ be\ no\ expectations\ on\ the\ methods\ now,\ so\ we\ can}}
+\DoxyCodeLine{02340\ \ \ \textcolor{comment}{//\ freely\ call\ them.}}
+\DoxyCodeLine{02341\ \ \ EXPECT\_EQ(0,\ b.DoB());}
+\DoxyCodeLine{02342\ \ \ EXPECT\_EQ(0,\ b.DoB(1));}
+\DoxyCodeLine{02343\ \}}
+\DoxyCodeLine{02344\ }
+\DoxyCodeLine{02345\ \textcolor{comment}{//\ Tests\ that\ we\ can\ verify\ and\ clear\ a\ mock\ object's\ expectations}}
+\DoxyCodeLine{02346\ \textcolor{comment}{//\ when\ some,\ but\ not\ all,\ of\ its\ methods\ have\ expectations\ *and*\ the}}
+\DoxyCodeLine{02347\ \textcolor{comment}{//\ verification\ succeeds.}}
+\DoxyCodeLine{02348\ TEST(VerifyAndClearExpectationsTest,\ SomeMethodsHaveExpectationsAndSucceed)\ \{}
+\DoxyCodeLine{02349\ \ \ MockB\ b;}
+\DoxyCodeLine{02350\ \ \ EXPECT\_CALL(b,\ DoB())}
+\DoxyCodeLine{02351\ \ \ \ \ \ \ .WillOnce(Return(1));}
+\DoxyCodeLine{02352\ \ \ b.DoB();}
+\DoxyCodeLine{02353\ \ \ ASSERT\_TRUE(Mock::VerifyAndClearExpectations(\&b));}
+\DoxyCodeLine{02354\ }
+\DoxyCodeLine{02355\ \ \ \textcolor{comment}{//\ There\ should\ be\ no\ expectations\ on\ the\ methods\ now,\ so\ we\ can}}
+\DoxyCodeLine{02356\ \ \ \textcolor{comment}{//\ freely\ call\ them.}}
+\DoxyCodeLine{02357\ \ \ EXPECT\_EQ(0,\ b.DoB());}
+\DoxyCodeLine{02358\ \ \ EXPECT\_EQ(0,\ b.DoB(1));}
+\DoxyCodeLine{02359\ \}}
+\DoxyCodeLine{02360\ }
+\DoxyCodeLine{02361\ \textcolor{comment}{//\ Tests\ that\ we\ can\ verify\ and\ clear\ a\ mock\ object's\ expectations}}
+\DoxyCodeLine{02362\ \textcolor{comment}{//\ when\ some,\ but\ not\ all,\ of\ its\ methods\ have\ expectations\ *and*\ the}}
+\DoxyCodeLine{02363\ \textcolor{comment}{//\ verification\ fails.}}
+\DoxyCodeLine{02364\ TEST(VerifyAndClearExpectationsTest,\ SomeMethodsHaveExpectationsAndFail)\ \{}
+\DoxyCodeLine{02365\ \ \ MockB\ b;}
+\DoxyCodeLine{02366\ \ \ EXPECT\_CALL(b,\ DoB())}
+\DoxyCodeLine{02367\ \ \ \ \ \ \ .WillOnce(Return(1));}
+\DoxyCodeLine{02368\ \ \ \textcolor{keywordtype}{bool}\ result\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{02369\ \ \ EXPECT\_NONFATAL\_FAILURE(result\ =\ Mock::VerifyAndClearExpectations(\&b),}
+\DoxyCodeLine{02370\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}Actual:\ never\ called"{}});}
+\DoxyCodeLine{02371\ \ \ ASSERT\_FALSE(result);}
+\DoxyCodeLine{02372\ }
+\DoxyCodeLine{02373\ \ \ \textcolor{comment}{//\ There\ should\ be\ no\ expectations\ on\ the\ methods\ now,\ so\ we\ can}}
+\DoxyCodeLine{02374\ \ \ \textcolor{comment}{//\ freely\ call\ them.}}
+\DoxyCodeLine{02375\ \ \ EXPECT\_EQ(0,\ b.DoB());}
+\DoxyCodeLine{02376\ \ \ EXPECT\_EQ(0,\ b.DoB(1));}
+\DoxyCodeLine{02377\ \}}
+\DoxyCodeLine{02378\ }
+\DoxyCodeLine{02379\ \textcolor{comment}{//\ Tests\ that\ we\ can\ verify\ and\ clear\ a\ mock\ object's\ expectations}}
+\DoxyCodeLine{02380\ \textcolor{comment}{//\ when\ all\ of\ its\ methods\ have\ expectations.}}
+\DoxyCodeLine{02381\ TEST(VerifyAndClearExpectationsTest,\ AllMethodsHaveExpectations)\ \{}
+\DoxyCodeLine{02382\ \ \ MockB\ b;}
+\DoxyCodeLine{02383\ \ \ EXPECT\_CALL(b,\ DoB())}
+\DoxyCodeLine{02384\ \ \ \ \ \ \ .WillOnce(Return(1));}
+\DoxyCodeLine{02385\ \ \ EXPECT\_CALL(b,\ DoB(\_))}
+\DoxyCodeLine{02386\ \ \ \ \ \ \ .WillOnce(Return(2));}
+\DoxyCodeLine{02387\ \ \ b.DoB();}
+\DoxyCodeLine{02388\ \ \ b.DoB(1);}
+\DoxyCodeLine{02389\ \ \ ASSERT\_TRUE(Mock::VerifyAndClearExpectations(\&b));}
+\DoxyCodeLine{02390\ }
+\DoxyCodeLine{02391\ \ \ \textcolor{comment}{//\ There\ should\ be\ no\ expectations\ on\ the\ methods\ now,\ so\ we\ can}}
+\DoxyCodeLine{02392\ \ \ \textcolor{comment}{//\ freely\ call\ them.}}
+\DoxyCodeLine{02393\ \ \ EXPECT\_EQ(0,\ b.DoB());}
+\DoxyCodeLine{02394\ \ \ EXPECT\_EQ(0,\ b.DoB(1));}
+\DoxyCodeLine{02395\ \}}
+\DoxyCodeLine{02396\ }
+\DoxyCodeLine{02397\ \textcolor{comment}{//\ Tests\ that\ we\ can\ verify\ and\ clear\ a\ mock\ object's\ expectations}}
+\DoxyCodeLine{02398\ \textcolor{comment}{//\ when\ a\ method\ has\ more\ than\ one\ expectation.}}
+\DoxyCodeLine{02399\ TEST(VerifyAndClearExpectationsTest,\ AMethodHasManyExpectations)\ \{}
+\DoxyCodeLine{02400\ \ \ MockB\ b;}
+\DoxyCodeLine{02401\ \ \ EXPECT\_CALL(b,\ DoB(0))}
+\DoxyCodeLine{02402\ \ \ \ \ \ \ .WillOnce(Return(1));}
+\DoxyCodeLine{02403\ \ \ EXPECT\_CALL(b,\ DoB(\_))}
+\DoxyCodeLine{02404\ \ \ \ \ \ \ .WillOnce(Return(2));}
+\DoxyCodeLine{02405\ \ \ b.DoB(1);}
+\DoxyCodeLine{02406\ \ \ \textcolor{keywordtype}{bool}\ result\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{02407\ \ \ EXPECT\_NONFATAL\_FAILURE(result\ =\ Mock::VerifyAndClearExpectations(\&b),}
+\DoxyCodeLine{02408\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}Actual:\ never\ called"{}});}
+\DoxyCodeLine{02409\ \ \ ASSERT\_FALSE(result);}
+\DoxyCodeLine{02410\ }
+\DoxyCodeLine{02411\ \ \ \textcolor{comment}{//\ There\ should\ be\ no\ expectations\ on\ the\ methods\ now,\ so\ we\ can}}
+\DoxyCodeLine{02412\ \ \ \textcolor{comment}{//\ freely\ call\ them.}}
+\DoxyCodeLine{02413\ \ \ EXPECT\_EQ(0,\ b.DoB());}
+\DoxyCodeLine{02414\ \ \ EXPECT\_EQ(0,\ b.DoB(1));}
+\DoxyCodeLine{02415\ \}}
+\DoxyCodeLine{02416\ }
+\DoxyCodeLine{02417\ \textcolor{comment}{//\ Tests\ that\ we\ can\ call\ VerifyAndClearExpectations()\ on\ the\ same}}
+\DoxyCodeLine{02418\ \textcolor{comment}{//\ mock\ object\ multiple\ times.}}
+\DoxyCodeLine{02419\ TEST(VerifyAndClearExpectationsTest,\ CanCallManyTimes)\ \{}
+\DoxyCodeLine{02420\ \ \ MockB\ b;}
+\DoxyCodeLine{02421\ \ \ EXPECT\_CALL(b,\ DoB());}
+\DoxyCodeLine{02422\ \ \ b.DoB();}
+\DoxyCodeLine{02423\ \ \ Mock::VerifyAndClearExpectations(\&b);}
+\DoxyCodeLine{02424\ }
+\DoxyCodeLine{02425\ \ \ EXPECT\_CALL(b,\ DoB(\_))}
+\DoxyCodeLine{02426\ \ \ \ \ \ \ .WillOnce(Return(1));}
+\DoxyCodeLine{02427\ \ \ b.DoB(1);}
+\DoxyCodeLine{02428\ \ \ Mock::VerifyAndClearExpectations(\&b);}
+\DoxyCodeLine{02429\ \ \ Mock::VerifyAndClearExpectations(\&b);}
+\DoxyCodeLine{02430\ }
+\DoxyCodeLine{02431\ \ \ \textcolor{comment}{//\ There\ should\ be\ no\ expectations\ on\ the\ methods\ now,\ so\ we\ can}}
+\DoxyCodeLine{02432\ \ \ \textcolor{comment}{//\ freely\ call\ them.}}
+\DoxyCodeLine{02433\ \ \ EXPECT\_EQ(0,\ b.DoB());}
+\DoxyCodeLine{02434\ \ \ EXPECT\_EQ(0,\ b.DoB(1));}
+\DoxyCodeLine{02435\ \}}
+\DoxyCodeLine{02436\ }
+\DoxyCodeLine{02437\ \textcolor{comment}{//\ Tests\ that\ we\ can\ clear\ a\ mock\ object's\ default\ actions\ when\ none}}
+\DoxyCodeLine{02438\ \textcolor{comment}{//\ of\ its\ methods\ has\ default\ actions.}}
+\DoxyCodeLine{02439\ TEST(VerifyAndClearTest,\ NoMethodHasDefaultActions)\ \{}
+\DoxyCodeLine{02440\ \ \ MockB\ b;}
+\DoxyCodeLine{02441\ \ \ \textcolor{comment}{//\ If\ this\ crashes\ or\ generates\ a\ failure,\ the\ test\ will\ catch\ it.}}
+\DoxyCodeLine{02442\ \ \ Mock::VerifyAndClear(\&b);}
+\DoxyCodeLine{02443\ \ \ EXPECT\_EQ(0,\ b.DoB());}
+\DoxyCodeLine{02444\ \}}
+\DoxyCodeLine{02445\ }
+\DoxyCodeLine{02446\ \textcolor{comment}{//\ Tests\ that\ we\ can\ clear\ a\ mock\ object's\ default\ actions\ when\ some,}}
+\DoxyCodeLine{02447\ \textcolor{comment}{//\ but\ not\ all\ of\ its\ methods\ have\ default\ actions.}}
+\DoxyCodeLine{02448\ TEST(VerifyAndClearTest,\ SomeMethodsHaveDefaultActions)\ \{}
+\DoxyCodeLine{02449\ \ \ MockB\ b;}
+\DoxyCodeLine{02450\ \ \ ON\_CALL(b,\ DoB())}
+\DoxyCodeLine{02451\ \ \ \ \ \ \ .WillByDefault(Return(1));}
+\DoxyCodeLine{02452\ }
+\DoxyCodeLine{02453\ \ \ Mock::VerifyAndClear(\&b);}
+\DoxyCodeLine{02454\ }
+\DoxyCodeLine{02455\ \ \ \textcolor{comment}{//\ Verifies\ that\ the\ default\ action\ of\ int\ DoB()\ was\ removed.}}
+\DoxyCodeLine{02456\ \ \ EXPECT\_EQ(0,\ b.DoB());}
+\DoxyCodeLine{02457\ \}}
+\DoxyCodeLine{02458\ }
+\DoxyCodeLine{02459\ \textcolor{comment}{//\ Tests\ that\ we\ can\ clear\ a\ mock\ object's\ default\ actions\ when\ all\ of}}
+\DoxyCodeLine{02460\ \textcolor{comment}{//\ its\ methods\ have\ default\ actions.}}
+\DoxyCodeLine{02461\ TEST(VerifyAndClearTest,\ AllMethodsHaveDefaultActions)\ \{}
+\DoxyCodeLine{02462\ \ \ MockB\ b;}
+\DoxyCodeLine{02463\ \ \ ON\_CALL(b,\ DoB())}
+\DoxyCodeLine{02464\ \ \ \ \ \ \ .WillByDefault(Return(1));}
+\DoxyCodeLine{02465\ \ \ ON\_CALL(b,\ DoB(\_))}
+\DoxyCodeLine{02466\ \ \ \ \ \ \ .WillByDefault(Return(2));}
+\DoxyCodeLine{02467\ }
+\DoxyCodeLine{02468\ \ \ Mock::VerifyAndClear(\&b);}
+\DoxyCodeLine{02469\ }
+\DoxyCodeLine{02470\ \ \ \textcolor{comment}{//\ Verifies\ that\ the\ default\ action\ of\ int\ DoB()\ was\ removed.}}
+\DoxyCodeLine{02471\ \ \ EXPECT\_EQ(0,\ b.DoB());}
+\DoxyCodeLine{02472\ }
+\DoxyCodeLine{02473\ \ \ \textcolor{comment}{//\ Verifies\ that\ the\ default\ action\ of\ int\ DoB(int)\ was\ removed.}}
+\DoxyCodeLine{02474\ \ \ EXPECT\_EQ(0,\ b.DoB(0));}
+\DoxyCodeLine{02475\ \}}
+\DoxyCodeLine{02476\ }
+\DoxyCodeLine{02477\ \textcolor{comment}{//\ Tests\ that\ we\ can\ clear\ a\ mock\ object's\ default\ actions\ when\ a}}
+\DoxyCodeLine{02478\ \textcolor{comment}{//\ method\ has\ more\ than\ one\ ON\_CALL()\ set\ on\ it.}}
+\DoxyCodeLine{02479\ TEST(VerifyAndClearTest,\ AMethodHasManyDefaultActions)\ \{}
+\DoxyCodeLine{02480\ \ \ MockB\ b;}
+\DoxyCodeLine{02481\ \ \ ON\_CALL(b,\ DoB(0))}
+\DoxyCodeLine{02482\ \ \ \ \ \ \ .WillByDefault(Return(1));}
+\DoxyCodeLine{02483\ \ \ ON\_CALL(b,\ DoB(\_))}
+\DoxyCodeLine{02484\ \ \ \ \ \ \ .WillByDefault(Return(2));}
+\DoxyCodeLine{02485\ }
+\DoxyCodeLine{02486\ \ \ Mock::VerifyAndClear(\&b);}
+\DoxyCodeLine{02487\ }
+\DoxyCodeLine{02488\ \ \ \textcolor{comment}{//\ Verifies\ that\ the\ default\ actions\ (there\ are\ two)\ of\ int\ DoB(int)}}
+\DoxyCodeLine{02489\ \ \ \textcolor{comment}{//\ were\ removed.}}
+\DoxyCodeLine{02490\ \ \ EXPECT\_EQ(0,\ b.DoB(0));}
+\DoxyCodeLine{02491\ \ \ EXPECT\_EQ(0,\ b.DoB(1));}
+\DoxyCodeLine{02492\ \}}
+\DoxyCodeLine{02493\ }
+\DoxyCodeLine{02494\ \textcolor{comment}{//\ Tests\ that\ we\ can\ call\ VerifyAndClear()\ on\ a\ mock\ object\ multiple}}
+\DoxyCodeLine{02495\ \textcolor{comment}{//\ times.}}
+\DoxyCodeLine{02496\ TEST(VerifyAndClearTest,\ CanCallManyTimes)\ \{}
+\DoxyCodeLine{02497\ \ \ MockB\ b;}
+\DoxyCodeLine{02498\ \ \ ON\_CALL(b,\ DoB())}
+\DoxyCodeLine{02499\ \ \ \ \ \ \ .WillByDefault(Return(1));}
+\DoxyCodeLine{02500\ \ \ Mock::VerifyAndClear(\&b);}
+\DoxyCodeLine{02501\ \ \ Mock::VerifyAndClear(\&b);}
+\DoxyCodeLine{02502\ }
+\DoxyCodeLine{02503\ \ \ ON\_CALL(b,\ DoB(\_))}
+\DoxyCodeLine{02504\ \ \ \ \ \ \ .WillByDefault(Return(1));}
+\DoxyCodeLine{02505\ \ \ Mock::VerifyAndClear(\&b);}
+\DoxyCodeLine{02506\ }
+\DoxyCodeLine{02507\ \ \ EXPECT\_EQ(0,\ b.DoB());}
+\DoxyCodeLine{02508\ \ \ EXPECT\_EQ(0,\ b.DoB(1));}
+\DoxyCodeLine{02509\ \}}
+\DoxyCodeLine{02510\ }
+\DoxyCodeLine{02511\ \textcolor{comment}{//\ Tests\ that\ VerifyAndClear()\ works\ when\ the\ verification\ succeeds.}}
+\DoxyCodeLine{02512\ TEST(VerifyAndClearTest,\ Success)\ \{}
+\DoxyCodeLine{02513\ \ \ MockB\ b;}
+\DoxyCodeLine{02514\ \ \ ON\_CALL(b,\ DoB())}
+\DoxyCodeLine{02515\ \ \ \ \ \ \ .WillByDefault(Return(1));}
+\DoxyCodeLine{02516\ \ \ EXPECT\_CALL(b,\ DoB(1))}
+\DoxyCodeLine{02517\ \ \ \ \ \ \ .WillOnce(Return(2));}
+\DoxyCodeLine{02518\ }
+\DoxyCodeLine{02519\ \ \ b.DoB();}
+\DoxyCodeLine{02520\ \ \ b.DoB(1);}
+\DoxyCodeLine{02521\ \ \ ASSERT\_TRUE(Mock::VerifyAndClear(\&b));}
+\DoxyCodeLine{02522\ }
+\DoxyCodeLine{02523\ \ \ \textcolor{comment}{//\ There\ should\ be\ no\ expectations\ on\ the\ methods\ now,\ so\ we\ can}}
+\DoxyCodeLine{02524\ \ \ \textcolor{comment}{//\ freely\ call\ them.}}
+\DoxyCodeLine{02525\ \ \ EXPECT\_EQ(0,\ b.DoB());}
+\DoxyCodeLine{02526\ \ \ EXPECT\_EQ(0,\ b.DoB(1));}
+\DoxyCodeLine{02527\ \}}
+\DoxyCodeLine{02528\ }
+\DoxyCodeLine{02529\ \textcolor{comment}{//\ Tests\ that\ VerifyAndClear()\ works\ when\ the\ verification\ fails.}}
+\DoxyCodeLine{02530\ TEST(VerifyAndClearTest,\ Failure)\ \{}
+\DoxyCodeLine{02531\ \ \ MockB\ b;}
+\DoxyCodeLine{02532\ \ \ ON\_CALL(b,\ DoB(\_))}
+\DoxyCodeLine{02533\ \ \ \ \ \ \ .WillByDefault(Return(1));}
+\DoxyCodeLine{02534\ \ \ EXPECT\_CALL(b,\ DoB())}
+\DoxyCodeLine{02535\ \ \ \ \ \ \ .WillOnce(Return(2));}
+\DoxyCodeLine{02536\ }
+\DoxyCodeLine{02537\ \ \ b.DoB(1);}
+\DoxyCodeLine{02538\ \ \ \textcolor{keywordtype}{bool}\ result\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{02539\ \ \ EXPECT\_NONFATAL\_FAILURE(result\ =\ Mock::VerifyAndClear(\&b),}
+\DoxyCodeLine{02540\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}Actual:\ never\ called"{}});}
+\DoxyCodeLine{02541\ \ \ ASSERT\_FALSE(result);}
+\DoxyCodeLine{02542\ }
+\DoxyCodeLine{02543\ \ \ \textcolor{comment}{//\ There\ should\ be\ no\ expectations\ on\ the\ methods\ now,\ so\ we\ can}}
+\DoxyCodeLine{02544\ \ \ \textcolor{comment}{//\ freely\ call\ them.}}
+\DoxyCodeLine{02545\ \ \ EXPECT\_EQ(0,\ b.DoB());}
+\DoxyCodeLine{02546\ \ \ EXPECT\_EQ(0,\ b.DoB(1));}
+\DoxyCodeLine{02547\ \}}
+\DoxyCodeLine{02548\ }
+\DoxyCodeLine{02549\ \textcolor{comment}{//\ Tests\ that\ VerifyAndClear()\ works\ when\ the\ default\ actions\ and}}
+\DoxyCodeLine{02550\ \textcolor{comment}{//\ expectations\ are\ set\ on\ a\ const\ mock\ object.}}
+\DoxyCodeLine{02551\ TEST(VerifyAndClearTest,\ Const)\ \{}
+\DoxyCodeLine{02552\ \ \ MockB\ b;}
+\DoxyCodeLine{02553\ \ \ ON\_CALL(Const(b),\ DoB())}
+\DoxyCodeLine{02554\ \ \ \ \ \ \ .WillByDefault(Return(1));}
+\DoxyCodeLine{02555\ }
+\DoxyCodeLine{02556\ \ \ EXPECT\_CALL(Const(b),\ DoB())}
+\DoxyCodeLine{02557\ \ \ \ \ \ \ .WillOnce(DoDefault())}
+\DoxyCodeLine{02558\ \ \ \ \ \ \ .WillOnce(Return(2));}
+\DoxyCodeLine{02559\ }
+\DoxyCodeLine{02560\ \ \ b.DoB();}
+\DoxyCodeLine{02561\ \ \ b.DoB();}
+\DoxyCodeLine{02562\ \ \ ASSERT\_TRUE(Mock::VerifyAndClear(\&b));}
+\DoxyCodeLine{02563\ }
+\DoxyCodeLine{02564\ \ \ \textcolor{comment}{//\ There\ should\ be\ no\ expectations\ on\ the\ methods\ now,\ so\ we\ can}}
+\DoxyCodeLine{02565\ \ \ \textcolor{comment}{//\ freely\ call\ them.}}
+\DoxyCodeLine{02566\ \ \ EXPECT\_EQ(0,\ b.DoB());}
+\DoxyCodeLine{02567\ \ \ EXPECT\_EQ(0,\ b.DoB(1));}
+\DoxyCodeLine{02568\ \}}
+\DoxyCodeLine{02569\ }
+\DoxyCodeLine{02570\ \textcolor{comment}{//\ Tests\ that\ we\ can\ set\ default\ actions\ and\ expectations\ on\ a\ mock}}
+\DoxyCodeLine{02571\ \textcolor{comment}{//\ object\ after\ VerifyAndClear()\ has\ been\ called\ on\ it.}}
+\DoxyCodeLine{02572\ TEST(VerifyAndClearTest,\ CanSetDefaultActionsAndExpectationsAfterwards)\ \{}
+\DoxyCodeLine{02573\ \ \ MockB\ b;}
+\DoxyCodeLine{02574\ \ \ ON\_CALL(b,\ DoB())}
+\DoxyCodeLine{02575\ \ \ \ \ \ \ .WillByDefault(Return(1));}
+\DoxyCodeLine{02576\ \ \ EXPECT\_CALL(b,\ DoB(\_))}
+\DoxyCodeLine{02577\ \ \ \ \ \ \ .WillOnce(Return(2));}
+\DoxyCodeLine{02578\ \ \ b.DoB(1);}
+\DoxyCodeLine{02579\ }
+\DoxyCodeLine{02580\ \ \ Mock::VerifyAndClear(\&b);}
+\DoxyCodeLine{02581\ }
+\DoxyCodeLine{02582\ \ \ EXPECT\_CALL(b,\ DoB())}
+\DoxyCodeLine{02583\ \ \ \ \ \ \ .WillOnce(Return(3));}
+\DoxyCodeLine{02584\ \ \ ON\_CALL(b,\ DoB(\_))}
+\DoxyCodeLine{02585\ \ \ \ \ \ \ .WillByDefault(Return(4));}
+\DoxyCodeLine{02586\ }
+\DoxyCodeLine{02587\ \ \ EXPECT\_EQ(3,\ b.DoB());}
+\DoxyCodeLine{02588\ \ \ EXPECT\_EQ(4,\ b.DoB(1));}
+\DoxyCodeLine{02589\ \}}
+\DoxyCodeLine{02590\ }
+\DoxyCodeLine{02591\ \textcolor{comment}{//\ Tests\ that\ calling\ VerifyAndClear()\ on\ one\ mock\ object\ does\ not}}
+\DoxyCodeLine{02592\ \textcolor{comment}{//\ affect\ other\ mock\ objects\ (either\ of\ the\ same\ type\ or\ not).}}
+\DoxyCodeLine{02593\ TEST(VerifyAndClearTest,\ DoesNotAffectOtherMockObjects)\ \{}
+\DoxyCodeLine{02594\ \ \ MockA\ a;}
+\DoxyCodeLine{02595\ \ \ MockB\ b1;}
+\DoxyCodeLine{02596\ \ \ MockB\ b2;}
+\DoxyCodeLine{02597\ }
+\DoxyCodeLine{02598\ \ \ ON\_CALL(a,\ Binary(\_,\ \_))}
+\DoxyCodeLine{02599\ \ \ \ \ \ \ .WillByDefault(Return(\textcolor{keyword}{true}));}
+\DoxyCodeLine{02600\ \ \ EXPECT\_CALL(a,\ Binary(\_,\ \_))}
+\DoxyCodeLine{02601\ \ \ \ \ \ \ .WillOnce(DoDefault())}
+\DoxyCodeLine{02602\ \ \ \ \ \ \ .WillOnce(Return(\textcolor{keyword}{false}));}
+\DoxyCodeLine{02603\ }
+\DoxyCodeLine{02604\ \ \ ON\_CALL(b1,\ DoB())}
+\DoxyCodeLine{02605\ \ \ \ \ \ \ .WillByDefault(Return(1));}
+\DoxyCodeLine{02606\ \ \ EXPECT\_CALL(b1,\ DoB(\_))}
+\DoxyCodeLine{02607\ \ \ \ \ \ \ .WillOnce(Return(2));}
+\DoxyCodeLine{02608\ }
+\DoxyCodeLine{02609\ \ \ ON\_CALL(b2,\ DoB())}
+\DoxyCodeLine{02610\ \ \ \ \ \ \ .WillByDefault(Return(3));}
+\DoxyCodeLine{02611\ \ \ EXPECT\_CALL(b2,\ DoB(\_));}
+\DoxyCodeLine{02612\ }
+\DoxyCodeLine{02613\ \ \ b2.DoB(0);}
+\DoxyCodeLine{02614\ \ \ Mock::VerifyAndClear(\&b2);}
+\DoxyCodeLine{02615\ }
+\DoxyCodeLine{02616\ \ \ \textcolor{comment}{//\ Verifies\ that\ the\ default\ actions\ and\ expectations\ of\ a\ and\ b1}}
+\DoxyCodeLine{02617\ \ \ \textcolor{comment}{//\ are\ still\ in\ effect.}}
+\DoxyCodeLine{02618\ \ \ EXPECT\_TRUE(a.Binary(0,\ 0));}
+\DoxyCodeLine{02619\ \ \ EXPECT\_FALSE(a.Binary(0,\ 0));}
+\DoxyCodeLine{02620\ }
+\DoxyCodeLine{02621\ \ \ EXPECT\_EQ(1,\ b1.DoB());}
+\DoxyCodeLine{02622\ \ \ EXPECT\_EQ(2,\ b1.DoB(0));}
+\DoxyCodeLine{02623\ \}}
+\DoxyCodeLine{02624\ }
+\DoxyCodeLine{02625\ TEST(VerifyAndClearTest,}
+\DoxyCodeLine{02626\ \ \ \ \ \ DestroyingChainedMocksDoesNotDeadlockThroughExpectations)\ \{}
+\DoxyCodeLine{02627\ \ \ std::shared\_ptr<MockA>\ a(\textcolor{keyword}{new}\ MockA);}
+\DoxyCodeLine{02628\ \ \ ReferenceHoldingMock\ test\_mock;}
+\DoxyCodeLine{02629\ }
+\DoxyCodeLine{02630\ \ \ \textcolor{comment}{//\ EXPECT\_CALL\ stores\ a\ reference\ to\ a\ inside\ test\_mock.}}
+\DoxyCodeLine{02631\ \ \ EXPECT\_CALL(test\_mock,\ AcceptReference(\_))}
+\DoxyCodeLine{02632\ \ \ \ \ \ \ .WillRepeatedly(SetArgPointee<0>(a));}
+\DoxyCodeLine{02633\ }
+\DoxyCodeLine{02634\ \ \ \textcolor{comment}{//\ Throw\ away\ the\ reference\ to\ the\ mock\ that\ we\ have\ in\ a.\ After\ this,\ the}}
+\DoxyCodeLine{02635\ \ \ \textcolor{comment}{//\ only\ reference\ to\ it\ is\ stored\ by\ test\_mock.}}
+\DoxyCodeLine{02636\ \ \ a.reset();}
+\DoxyCodeLine{02637\ }
+\DoxyCodeLine{02638\ \ \ \textcolor{comment}{//\ When\ test\_mock\ goes\ out\ of\ scope,\ it\ destroys\ the\ last\ remaining\ reference}}
+\DoxyCodeLine{02639\ \ \ \textcolor{comment}{//\ to\ the\ mock\ object\ originally\ pointed\ to\ by\ a.\ This\ will\ cause\ the\ MockA}}
+\DoxyCodeLine{02640\ \ \ \textcolor{comment}{//\ destructor\ to\ be\ called\ from\ inside\ the\ ReferenceHoldingMock\ destructor.}}
+\DoxyCodeLine{02641\ \ \ \textcolor{comment}{//\ The\ state\ of\ all\ mocks\ is\ protected\ by\ a\ single\ global\ lock,\ but\ there}}
+\DoxyCodeLine{02642\ \ \ \textcolor{comment}{//\ should\ be\ no\ deadlock.}}
+\DoxyCodeLine{02643\ \}}
+\DoxyCodeLine{02644\ }
+\DoxyCodeLine{02645\ TEST(VerifyAndClearTest,}
+\DoxyCodeLine{02646\ \ \ \ \ \ DestroyingChainedMocksDoesNotDeadlockThroughDefaultAction)\ \{}
+\DoxyCodeLine{02647\ \ \ std::shared\_ptr<MockA>\ a(\textcolor{keyword}{new}\ MockA);}
+\DoxyCodeLine{02648\ \ \ ReferenceHoldingMock\ test\_mock;}
+\DoxyCodeLine{02649\ }
+\DoxyCodeLine{02650\ \ \ \textcolor{comment}{//\ ON\_CALL\ stores\ a\ reference\ to\ a\ inside\ test\_mock.}}
+\DoxyCodeLine{02651\ \ \ ON\_CALL(test\_mock,\ AcceptReference(\_))}
+\DoxyCodeLine{02652\ \ \ \ \ \ \ .WillByDefault(SetArgPointee<0>(a));}
+\DoxyCodeLine{02653\ }
+\DoxyCodeLine{02654\ \ \ \textcolor{comment}{//\ Throw\ away\ the\ reference\ to\ the\ mock\ that\ we\ have\ in\ a.\ After\ this,\ the}}
+\DoxyCodeLine{02655\ \ \ \textcolor{comment}{//\ only\ reference\ to\ it\ is\ stored\ by\ test\_mock.}}
+\DoxyCodeLine{02656\ \ \ a.reset();}
+\DoxyCodeLine{02657\ }
+\DoxyCodeLine{02658\ \ \ \textcolor{comment}{//\ When\ test\_mock\ goes\ out\ of\ scope,\ it\ destroys\ the\ last\ remaining\ reference}}
+\DoxyCodeLine{02659\ \ \ \textcolor{comment}{//\ to\ the\ mock\ object\ originally\ pointed\ to\ by\ a.\ This\ will\ cause\ the\ MockA}}
+\DoxyCodeLine{02660\ \ \ \textcolor{comment}{//\ destructor\ to\ be\ called\ from\ inside\ the\ ReferenceHoldingMock\ destructor.}}
+\DoxyCodeLine{02661\ \ \ \textcolor{comment}{//\ The\ state\ of\ all\ mocks\ is\ protected\ by\ a\ single\ global\ lock,\ but\ there}}
+\DoxyCodeLine{02662\ \ \ \textcolor{comment}{//\ should\ be\ no\ deadlock.}}
+\DoxyCodeLine{02663\ \}}
+\DoxyCodeLine{02664\ }
+\DoxyCodeLine{02665\ \textcolor{comment}{//\ Tests\ that\ a\ mock\ function's\ action\ can\ call\ a\ mock\ function}}
+\DoxyCodeLine{02666\ \textcolor{comment}{//\ (either\ the\ same\ function\ or\ a\ different\ one)\ either\ as\ an\ explicit}}
+\DoxyCodeLine{02667\ \textcolor{comment}{//\ action\ or\ as\ a\ default\ action\ without\ causing\ a\ dead\ lock.\ \ It}}
+\DoxyCodeLine{02668\ \textcolor{comment}{//\ verifies\ that\ the\ action\ is\ not\ performed\ inside\ the\ critical}}
+\DoxyCodeLine{02669\ \textcolor{comment}{//\ section.}}
+\DoxyCodeLine{02670\ TEST(SynchronizationTest,\ CanCallMockMethodInAction)\ \{}
+\DoxyCodeLine{02671\ \ \ MockA\ a;}
+\DoxyCodeLine{02672\ \ \ MockC\ c;}
+\DoxyCodeLine{02673\ \ \ ON\_CALL(a,\ DoA(\_))}
+\DoxyCodeLine{02674\ \ \ \ \ \ \ .WillByDefault(IgnoreResult(InvokeWithoutArgs(\&c,}
+\DoxyCodeLine{02675\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \&MockC::NonVoidMethod)));}
+\DoxyCodeLine{02676\ \ \ EXPECT\_CALL(a,\ DoA(1));}
+\DoxyCodeLine{02677\ \ \ EXPECT\_CALL(a,\ DoA(1))}
+\DoxyCodeLine{02678\ \ \ \ \ \ \ .WillOnce(Invoke(\&a,\ \&MockA::DoA))}
+\DoxyCodeLine{02679\ \ \ \ \ \ \ .RetiresOnSaturation();}
+\DoxyCodeLine{02680\ \ \ EXPECT\_CALL(c,\ NonVoidMethod());}
+\DoxyCodeLine{02681\ }
+\DoxyCodeLine{02682\ \ \ a.DoA(1);}
+\DoxyCodeLine{02683\ \ \ \textcolor{comment}{//\ This\ will\ match\ the\ second\ EXPECT\_CALL()\ and\ trigger\ another\ a.DoA(1),}}
+\DoxyCodeLine{02684\ \ \ \textcolor{comment}{//\ which\ will\ in\ turn\ match\ the\ first\ EXPECT\_CALL()\ and\ trigger\ a\ call\ to}}
+\DoxyCodeLine{02685\ \ \ \textcolor{comment}{//\ c.NonVoidMethod()\ that\ was\ specified\ by\ the\ ON\_CALL()\ since\ the\ first}}
+\DoxyCodeLine{02686\ \ \ \textcolor{comment}{//\ EXPECT\_CALL()\ did\ not\ specify\ an\ action.}}
+\DoxyCodeLine{02687\ \}}
+\DoxyCodeLine{02688\ }
+\DoxyCodeLine{02689\ TEST(ParameterlessExpectationsTest,\ CanSetExpectationsWithoutMatchers)\ \{}
+\DoxyCodeLine{02690\ \ \ MockA\ a;}
+\DoxyCodeLine{02691\ \ \ \textcolor{keywordtype}{int}\ do\_a\_arg0\ =\ 0;}
+\DoxyCodeLine{02692\ \ \ ON\_CALL(a,\ DoA).WillByDefault(SaveArg<0>(\&do\_a\_arg0));}
+\DoxyCodeLine{02693\ \ \ \textcolor{keywordtype}{int}\ do\_a\_47\_arg0\ =\ 0;}
+\DoxyCodeLine{02694\ \ \ ON\_CALL(a,\ DoA(47)).WillByDefault(SaveArg<0>(\&do\_a\_47\_arg0));}
+\DoxyCodeLine{02695\ }
+\DoxyCodeLine{02696\ \ \ a.DoA(17);}
+\DoxyCodeLine{02697\ \ \ EXPECT\_THAT(do\_a\_arg0,\ 17);}
+\DoxyCodeLine{02698\ \ \ EXPECT\_THAT(do\_a\_47\_arg0,\ 0);}
+\DoxyCodeLine{02699\ \ \ a.DoA(47);}
+\DoxyCodeLine{02700\ \ \ EXPECT\_THAT(do\_a\_arg0,\ 17);}
+\DoxyCodeLine{02701\ \ \ EXPECT\_THAT(do\_a\_47\_arg0,\ 47);}
+\DoxyCodeLine{02702\ }
+\DoxyCodeLine{02703\ \ \ ON\_CALL(a,\ Binary).WillByDefault(Return(\textcolor{keyword}{true}));}
+\DoxyCodeLine{02704\ \ \ ON\_CALL(a,\ Binary(\_,\ 14)).WillByDefault(Return(\textcolor{keyword}{false}));}
+\DoxyCodeLine{02705\ \ \ EXPECT\_THAT(a.Binary(14,\ 17),\ \textcolor{keyword}{true});}
+\DoxyCodeLine{02706\ \ \ EXPECT\_THAT(a.Binary(17,\ 14),\ \textcolor{keyword}{false});}
+\DoxyCodeLine{02707\ \}}
+\DoxyCodeLine{02708\ }
+\DoxyCodeLine{02709\ TEST(ParameterlessExpectationsTest,\ CanSetExpectationsForOverloadedMethods)\ \{}
+\DoxyCodeLine{02710\ \ \ MockB\ b;}
+\DoxyCodeLine{02711\ \ \ ON\_CALL(b,\ DoB()).WillByDefault(Return(9));}
+\DoxyCodeLine{02712\ \ \ ON\_CALL(b,\ DoB(5)).WillByDefault(Return(11));}
+\DoxyCodeLine{02713\ }
+\DoxyCodeLine{02714\ \ \ EXPECT\_THAT(b.DoB(),\ 9);}
+\DoxyCodeLine{02715\ \ \ EXPECT\_THAT(b.DoB(1),\ 0);\ \ \textcolor{comment}{//\ default\ value}}
+\DoxyCodeLine{02716\ \ \ EXPECT\_THAT(b.DoB(5),\ 11);}
+\DoxyCodeLine{02717\ \}}
+\DoxyCodeLine{02718\ }
+\DoxyCodeLine{02719\ \textcolor{keyword}{struct\ }MockWithConstMethods\ \{}
+\DoxyCodeLine{02720\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{02721\ \ \ MOCK\_CONST\_METHOD1(Foo,\ \textcolor{keywordtype}{int}(\textcolor{keywordtype}{int}));}
+\DoxyCodeLine{02722\ \ \ MOCK\_CONST\_METHOD2(Bar,\ \textcolor{keywordtype}{int}(\textcolor{keywordtype}{int},\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*));}
+\DoxyCodeLine{02723\ \};}
+\DoxyCodeLine{02724\ }
+\DoxyCodeLine{02725\ TEST(ParameterlessExpectationsTest,\ CanSetExpectationsForConstMethods)\ \{}
+\DoxyCodeLine{02726\ \ \ MockWithConstMethods\ mock;}
+\DoxyCodeLine{02727\ \ \ ON\_CALL(mock,\ Foo).WillByDefault(Return(7));}
+\DoxyCodeLine{02728\ \ \ ON\_CALL(mock,\ Bar).WillByDefault(Return(33));}
+\DoxyCodeLine{02729\ }
+\DoxyCodeLine{02730\ \ \ EXPECT\_THAT(mock.Foo(17),\ 7);}
+\DoxyCodeLine{02731\ \ \ EXPECT\_THAT(mock.Bar(27,\ \textcolor{stringliteral}{"{}purple"{}}),\ 33);}
+\DoxyCodeLine{02732\ \}}
+\DoxyCodeLine{02733\ }
+\DoxyCodeLine{02734\ \textcolor{keyword}{class\ }MockConstOverload\ \{}
+\DoxyCodeLine{02735\ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{02736\ \ \ MOCK\_METHOD1(Overloaded,\ \textcolor{keywordtype}{int}(\textcolor{keywordtype}{int}));}
+\DoxyCodeLine{02737\ \ \ MOCK\_CONST\_METHOD1(Overloaded,\ \textcolor{keywordtype}{int}(\textcolor{keywordtype}{int}));}
+\DoxyCodeLine{02738\ \};}
+\DoxyCodeLine{02739\ }
+\DoxyCodeLine{02740\ TEST(ParameterlessExpectationsTest,}
+\DoxyCodeLine{02741\ \ \ \ \ \ CanSetExpectationsForConstOverloadedMethods)\ \{}
+\DoxyCodeLine{02742\ \ \ MockConstOverload\ mock;}
+\DoxyCodeLine{02743\ \ \ ON\_CALL(mock,\ Overloaded(\_)).WillByDefault(Return(7));}
+\DoxyCodeLine{02744\ \ \ ON\_CALL(mock,\ Overloaded(5)).WillByDefault(Return(9));}
+\DoxyCodeLine{02745\ \ \ ON\_CALL(Const(mock),\ Overloaded(5)).WillByDefault(Return(11));}
+\DoxyCodeLine{02746\ \ \ ON\_CALL(Const(mock),\ Overloaded(7)).WillByDefault(Return(13));}
+\DoxyCodeLine{02747\ }
+\DoxyCodeLine{02748\ \ \ EXPECT\_THAT(mock.Overloaded(1),\ 7);}
+\DoxyCodeLine{02749\ \ \ EXPECT\_THAT(mock.Overloaded(5),\ 9);}
+\DoxyCodeLine{02750\ \ \ EXPECT\_THAT(mock.Overloaded(7),\ 7);}
+\DoxyCodeLine{02751\ }
+\DoxyCodeLine{02752\ \ \ \textcolor{keyword}{const}\ MockConstOverload\&\ const\_mock\ =\ mock;}
+\DoxyCodeLine{02753\ \ \ EXPECT\_THAT(const\_mock.Overloaded(1),\ 0);}
+\DoxyCodeLine{02754\ \ \ EXPECT\_THAT(const\_mock.Overloaded(5),\ 11);}
+\DoxyCodeLine{02755\ \ \ EXPECT\_THAT(const\_mock.Overloaded(7),\ 13);}
+\DoxyCodeLine{02756\ \}}
+\DoxyCodeLine{02757\ }
+\DoxyCodeLine{02758\ \}\ \ \textcolor{comment}{//\ namespace}}
+\DoxyCodeLine{02759\ }
+\DoxyCodeLine{02760\ \textcolor{comment}{//\ Allows\ the\ user\ to\ define\ their\ own\ main\ and\ then\ invoke\ gmock\_main}}
+\DoxyCodeLine{02761\ \textcolor{comment}{//\ from\ it.\ This\ might\ be\ necessary\ on\ some\ platforms\ which\ require}}
+\DoxyCodeLine{02762\ \textcolor{comment}{//\ specific\ setup\ and\ teardown.}}
+\DoxyCodeLine{02763\ \textcolor{preprocessor}{\#if\ GMOCK\_RENAME\_MAIN}}
+\DoxyCodeLine{02764\ \textcolor{keywordtype}{int}\ gmock\_main(\textcolor{keywordtype}{int}\ argc,\ \textcolor{keywordtype}{char}\ **argv)\ \{}
+\DoxyCodeLine{02765\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{02766\ \textcolor{keywordtype}{int}\ main(\textcolor{keywordtype}{int}\ argc,\ \textcolor{keywordtype}{char}\ **argv)\ \{}
+\DoxyCodeLine{02767\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ GMOCK\_RENAME\_MAIN}}
+\DoxyCodeLine{02768\ \ \ testing::InitGoogleMock(\&argc,\ argv);}
+\DoxyCodeLine{02769\ \ \ \textcolor{comment}{//\ Ensures\ that\ the\ tests\ pass\ no\ matter\ what\ value\ of}}
+\DoxyCodeLine{02770\ \ \ \textcolor{comment}{//\ -\/-\/gmock\_catch\_leaked\_mocks\ and\ -\/-\/gmock\_verbose\ the\ user\ specifies.}}
+\DoxyCodeLine{02771\ \ \ testing::GMOCK\_FLAG(catch\_leaked\_mocks)\ =\ \textcolor{keyword}{true};}
+\DoxyCodeLine{02772\ \ \ testing::GMOCK\_FLAG(verbose)\ =\ testing::internal::kWarningVerbosity;}
+\DoxyCodeLine{02773\ }
+\DoxyCodeLine{02774\ \ \ \textcolor{keywordflow}{return}\ RUN\_ALL\_TESTS();}
+\DoxyCodeLine{02775\ \}}
+
+\end{DoxyCode}

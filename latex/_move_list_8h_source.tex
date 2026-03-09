@@ -1,0 +1,51 @@
+\doxysection{Move\+List.\+h}
+\hypertarget{_move_list_8h_source}{}\label{_move_list_8h_source}\index{src/engine/MoveList.h@{src/engine/MoveList.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#ifndef\ MOVE\_LIST\_H}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#define\ MOVE\_LIST\_H}}
+\DoxyCodeLine{00003\ }
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ "{}Move.h"{}}}
+\DoxyCodeLine{00005\ }
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ <deque>}}
+\DoxyCodeLine{00007\ \textcolor{keyword}{using\ }std::deque;}
+\DoxyCodeLine{00008\ }
+\DoxyCodeLine{00009\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_move_list}{MoveList}}}
+\DoxyCodeLine{00010\ \{}
+\DoxyCodeLine{00011\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00012\ }
+\DoxyCodeLine{00013\ \ \ \ \ \textcolor{keyword}{typedef}\ deque<\ Move\ >::const\_iterator\ \ \ \ \ \ \ \ \ \ \ const\_iterator;}
+\DoxyCodeLine{00014\ \ \ \ \ \textcolor{keyword}{typedef}\ deque<\ Move\ >::const\_reverse\_iterator\ \ \ const\_reverse\_iterator;}
+\DoxyCodeLine{00015\ }
+\DoxyCodeLine{00016\ \ \ \ \ \mbox{\hyperlink{class_move_list}{MoveList}}():}
+\DoxyCodeLine{00017\ \ \ \ \ \ \ \ \ mLastMoveTimestamp(\ -\/1.f\ )}
+\DoxyCodeLine{00018\ \ \ \ \ \{\}}
+\DoxyCodeLine{00019\ }
+\DoxyCodeLine{00020\ \ \ \ \ \textcolor{keyword}{const}\ \ \ \mbox{\hyperlink{class_move}{Move}}\&\ \ \ AddMove(\ \textcolor{keyword}{const}\ \mbox{\hyperlink{class_input_state}{InputState}}\&\ inInputState,\ \textcolor{keywordtype}{float}\ inTimestamp\ );}
+\DoxyCodeLine{00021\ \ \ \ \ \textcolor{keywordtype}{bool}\ \ \ \ AddMove(\ \textcolor{keyword}{const}\ \mbox{\hyperlink{class_move}{Move}}\&\ inMove\ );}
+\DoxyCodeLine{00022\ }
+\DoxyCodeLine{00023\ \ \ \ \ \textcolor{keywordtype}{void}\ \ \ \ RemovedProcessedMoves(\ \textcolor{keywordtype}{float}\ inLastMoveProcessedOnServerTimestamp\ );}
+\DoxyCodeLine{00024\ }
+\DoxyCodeLine{00025\ \ \ \ \ \textcolor{keywordtype}{float}\ \ \ \ \ \ \ \ \ \ \ GetLastMoveTimestamp()\textcolor{keyword}{\ \ const\ \ \ }\{\ \textcolor{keywordflow}{return}\ mLastMoveTimestamp;\ \}}
+\DoxyCodeLine{00026\ }
+\DoxyCodeLine{00027\ \ \ \ \ \textcolor{keyword}{const}\ \mbox{\hyperlink{class_move}{Move}}\&\ \ \ \ \ GetLatestMove()\textcolor{keyword}{\ \ \ \ \ \ \ \ \ const\ \ \ }\{\ \textcolor{keywordflow}{return}\ mMoves.back();\ \}}
+\DoxyCodeLine{00028\ }
+\DoxyCodeLine{00029\ \ \ \ \ \textcolor{keywordtype}{void}\ \ \ \ \ \ \ \ \ \ \ \ Clear()\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{\ mMoves.clear();\ \}}
+\DoxyCodeLine{00030\ \ \ \ \ \textcolor{keywordtype}{bool}\ \ \ \ \ \ \ \ \ \ \ \ HasMoves()\textcolor{keyword}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ const\ \ \ }\{\ \textcolor{keywordflow}{return}\ !mMoves.empty();\ \}}
+\DoxyCodeLine{00031\ \ \ \ \ \textcolor{keywordtype}{int}\ \ \ \ \ \ \ \ \ \ \ \ \ GetMoveCount()\textcolor{keyword}{\ \ \ \ \ \ \ \ \ \ const\ \ \ }\{\ \textcolor{keywordflow}{return}\ mMoves.size();\ \}}
+\DoxyCodeLine{00032\ }
+\DoxyCodeLine{00033\ \ \ \ \ \textcolor{comment}{//for\ for\ each,\ we\ have\ to\ match\ stl\ calling\ convention}}
+\DoxyCodeLine{00034\ \ \ \ \ const\_iterator\ \ begin()\textcolor{keyword}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ const\ \ \ }\{\ \textcolor{keywordflow}{return}\ mMoves.begin();\ \}}
+\DoxyCodeLine{00035\ \ \ \ \ const\_iterator\ \ end()\textcolor{keyword}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ const\ \ \ }\{\ \textcolor{keywordflow}{return}\ mMoves.end();\ \}}
+\DoxyCodeLine{00036\ }
+\DoxyCodeLine{00037\ \ \ \ \ \textcolor{keyword}{const}\ \mbox{\hyperlink{class_move}{Move}}\&\ \ \ \ \ operator[](\ \textcolor{keywordtype}{size\_t}\ i\ )\textcolor{keyword}{\ \ const\ \ \ }\{\ \textcolor{keywordflow}{return}\ mMoves[\ i\ ];\ \}}
+\DoxyCodeLine{00038\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00039\ }
+\DoxyCodeLine{00040\ \ \ \ \ \textcolor{keywordtype}{float}\ \ \ \ \ \ \ \ \ \ \ mLastMoveTimestamp;}
+\DoxyCodeLine{00041\ \ \ \ \ deque<\ Move\ >\ \ \ mMoves;}
+\DoxyCodeLine{00042\ }
+\DoxyCodeLine{00043\ \};}
+\DoxyCodeLine{00044\ }
+\DoxyCodeLine{00045\ \textcolor{preprocessor}{\#endif}}
+
+\end{DoxyCode}

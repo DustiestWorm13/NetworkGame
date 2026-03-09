@@ -1,0 +1,33 @@
+\doxysection{Random\+Gen\+Test\+Harness.\+h}
+\hypertarget{_random_gen_test_harness_8h_source}{}\label{_random_gen_test_harness_8h_source}\index{src/gtest/RandomGenTestHarness.h@{src/gtest/RandomGenTestHarness.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#ifndef\ RANDOM\_GEN\_TEST\_HARNESS\_H\_}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#define\ RANDOM\_GEN\_TEST\_HARNESS\_H\_}}
+\DoxyCodeLine{00003\ }
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ <limits.h>}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ <gtest/gtest.h>}}
+\DoxyCodeLine{00006\ }
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#include\ "{}RandGen.h"{}}}
+\DoxyCodeLine{00008\ }
+\DoxyCodeLine{00009\ \textcolor{preprocessor}{\#include\ <memory>}}
+\DoxyCodeLine{00010\ \textcolor{keyword}{using\ }std::shared\_ptr;}
+\DoxyCodeLine{00011\ }
+\DoxyCodeLine{00012\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_random_gen_test_harness}{RandomGenTestHarness}}\ :\ \textcolor{keyword}{public}\ \mbox{\hyperlink{classtesting_1_1_test}{::testing::Test}}}
+\DoxyCodeLine{00013\ \{}
+\DoxyCodeLine{00014\ \textcolor{keyword}{protected}:}
+\DoxyCodeLine{00015\ }
+\DoxyCodeLine{00016\ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{void}\ SetUp();}
+\DoxyCodeLine{00017\ \ \ \textcolor{keyword}{virtual}\ \textcolor{keywordtype}{void}\ TearDown();}
+\DoxyCodeLine{00018\ }
+\DoxyCodeLine{00019\ \ \ shared\_ptr<RandGen>\ rg;}
+\DoxyCodeLine{00020\ }
+\DoxyCodeLine{00021\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00022\ }
+\DoxyCodeLine{00023\ \ \ \ \ \mbox{\hyperlink{class_random_gen_test_harness}{RandomGenTestHarness}}();}
+\DoxyCodeLine{00024\ \ \ \ \ \textcolor{keyword}{virtual}\ \mbox{\hyperlink{class_random_gen_test_harness}{\string~RandomGenTestHarness}}();}
+\DoxyCodeLine{00025\ \};}
+\DoxyCodeLine{00026\ }
+\DoxyCodeLine{00027\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{//\ RANDOM\_GEN\_TEST\_HARNESS\_H\_}}
+
+\end{DoxyCode}

@@ -1,0 +1,88 @@
+\doxysection{cpp.\+tokenize Namespace Reference}
+\hypertarget{namespacecpp_1_1tokenize}{}\label{namespacecpp_1_1tokenize}\index{cpp.tokenize@{cpp.tokenize}}
+\doxysubsubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \mbox{\hyperlink{classcpp_1_1tokenize_1_1_token}{Token}}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{namespacecpp_1_1tokenize_afa711895958f5f4d05c456be765b6f10}\label{namespacecpp_1_1tokenize_afa711895958f5f4d05c456be765b6f10} 
+{\bfseries \+\_\+\+Get\+String} (source, start, i)
+\item 
+\Hypertarget{namespacecpp_1_1tokenize_acd467b0bde12e7f818ae2961364b3a3d}\label{namespacecpp_1_1tokenize_acd467b0bde12e7f818ae2961364b3a3d} 
+{\bfseries \+\_\+\+Get\+Char} (source, start, i)
+\item 
+\mbox{\hyperlink{namespacecpp_1_1tokenize_abdc89f5b08e972e7404e9b9ac1dd17ff}{Get\+Tokens}} (source)
+\item 
+\mbox{\hyperlink{namespacecpp_1_1tokenize_a28ff7996105f9b03b22335c579838769}{main}} (argv)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{namespacecpp_1_1tokenize_a7184d66b4221a018ce89a3bdc5be462a}\label{namespacecpp_1_1tokenize_a7184d66b4221a018ce89a3bdc5be462a} 
+str {\bfseries \+\_\+letters} = \textquotesingle{}abcdefghijklmnopqrstuvwxyz\textquotesingle{}
+\item 
+\Hypertarget{namespacecpp_1_1tokenize_a733f1cf605b1630fb6a0a7f30aaefbec}\label{namespacecpp_1_1tokenize_a733f1cf605b1630fb6a0a7f30aaefbec} 
+{\bfseries VALID\+\_\+\+IDENTIFIER\+\_\+\+CHARS} = set(\+\_\+letters + \+\_\+letters.\+upper() + \textquotesingle{}\+\_\+0123456789\$\textquotesingle{})
+\item 
+\Hypertarget{namespacecpp_1_1tokenize_a8b45b0f0f2b504757e9ede9c342b2c36}\label{namespacecpp_1_1tokenize_a8b45b0f0f2b504757e9ede9c342b2c36} 
+{\bfseries HEX\+\_\+\+DIGITS} = set(\textquotesingle{}0123456789abcdef\+ABCDEF\textquotesingle{})
+\item 
+\Hypertarget{namespacecpp_1_1tokenize_ad8c6dd06d4e6ef2e24e9186acb0aff43}\label{namespacecpp_1_1tokenize_ad8c6dd06d4e6ef2e24e9186acb0aff43} 
+{\bfseries INT\+\_\+\+OR\+\_\+\+FLOAT\+\_\+\+DIGITS} = set(\textquotesingle{}01234567890eE-\/+\textquotesingle{})
+\item 
+\Hypertarget{namespacecpp_1_1tokenize_aef952930004258aec982a51c8875e82a}\label{namespacecpp_1_1tokenize_aef952930004258aec982a51c8875e82a} 
+{\bfseries \+\_\+\+STR\+\_\+\+PREFIXES} = set((\textquotesingle{}R\textquotesingle{}, \textquotesingle{}u8\textquotesingle{}, \textquotesingle{}u8R\textquotesingle{}, \textquotesingle{}u\textquotesingle{}, \textquotesingle{}uR\textquotesingle{}, \textquotesingle{}U\textquotesingle{}, \textquotesingle{}UR\textquotesingle{}, \textquotesingle{}L\textquotesingle{}, \textquotesingle{}LR\textquotesingle{}))
+\item 
+\Hypertarget{namespacecpp_1_1tokenize_a31fe52b9a13f1a1f917cd73f74912487}\label{namespacecpp_1_1tokenize_a31fe52b9a13f1a1f917cd73f74912487} 
+str {\bfseries UNKNOWN} = \textquotesingle{}UNKNOWN\textquotesingle{}
+\item 
+\Hypertarget{namespacecpp_1_1tokenize_a7631742d15d2fc4fa38971890756ea38}\label{namespacecpp_1_1tokenize_a7631742d15d2fc4fa38971890756ea38} 
+str {\bfseries SYNTAX} = \textquotesingle{}SYNTAX\textquotesingle{}
+\item 
+\Hypertarget{namespacecpp_1_1tokenize_a9b6f0ba84066474fbe0efe3e1054fbb6}\label{namespacecpp_1_1tokenize_a9b6f0ba84066474fbe0efe3e1054fbb6} 
+str {\bfseries CONSTANT} = \textquotesingle{}CONSTANT\textquotesingle{}
+\item 
+\Hypertarget{namespacecpp_1_1tokenize_a208259db0db4d57d5ba342822d1d9047}\label{namespacecpp_1_1tokenize_a208259db0db4d57d5ba342822d1d9047} 
+str {\bfseries NAME} = \textquotesingle{}NAME\textquotesingle{}
+\item 
+\Hypertarget{namespacecpp_1_1tokenize_a498a39725ded32f55fb18b9b3a8e473f}\label{namespacecpp_1_1tokenize_a498a39725ded32f55fb18b9b3a8e473f} 
+str {\bfseries PREPROCESSOR} = \textquotesingle{}PREPROCESSOR\textquotesingle{}
+\item 
+\Hypertarget{namespacecpp_1_1tokenize_a8dd117207e391864f7d9cb656e826a9e}\label{namespacecpp_1_1tokenize_a8dd117207e391864f7d9cb656e826a9e} 
+{\bfseries WHENCE\+\_\+\+STREAM}
+\item 
+\Hypertarget{namespacecpp_1_1tokenize_ad02466a473c5e9c2ac256e18209f0967}\label{namespacecpp_1_1tokenize_ad02466a473c5e9c2ac256e18209f0967} 
+{\bfseries WHENCE\+\_\+\+QUEUE}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyVerb}Tokenize C++ source code.\end{DoxyVerb}
+ 
+
+\doxysubsection{Function Documentation}
+\Hypertarget{namespacecpp_1_1tokenize_abdc89f5b08e972e7404e9b9ac1dd17ff}\label{namespacecpp_1_1tokenize_abdc89f5b08e972e7404e9b9ac1dd17ff} 
+\index{cpp.tokenize@{cpp.tokenize}!GetTokens@{GetTokens}}
+\index{GetTokens@{GetTokens}!cpp.tokenize@{cpp.tokenize}}
+\doxysubsubsection{\texorpdfstring{GetTokens()}{GetTokens()}}
+{\footnotesize\ttfamily cpp.\+tokenize.\+Get\+Tokens (\begin{DoxyParamCaption}\item[{}]{source }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Returns a sequence of Tokens.
+
+Args:
+  source: string of C++ source code.
+
+Yields:
+  Token that represents the next token in the source.
+\end{DoxyVerb}
+ \Hypertarget{namespacecpp_1_1tokenize_a28ff7996105f9b03b22335c579838769}\label{namespacecpp_1_1tokenize_a28ff7996105f9b03b22335c579838769} 
+\index{cpp.tokenize@{cpp.tokenize}!main@{main}}
+\index{main@{main}!cpp.tokenize@{cpp.tokenize}}
+\doxysubsubsection{\texorpdfstring{main()}{main()}}
+{\footnotesize\ttfamily cpp.\+tokenize.\+main (\begin{DoxyParamCaption}\item[{}]{argv }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Driver mostly for testing purposes.\end{DoxyVerb}
+ 

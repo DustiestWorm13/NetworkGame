@@ -1,0 +1,34 @@
+\doxysection{Rand\+Gen.\+h}
+\hypertarget{_rand_gen_8h_source}{}\label{_rand_gen_8h_source}\index{src/maths/RandGen.h@{src/maths/RandGen.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#ifndef\ RAND\_GEN\_H\_}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#define\ RAND\_GEN\_H\_}}
+\DoxyCodeLine{00003\ }
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ "{}Vector3.h"{}}}
+\DoxyCodeLine{00005\ }
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ <memory>}}
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#include\ <random>}}
+\DoxyCodeLine{00008\ }
+\DoxyCodeLine{00009\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_rand_gen}{RandGen}}}
+\DoxyCodeLine{00010\ \{}
+\DoxyCodeLine{00011\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00012\ \ \ \ \ \textcolor{keyword}{static}\ std::unique\_ptr<\ RandGen\ >\ sInstance;}
+\DoxyCodeLine{00013\ }
+\DoxyCodeLine{00014\ \ \ \ \ \mbox{\hyperlink{class_rand_gen}{RandGen}}();}
+\DoxyCodeLine{00015\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ StaticInit();}
+\DoxyCodeLine{00016\ \ \ \ \ \textcolor{keywordtype}{void}\ Seed(\ uint32\_t\ inSeed\ );}
+\DoxyCodeLine{00017\ \ \ \ \ std::mt19937\&\ GetGeneratorRef()\ \{\ \textcolor{keywordflow}{return}\ mGenerator;\ \}}
+\DoxyCodeLine{00018\ }
+\DoxyCodeLine{00019\ \ \ \ \ \textcolor{keywordtype}{float}\ GetRandomFloat();}
+\DoxyCodeLine{00020\ \ \ \ \ uint32\_t\ GetRandomUInt32(\ uint32\_t\ inMin,\ uint32\_t\ inMax\ );}
+\DoxyCodeLine{00021\ \ \ \ \ int32\_t\ GetRandomInt(\ int32\_t\ inMin,\ int32\_t\ inMax\ );}
+\DoxyCodeLine{00022\ \ \ \ \ \mbox{\hyperlink{class_vector3}{Vector3}}\ GetRandomVector(\ \textcolor{keyword}{const}\ \mbox{\hyperlink{class_vector3}{Vector3}}\&\ inMin,\ \textcolor{keyword}{const}\ \mbox{\hyperlink{class_vector3}{Vector3}}\&\ inMax\ );}
+\DoxyCodeLine{00023\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00024\ \ \ \ \ std::mt19937\ mGenerator;}
+\DoxyCodeLine{00025\ \ \ \ \ std::uniform\_real\_distribution<\ float\ >\ mFloatDistr;}
+\DoxyCodeLine{00026\ \};}
+\DoxyCodeLine{00027\ }
+\DoxyCodeLine{00028\ \textcolor{preprocessor}{\#endif}}
+
+\end{DoxyCode}

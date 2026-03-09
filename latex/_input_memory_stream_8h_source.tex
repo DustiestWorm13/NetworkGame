@@ -1,0 +1,72 @@
+\doxysection{Input\+Memory\+Stream.\+h}
+\hypertarget{_input_memory_stream_8h_source}{}\label{_input_memory_stream_8h_source}\index{src/serialisation/InputMemoryStream.h@{src/serialisation/InputMemoryStream.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#ifndef\ INPUT\_MEMORY\_STREAM\_H\_}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#define\ INPUT\_MEMORY\_STREAM\_H\_}}
+\DoxyCodeLine{00003\ }
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ <cstdlib>}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ <cstdint>}}
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ <type\_traits>}}
+\DoxyCodeLine{00007\ }
+\DoxyCodeLine{00008\ \textcolor{preprocessor}{\#include\ "{}SerialisationCommon.h"{}}}
+\DoxyCodeLine{00009\ \textcolor{preprocessor}{\#include\ "{}BitMan.h"{}}}
+\DoxyCodeLine{00010\ \textcolor{preprocessor}{\#include\ "{}Fixed.h"{}}}
+\DoxyCodeLine{00011\ }
+\DoxyCodeLine{00012\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_vector3}{Vector3}};}
+\DoxyCodeLine{00013\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_quaternion}{Quaternion}};}
+\DoxyCodeLine{00014\ }
+\DoxyCodeLine{00015\ \textcolor{preprocessor}{\#include\ <cmath>}}
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#include\ <vector>}}
+\DoxyCodeLine{00017\ }
+\DoxyCodeLine{00018\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_game_object}{GameObject}};}
+\DoxyCodeLine{00019\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_linking_context}{LinkingContext}};}
+\DoxyCodeLine{00020\ }
+\DoxyCodeLine{00021\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_input_memory_stream}{InputMemoryStream}}}
+\DoxyCodeLine{00022\ \{}
+\DoxyCodeLine{00023\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00024\ \ \ \ \ \textcolor{keywordtype}{char}*\ \ \ \ \ \ \ mBuffer;}
+\DoxyCodeLine{00025\ \ \ \ \ uint32\_t\ \ \ \ mHead;}
+\DoxyCodeLine{00026\ \ \ \ \ uint32\_t\ \ \ \ mCapacity;}
+\DoxyCodeLine{00027\ }
+\DoxyCodeLine{00028\ \ \ \ \ \mbox{\hyperlink{class_linking_context}{LinkingContext}}*\ mLinkingContext;}
+\DoxyCodeLine{00029\ }
+\DoxyCodeLine{00030\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00031\ \ \ \ \ \mbox{\hyperlink{class_input_memory_stream}{InputMemoryStream}}(\ \textcolor{keywordtype}{char}*\ inBuffer,\ uint32\_t\ inByteCount\ )\ :}
+\DoxyCodeLine{00032\ \ \ \ \ mBuffer(\ inBuffer\ ),}
+\DoxyCodeLine{00033\ \ \ \ \ mHead(\ 0\ ),}
+\DoxyCodeLine{00034\ \ \ \ \ mCapacity(\ inByteCount\ ),}
+\DoxyCodeLine{00035\ \ \ \ \ mLinkingContext(\ \textcolor{keyword}{nullptr}\ )\ \{\}}
+\DoxyCodeLine{00036\ }
+\DoxyCodeLine{00037\ \ \ \ \ \mbox{\hyperlink{class_input_memory_stream}{\string~InputMemoryStream}}();}
+\DoxyCodeLine{00038\ }
+\DoxyCodeLine{00039\ \ \ \ \ uint32\_t\ \ \ \ \ \ \ \ GetRemainingDataSize()\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00040\ \textcolor{keyword}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\{\ \textcolor{keywordflow}{return}\ mCapacity\ -\/\ mHead;\ \}}
+\DoxyCodeLine{00041\ }
+\DoxyCodeLine{00042\ \ \ \ \ \textcolor{keywordtype}{void}\ \ \ \ \ \ \ \ Read(\ \textcolor{keywordtype}{void}*\ outData,\ uint32\_t\ inByteCount\ );}
+\DoxyCodeLine{00043\ \ \ \textcolor{keywordtype}{void}\ \ \ \ Read(\ \mbox{\hyperlink{class_game_object}{GameObject}}*\&\ outGameObject\ );}
+\DoxyCodeLine{00044\ }
+\DoxyCodeLine{00045\ \ \ \ \ \textcolor{keyword}{template}<\ \textcolor{keyword}{typename}\ T\ >\ \textcolor{keywordtype}{void}\ Read(\ T\&\ outData\ )}
+\DoxyCodeLine{00046\ \ \ \ \ \{}
+\DoxyCodeLine{00047\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static\_assert}(\ std::is\_arithmetic<\ T\ >::value\ ||}
+\DoxyCodeLine{00048\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::is\_enum<\ T\ >::value,}
+\DoxyCodeLine{00049\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}Generic\ Read\ only\ supports\ primitive\ data\ types"{}}\ );}
+\DoxyCodeLine{00050\ \ \ \ \ \ \ \ \ Read(\ \&outData,\ \textcolor{keyword}{sizeof}(\ outData\ )\ );}
+\DoxyCodeLine{00051\ \ \ \ \ \}}
+\DoxyCodeLine{00052\ }
+\DoxyCodeLine{00053\ \ \ \ \ \textcolor{keyword}{template}<\ \textcolor{keyword}{typename}\ T\ >}
+\DoxyCodeLine{00054\ \ \ \ \ \textcolor{keywordtype}{void}\ Read(\ std::vector<\ T\ >\&\ outVector\ )}
+\DoxyCodeLine{00055\ \ \ \ \ \{}
+\DoxyCodeLine{00056\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{size\_t}\ elementCount;}
+\DoxyCodeLine{00057\ \ \ \ \ \ \ \ \ Read(\ elementCount\ );}
+\DoxyCodeLine{00058\ \ \ \ \ \ \ \ \ outVector.resize(\ elementCount\ );}
+\DoxyCodeLine{00059\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}(\ \textcolor{keyword}{const}\ T\&\ element\ :\ outVector\ )}
+\DoxyCodeLine{00060\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00061\ \ \ \ \ \ \ \ \ \ \ \ \ Read(\ element\ );}
+\DoxyCodeLine{00062\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00063\ \ \ \ \ \}}
+\DoxyCodeLine{00064\ \};}
+\DoxyCodeLine{00065\ }
+\DoxyCodeLine{00066\ \textcolor{preprocessor}{\#endif}}
+
+\end{DoxyCode}

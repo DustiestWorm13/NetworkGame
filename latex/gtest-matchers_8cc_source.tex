@@ -1,0 +1,103 @@
+\doxysection{gtest-\/matchers.cc}
+\hypertarget{gtest-matchers_8cc_source}{}\label{gtest-matchers_8cc_source}\index{build/\_deps/googletest-\/src/googletest/src/gtest-\/matchers.cc@{build/\_deps/googletest-\/src/googletest/src/gtest-\/matchers.cc}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{//\ Copyright\ 2007,\ Google\ Inc.}}
+\DoxyCodeLine{00002\ \textcolor{comment}{//\ All\ rights\ reserved.}}
+\DoxyCodeLine{00003\ \textcolor{comment}{//}}
+\DoxyCodeLine{00004\ \textcolor{comment}{//\ Redistribution\ and\ use\ in\ source\ and\ binary\ forms,\ with\ or\ without}}
+\DoxyCodeLine{00005\ \textcolor{comment}{//\ modification,\ are\ permitted\ provided\ that\ the\ following\ conditions\ are}}
+\DoxyCodeLine{00006\ \textcolor{comment}{//\ met:}}
+\DoxyCodeLine{00007\ \textcolor{comment}{//}}
+\DoxyCodeLine{00008\ \textcolor{comment}{//\ \ \ \ \ *\ Redistributions\ of\ source\ code\ must\ retain\ the\ above\ copyright}}
+\DoxyCodeLine{00009\ \textcolor{comment}{//\ notice,\ this\ list\ of\ conditions\ and\ the\ following\ disclaimer.}}
+\DoxyCodeLine{00010\ \textcolor{comment}{//\ \ \ \ \ *\ Redistributions\ in\ binary\ form\ must\ reproduce\ the\ above}}
+\DoxyCodeLine{00011\ \textcolor{comment}{//\ copyright\ notice,\ this\ list\ of\ conditions\ and\ the\ following\ disclaimer}}
+\DoxyCodeLine{00012\ \textcolor{comment}{//\ in\ the\ documentation\ and/or\ other\ materials\ provided\ with\ the}}
+\DoxyCodeLine{00013\ \textcolor{comment}{//\ distribution.}}
+\DoxyCodeLine{00014\ \textcolor{comment}{//\ \ \ \ \ *\ Neither\ the\ name\ of\ Google\ Inc.\ nor\ the\ names\ of\ its}}
+\DoxyCodeLine{00015\ \textcolor{comment}{//\ contributors\ may\ be\ used\ to\ endorse\ or\ promote\ products\ derived\ from}}
+\DoxyCodeLine{00016\ \textcolor{comment}{//\ this\ software\ without\ specific\ prior\ written\ permission.}}
+\DoxyCodeLine{00017\ \textcolor{comment}{//}}
+\DoxyCodeLine{00018\ \textcolor{comment}{//\ THIS\ SOFTWARE\ IS\ PROVIDED\ BY\ THE\ COPYRIGHT\ HOLDERS\ AND\ CONTRIBUTORS}}
+\DoxyCodeLine{00019\ \textcolor{comment}{//\ "{}AS\ IS"{}\ AND\ ANY\ EXPRESS\ OR\ IMPLIED\ WARRANTIES,\ INCLUDING,\ BUT\ NOT}}
+\DoxyCodeLine{00020\ \textcolor{comment}{//\ LIMITED\ TO,\ THE\ IMPLIED\ WARRANTIES\ OF\ MERCHANTABILITY\ AND\ FITNESS\ FOR}}
+\DoxyCodeLine{00021\ \textcolor{comment}{//\ A\ PARTICULAR\ PURPOSE\ ARE\ DISCLAIMED.\ IN\ NO\ EVENT\ SHALL\ THE\ COPYRIGHT}}
+\DoxyCodeLine{00022\ \textcolor{comment}{//\ OWNER\ OR\ CONTRIBUTORS\ BE\ LIABLE\ FOR\ ANY\ DIRECT,\ INDIRECT,\ INCIDENTAL,}}
+\DoxyCodeLine{00023\ \textcolor{comment}{//\ SPECIAL,\ EXEMPLARY,\ OR\ CONSEQUENTIAL\ DAMAGES\ (INCLUDING,\ BUT\ NOT}}
+\DoxyCodeLine{00024\ \textcolor{comment}{//\ LIMITED\ TO,\ PROCUREMENT\ OF\ SUBSTITUTE\ GOODS\ OR\ SERVICES;\ LOSS\ OF\ USE,}}
+\DoxyCodeLine{00025\ \textcolor{comment}{//\ DATA,\ OR\ PROFITS;\ OR\ BUSINESS\ INTERRUPTION)\ HOWEVER\ CAUSED\ AND\ ON\ ANY}}
+\DoxyCodeLine{00026\ \textcolor{comment}{//\ THEORY\ OF\ LIABILITY,\ WHETHER\ IN\ CONTRACT,\ STRICT\ LIABILITY,\ OR\ TORT}}
+\DoxyCodeLine{00027\ \textcolor{comment}{//\ (INCLUDING\ NEGLIGENCE\ OR\ OTHERWISE)\ ARISING\ IN\ ANY\ WAY\ OUT\ OF\ THE\ USE}}
+\DoxyCodeLine{00028\ \textcolor{comment}{//\ OF\ THIS\ SOFTWARE,\ EVEN\ IF\ ADVISED\ OF\ THE\ POSSIBILITY\ OF\ SUCH\ DAMAGE.}}
+\DoxyCodeLine{00029\ }
+\DoxyCodeLine{00030\ \textcolor{comment}{//\ The\ Google\ C++\ Testing\ and\ Mocking\ Framework\ (Google\ Test)}}
+\DoxyCodeLine{00031\ \textcolor{comment}{//}}
+\DoxyCodeLine{00032\ \textcolor{comment}{//\ This\ file\ implements\ just\ enough\ of\ the\ matcher\ interface\ to\ allow}}
+\DoxyCodeLine{00033\ \textcolor{comment}{//\ EXPECT\_DEATH\ and\ friends\ to\ accept\ a\ matcher\ argument.}}
+\DoxyCodeLine{00034\ }
+\DoxyCodeLine{00035\ \textcolor{preprocessor}{\#include\ "{}gtest/internal/gtest-\/internal.h"{}}}
+\DoxyCodeLine{00036\ \textcolor{preprocessor}{\#include\ "{}gtest/internal/gtest-\/port.h"{}}}
+\DoxyCodeLine{00037\ \textcolor{preprocessor}{\#include\ "{}gtest/gtest-\/matchers.h"{}}}
+\DoxyCodeLine{00038\ }
+\DoxyCodeLine{00039\ \textcolor{preprocessor}{\#include\ <string>}}
+\DoxyCodeLine{00040\ }
+\DoxyCodeLine{00041\ \textcolor{keyword}{namespace\ }testing\ \{}
+\DoxyCodeLine{00042\ }
+\DoxyCodeLine{00043\ \textcolor{comment}{//\ Constructs\ a\ matcher\ that\ matches\ a\ const\ std::string\&\ whose\ value\ is}}
+\DoxyCodeLine{00044\ \textcolor{comment}{//\ equal\ to\ s.}}
+\DoxyCodeLine{00045\ Matcher<const\ std::string\&>::Matcher(\textcolor{keyword}{const}\ std::string\&\ s)\ \{\ *\textcolor{keyword}{this}\ =\ Eq(s);\ \}}
+\DoxyCodeLine{00046\ }
+\DoxyCodeLine{00047\ \textcolor{comment}{//\ Constructs\ a\ matcher\ that\ matches\ a\ const\ std::string\&\ whose\ value\ is}}
+\DoxyCodeLine{00048\ \textcolor{comment}{//\ equal\ to\ s.}}
+\DoxyCodeLine{00049\ Matcher<const\ std::string\&>::Matcher(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ s)\ \{}
+\DoxyCodeLine{00050\ \ \ *\textcolor{keyword}{this}\ =\ Eq(std::string(s));}
+\DoxyCodeLine{00051\ \}}
+\DoxyCodeLine{00052\ }
+\DoxyCodeLine{00053\ \textcolor{comment}{//\ Constructs\ a\ matcher\ that\ matches\ a\ std::string\ whose\ value\ is\ equal\ to}}
+\DoxyCodeLine{00054\ \textcolor{comment}{//\ s.}}
+\DoxyCodeLine{00055\ Matcher<std::string>::Matcher(\textcolor{keyword}{const}\ std::string\&\ s)\ \{\ *\textcolor{keyword}{this}\ =\ Eq(s);\ \}}
+\DoxyCodeLine{00056\ }
+\DoxyCodeLine{00057\ \textcolor{comment}{//\ Constructs\ a\ matcher\ that\ matches\ a\ std::string\ whose\ value\ is\ equal\ to}}
+\DoxyCodeLine{00058\ \textcolor{comment}{//\ s.}}
+\DoxyCodeLine{00059\ Matcher<std::string>::Matcher(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ s)\ \{\ *\textcolor{keyword}{this}\ =\ Eq(std::string(s));\ \}}
+\DoxyCodeLine{00060\ }
+\DoxyCodeLine{00061\ \textcolor{preprocessor}{\#if\ GTEST\_INTERNAL\_HAS\_STRING\_VIEW}}
+\DoxyCodeLine{00062\ \textcolor{comment}{//\ Constructs\ a\ matcher\ that\ matches\ a\ const\ StringView\&\ whose\ value\ is}}
+\DoxyCodeLine{00063\ \textcolor{comment}{//\ equal\ to\ s.}}
+\DoxyCodeLine{00064\ Matcher<const\ internal::StringView\&>::Matcher(\textcolor{keyword}{const}\ std::string\&\ s)\ \{}
+\DoxyCodeLine{00065\ \ \ *\textcolor{keyword}{this}\ =\ Eq(s);}
+\DoxyCodeLine{00066\ \}}
+\DoxyCodeLine{00067\ }
+\DoxyCodeLine{00068\ \textcolor{comment}{//\ Constructs\ a\ matcher\ that\ matches\ a\ const\ StringView\&\ whose\ value\ is}}
+\DoxyCodeLine{00069\ \textcolor{comment}{//\ equal\ to\ s.}}
+\DoxyCodeLine{00070\ Matcher<const\ internal::StringView\&>::Matcher(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ s)\ \{}
+\DoxyCodeLine{00071\ \ \ *\textcolor{keyword}{this}\ =\ Eq(std::string(s));}
+\DoxyCodeLine{00072\ \}}
+\DoxyCodeLine{00073\ }
+\DoxyCodeLine{00074\ \textcolor{comment}{//\ Constructs\ a\ matcher\ that\ matches\ a\ const\ StringView\&\ whose\ value\ is}}
+\DoxyCodeLine{00075\ \textcolor{comment}{//\ equal\ to\ s.}}
+\DoxyCodeLine{00076\ Matcher<const\ internal::StringView\&>::Matcher(internal::StringView\ s)\ \{}
+\DoxyCodeLine{00077\ \ \ *\textcolor{keyword}{this}\ =\ Eq(std::string(s));}
+\DoxyCodeLine{00078\ \}}
+\DoxyCodeLine{00079\ }
+\DoxyCodeLine{00080\ \textcolor{comment}{//\ Constructs\ a\ matcher\ that\ matches\ a\ StringView\ whose\ value\ is\ equal\ to}}
+\DoxyCodeLine{00081\ \textcolor{comment}{//\ s.}}
+\DoxyCodeLine{00082\ Matcher<internal::StringView>::Matcher(\textcolor{keyword}{const}\ std::string\&\ s)\ \{\ *\textcolor{keyword}{this}\ =\ Eq(s);\ \}}
+\DoxyCodeLine{00083\ }
+\DoxyCodeLine{00084\ \textcolor{comment}{//\ Constructs\ a\ matcher\ that\ matches\ a\ StringView\ whose\ value\ is\ equal\ to}}
+\DoxyCodeLine{00085\ \textcolor{comment}{//\ s.}}
+\DoxyCodeLine{00086\ Matcher<internal::StringView>::Matcher(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ s)\ \{}
+\DoxyCodeLine{00087\ \ \ *\textcolor{keyword}{this}\ =\ Eq(std::string(s));}
+\DoxyCodeLine{00088\ \}}
+\DoxyCodeLine{00089\ }
+\DoxyCodeLine{00090\ \textcolor{comment}{//\ Constructs\ a\ matcher\ that\ matches\ a\ StringView\ whose\ value\ is\ equal\ to}}
+\DoxyCodeLine{00091\ \textcolor{comment}{//\ s.}}
+\DoxyCodeLine{00092\ Matcher<internal::StringView>::Matcher(internal::StringView\ s)\ \{}
+\DoxyCodeLine{00093\ \ \ *\textcolor{keyword}{this}\ =\ Eq(std::string(s));}
+\DoxyCodeLine{00094\ \}}
+\DoxyCodeLine{00095\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ GTEST\_INTERNAL\_HAS\_STRING\_VIEW}}
+\DoxyCodeLine{00096\ }
+\DoxyCodeLine{00097\ \}\ \ \textcolor{comment}{//\ namespace\ testing}}
+
+\end{DoxyCode}

@@ -1,0 +1,45 @@
+\doxysection{Input\+State.\+h}
+\hypertarget{_input_state_8h_source}{}\label{_input_state_8h_source}\index{src/engine/InputState.h@{src/engine/InputState.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#ifndef\ INPUT\_STATE\_H}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#define\ INPUT\_STATE\_H}}
+\DoxyCodeLine{00003\ }
+\DoxyCodeLine{00004\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_input_memory_bit_stream}{InputMemoryBitStream}};}
+\DoxyCodeLine{00005\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_output_memory_bit_stream}{OutputMemoryBitStream}};}
+\DoxyCodeLine{00006\ }
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#include\ <memory>}}
+\DoxyCodeLine{00008\ }
+\DoxyCodeLine{00009\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_input_state}{InputState}}}
+\DoxyCodeLine{00010\ \{}
+\DoxyCodeLine{00011\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00012\ }
+\DoxyCodeLine{00013\ \ \ \ \ \mbox{\hyperlink{class_input_state}{InputState}}()\ :}
+\DoxyCodeLine{00014\ \ \ \ \ mDesiredRightAmount(\ 0\ ),}
+\DoxyCodeLine{00015\ \ \ \ \ mDesiredLeftAmount(\ 0\ ),}
+\DoxyCodeLine{00016\ \ \ \ \ mDesiredForwardAmount(\ 0\ ),}
+\DoxyCodeLine{00017\ \ \ \ \ mDesiredBackAmount(\ 0\ ),}
+\DoxyCodeLine{00018\ \ \ \ \ mIsShooting(\ \textcolor{keyword}{false}\ )}
+\DoxyCodeLine{00019\ \ \ \ \ \{\}}
+\DoxyCodeLine{00020\ }
+\DoxyCodeLine{00021\ \ \ \ \ \textcolor{keywordtype}{float}\ GetDesiredHorizontalDelta()\textcolor{keyword}{\ \ \ const\ }\{\ \textcolor{keywordflow}{return}\ mDesiredRightAmount\ -\/\ mDesiredLeftAmount;\ \}}
+\DoxyCodeLine{00022\ \ \ \ \ \textcolor{keywordtype}{float}\ GetDesiredVerticalDelta()\textcolor{keyword}{\ \ \ \ \ const\ }\{\ \textcolor{keywordflow}{return}\ mDesiredForwardAmount\ -\/\ mDesiredBackAmount;\ \}}
+\DoxyCodeLine{00023\ \ \ \ \ \textcolor{keywordtype}{bool}\ \ IsShooting()\textcolor{keyword}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ const\ }\{\ \textcolor{keywordflow}{return}\ mIsShooting;\ \}}
+\DoxyCodeLine{00024\ }
+\DoxyCodeLine{00025\ \ \ \ \ \textcolor{keywordtype}{bool}\ Write(\ \mbox{\hyperlink{class_output_memory_bit_stream}{OutputMemoryBitStream}}\&\ inOutputStream\ )\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00026\ \ \ \ \ \textcolor{keywordtype}{bool}\ Read(\ \mbox{\hyperlink{class_input_memory_bit_stream}{InputMemoryBitStream}}\&\ inInputStream\ );}
+\DoxyCodeLine{00027\ }
+\DoxyCodeLine{00028\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00029\ \ \ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_input_manager}{InputManager}};}
+\DoxyCodeLine{00030\ \ \ \ \ \textcolor{keyword}{friend}\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_input_state_test_harness}{InputStateTestHarness}};}
+\DoxyCodeLine{00031\ }
+\DoxyCodeLine{00032\ \ \ \ \ \textcolor{keywordtype}{float}\ \ \ mDesiredRightAmount,\ mDesiredLeftAmount;}
+\DoxyCodeLine{00033\ \ \ \ \ \textcolor{keywordtype}{float}\ \ \ mDesiredForwardAmount,\ mDesiredBackAmount;}
+\DoxyCodeLine{00034\ \ \ \ \ \textcolor{keywordtype}{bool}\ \ \ \ mIsShooting;}
+\DoxyCodeLine{00035\ \};}
+\DoxyCodeLine{00036\ }
+\DoxyCodeLine{00037\ \textcolor{keyword}{typedef}\ std::shared\_ptr<\ InputState\ >\ \ \ InputStatePtr;}
+\DoxyCodeLine{00038\ }
+\DoxyCodeLine{00039\ \textcolor{preprocessor}{\#endif}}
+
+\end{DoxyCode}

@@ -1,0 +1,539 @@
+\doxysection{gtest-\/printers.cc}
+\hypertarget{gtest-printers_8cc_source}{}\label{gtest-printers_8cc_source}\index{build/\_deps/googletest-\/src/googletest/src/gtest-\/printers.cc@{build/\_deps/googletest-\/src/googletest/src/gtest-\/printers.cc}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{//\ Copyright\ 2007,\ Google\ Inc.}}
+\DoxyCodeLine{00002\ \textcolor{comment}{//\ All\ rights\ reserved.}}
+\DoxyCodeLine{00003\ \textcolor{comment}{//}}
+\DoxyCodeLine{00004\ \textcolor{comment}{//\ Redistribution\ and\ use\ in\ source\ and\ binary\ forms,\ with\ or\ without}}
+\DoxyCodeLine{00005\ \textcolor{comment}{//\ modification,\ are\ permitted\ provided\ that\ the\ following\ conditions\ are}}
+\DoxyCodeLine{00006\ \textcolor{comment}{//\ met:}}
+\DoxyCodeLine{00007\ \textcolor{comment}{//}}
+\DoxyCodeLine{00008\ \textcolor{comment}{//\ \ \ \ \ *\ Redistributions\ of\ source\ code\ must\ retain\ the\ above\ copyright}}
+\DoxyCodeLine{00009\ \textcolor{comment}{//\ notice,\ this\ list\ of\ conditions\ and\ the\ following\ disclaimer.}}
+\DoxyCodeLine{00010\ \textcolor{comment}{//\ \ \ \ \ *\ Redistributions\ in\ binary\ form\ must\ reproduce\ the\ above}}
+\DoxyCodeLine{00011\ \textcolor{comment}{//\ copyright\ notice,\ this\ list\ of\ conditions\ and\ the\ following\ disclaimer}}
+\DoxyCodeLine{00012\ \textcolor{comment}{//\ in\ the\ documentation\ and/or\ other\ materials\ provided\ with\ the}}
+\DoxyCodeLine{00013\ \textcolor{comment}{//\ distribution.}}
+\DoxyCodeLine{00014\ \textcolor{comment}{//\ \ \ \ \ *\ Neither\ the\ name\ of\ Google\ Inc.\ nor\ the\ names\ of\ its}}
+\DoxyCodeLine{00015\ \textcolor{comment}{//\ contributors\ may\ be\ used\ to\ endorse\ or\ promote\ products\ derived\ from}}
+\DoxyCodeLine{00016\ \textcolor{comment}{//\ this\ software\ without\ specific\ prior\ written\ permission.}}
+\DoxyCodeLine{00017\ \textcolor{comment}{//}}
+\DoxyCodeLine{00018\ \textcolor{comment}{//\ THIS\ SOFTWARE\ IS\ PROVIDED\ BY\ THE\ COPYRIGHT\ HOLDERS\ AND\ CONTRIBUTORS}}
+\DoxyCodeLine{00019\ \textcolor{comment}{//\ "{}AS\ IS"{}\ AND\ ANY\ EXPRESS\ OR\ IMPLIED\ WARRANTIES,\ INCLUDING,\ BUT\ NOT}}
+\DoxyCodeLine{00020\ \textcolor{comment}{//\ LIMITED\ TO,\ THE\ IMPLIED\ WARRANTIES\ OF\ MERCHANTABILITY\ AND\ FITNESS\ FOR}}
+\DoxyCodeLine{00021\ \textcolor{comment}{//\ A\ PARTICULAR\ PURPOSE\ ARE\ DISCLAIMED.\ IN\ NO\ EVENT\ SHALL\ THE\ COPYRIGHT}}
+\DoxyCodeLine{00022\ \textcolor{comment}{//\ OWNER\ OR\ CONTRIBUTORS\ BE\ LIABLE\ FOR\ ANY\ DIRECT,\ INDIRECT,\ INCIDENTAL,}}
+\DoxyCodeLine{00023\ \textcolor{comment}{//\ SPECIAL,\ EXEMPLARY,\ OR\ CONSEQUENTIAL\ DAMAGES\ (INCLUDING,\ BUT\ NOT}}
+\DoxyCodeLine{00024\ \textcolor{comment}{//\ LIMITED\ TO,\ PROCUREMENT\ OF\ SUBSTITUTE\ GOODS\ OR\ SERVICES;\ LOSS\ OF\ USE,}}
+\DoxyCodeLine{00025\ \textcolor{comment}{//\ DATA,\ OR\ PROFITS;\ OR\ BUSINESS\ INTERRUPTION)\ HOWEVER\ CAUSED\ AND\ ON\ ANY}}
+\DoxyCodeLine{00026\ \textcolor{comment}{//\ THEORY\ OF\ LIABILITY,\ WHETHER\ IN\ CONTRACT,\ STRICT\ LIABILITY,\ OR\ TORT}}
+\DoxyCodeLine{00027\ \textcolor{comment}{//\ (INCLUDING\ NEGLIGENCE\ OR\ OTHERWISE)\ ARISING\ IN\ ANY\ WAY\ OUT\ OF\ THE\ USE}}
+\DoxyCodeLine{00028\ \textcolor{comment}{//\ OF\ THIS\ SOFTWARE,\ EVEN\ IF\ ADVISED\ OF\ THE\ POSSIBILITY\ OF\ SUCH\ DAMAGE.}}
+\DoxyCodeLine{00029\ }
+\DoxyCodeLine{00030\ }
+\DoxyCodeLine{00031\ \textcolor{comment}{//\ Google\ Test\ -\/\ The\ Google\ C++\ Testing\ and\ Mocking\ Framework}}
+\DoxyCodeLine{00032\ \textcolor{comment}{//}}
+\DoxyCodeLine{00033\ \textcolor{comment}{//\ This\ file\ implements\ a\ universal\ value\ printer\ that\ can\ print\ a}}
+\DoxyCodeLine{00034\ \textcolor{comment}{//\ value\ of\ any\ type\ T:}}
+\DoxyCodeLine{00035\ \textcolor{comment}{//}}
+\DoxyCodeLine{00036\ \textcolor{comment}{//\ \ \ void\ ::testing::internal::UniversalPrinter<T>::Print(value,\ ostream\_ptr);}}
+\DoxyCodeLine{00037\ \textcolor{comment}{//}}
+\DoxyCodeLine{00038\ \textcolor{comment}{//\ It\ uses\ the\ <<\ operator\ when\ possible,\ and\ prints\ the\ bytes\ in\ the}}
+\DoxyCodeLine{00039\ \textcolor{comment}{//\ object\ otherwise.\ \ A\ user\ can\ override\ its\ behavior\ for\ a\ class}}
+\DoxyCodeLine{00040\ \textcolor{comment}{//\ type\ Foo\ by\ defining\ either\ operator<<(::std::ostream\&,\ const\ Foo\&)}}
+\DoxyCodeLine{00041\ \textcolor{comment}{//\ or\ void\ PrintTo(const\ Foo\&,\ ::std::ostream*)\ in\ the\ namespace\ that}}
+\DoxyCodeLine{00042\ \textcolor{comment}{//\ defines\ Foo.}}
+\DoxyCodeLine{00043\ }
+\DoxyCodeLine{00044\ \textcolor{preprocessor}{\#include\ "{}gtest/gtest-\/printers.h"{}}}
+\DoxyCodeLine{00045\ }
+\DoxyCodeLine{00046\ \textcolor{preprocessor}{\#include\ <stdio.h>}}
+\DoxyCodeLine{00047\ }
+\DoxyCodeLine{00048\ \textcolor{preprocessor}{\#include\ <cctype>}}
+\DoxyCodeLine{00049\ \textcolor{preprocessor}{\#include\ <cstdint>}}
+\DoxyCodeLine{00050\ \textcolor{preprocessor}{\#include\ <cwchar>}}
+\DoxyCodeLine{00051\ \textcolor{preprocessor}{\#include\ <ostream>}\ \ \textcolor{comment}{//\ NOLINT}}
+\DoxyCodeLine{00052\ \textcolor{preprocessor}{\#include\ <string>}}
+\DoxyCodeLine{00053\ \textcolor{preprocessor}{\#include\ <type\_traits>}}
+\DoxyCodeLine{00054\ }
+\DoxyCodeLine{00055\ \textcolor{preprocessor}{\#include\ "{}gtest/internal/gtest-\/port.h"{}}}
+\DoxyCodeLine{00056\ \textcolor{preprocessor}{\#include\ "{}src/gtest-\/internal-\/inl.h"{}}}
+\DoxyCodeLine{00057\ }
+\DoxyCodeLine{00058\ \textcolor{keyword}{namespace\ }testing\ \{}
+\DoxyCodeLine{00059\ }
+\DoxyCodeLine{00060\ \textcolor{keyword}{namespace\ }\{}
+\DoxyCodeLine{00061\ }
+\DoxyCodeLine{00062\ using\ ::std::ostream;}
+\DoxyCodeLine{00063\ }
+\DoxyCodeLine{00064\ \textcolor{comment}{//\ Prints\ a\ segment\ of\ bytes\ in\ the\ given\ object.}}
+\DoxyCodeLine{00065\ GTEST\_ATTRIBUTE\_NO\_SANITIZE\_MEMORY\_}
+\DoxyCodeLine{00066\ GTEST\_ATTRIBUTE\_NO\_SANITIZE\_ADDRESS\_}
+\DoxyCodeLine{00067\ GTEST\_ATTRIBUTE\_NO\_SANITIZE\_HWADDRESS\_}
+\DoxyCodeLine{00068\ GTEST\_ATTRIBUTE\_NO\_SANITIZE\_THREAD\_}
+\DoxyCodeLine{00069\ \textcolor{keywordtype}{void}\ PrintByteSegmentInObjectTo(\textcolor{keyword}{const}\ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}*\ obj\_bytes,\ \textcolor{keywordtype}{size\_t}\ start,}
+\DoxyCodeLine{00070\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{size\_t}\ count,\ ostream*\ os)\ \{}
+\DoxyCodeLine{00071\ \ \ \textcolor{keywordtype}{char}\ text[5]\ =\ \textcolor{stringliteral}{"{}"{}};}
+\DoxyCodeLine{00072\ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{size\_t}\ i\ =\ 0;\ i\ !=\ count;\ i++)\ \{}
+\DoxyCodeLine{00073\ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{size\_t}\ j\ =\ start\ +\ i;}
+\DoxyCodeLine{00074\ \ \ \ \ \textcolor{keywordflow}{if}\ (i\ !=\ 0)\ \{}
+\DoxyCodeLine{00075\ \ \ \ \ \ \ \textcolor{comment}{//\ Organizes\ the\ bytes\ into\ groups\ of\ 2\ for\ easy\ parsing\ by}}
+\DoxyCodeLine{00076\ \ \ \ \ \ \ \textcolor{comment}{//\ human.}}
+\DoxyCodeLine{00077\ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ ((j\ \%\ 2)\ ==\ 0)}
+\DoxyCodeLine{00078\ \ \ \ \ \ \ \ \ *os\ <<\ \textcolor{charliteral}{'\ '};}
+\DoxyCodeLine{00079\ \ \ \ \ \ \ \textcolor{keywordflow}{else}}
+\DoxyCodeLine{00080\ \ \ \ \ \ \ \ \ *os\ <<\ \textcolor{charliteral}{'-\/'};}
+\DoxyCodeLine{00081\ \ \ \ \ \}}
+\DoxyCodeLine{00082\ \ \ \ \ GTEST\_SNPRINTF\_(text,\ \textcolor{keyword}{sizeof}(text),\ \textcolor{stringliteral}{"{}\%02X"{}},\ obj\_bytes[j]);}
+\DoxyCodeLine{00083\ \ \ \ \ *os\ <<\ text;}
+\DoxyCodeLine{00084\ \ \ \}}
+\DoxyCodeLine{00085\ \}}
+\DoxyCodeLine{00086\ }
+\DoxyCodeLine{00087\ \textcolor{comment}{//\ Prints\ the\ bytes\ in\ the\ given\ value\ to\ the\ given\ ostream.}}
+\DoxyCodeLine{00088\ \textcolor{keywordtype}{void}\ PrintBytesInObjectToImpl(\textcolor{keyword}{const}\ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}*\ obj\_bytes,\ \textcolor{keywordtype}{size\_t}\ count,}
+\DoxyCodeLine{00089\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ostream*\ os)\ \{}
+\DoxyCodeLine{00090\ \ \ \textcolor{comment}{//\ Tells\ the\ user\ how\ big\ the\ object\ is.}}
+\DoxyCodeLine{00091\ \ \ *os\ <<\ count\ <<\ \textcolor{stringliteral}{"{}-\/byte\ object\ <"{}};}
+\DoxyCodeLine{00092\ }
+\DoxyCodeLine{00093\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{size\_t}\ kThreshold\ =\ 132;}
+\DoxyCodeLine{00094\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{size\_t}\ kChunkSize\ =\ 64;}
+\DoxyCodeLine{00095\ \ \ \textcolor{comment}{//\ If\ the\ object\ size\ is\ bigger\ than\ kThreshold,\ we'll\ have\ to\ omit}}
+\DoxyCodeLine{00096\ \ \ \textcolor{comment}{//\ some\ details\ by\ printing\ only\ the\ first\ and\ the\ last\ kChunkSize}}
+\DoxyCodeLine{00097\ \ \ \textcolor{comment}{//\ bytes.}}
+\DoxyCodeLine{00098\ \ \ \textcolor{keywordflow}{if}\ (count\ <\ kThreshold)\ \{}
+\DoxyCodeLine{00099\ \ \ \ \ PrintByteSegmentInObjectTo(obj\_bytes,\ 0,\ count,\ os);}
+\DoxyCodeLine{00100\ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00101\ \ \ \ \ PrintByteSegmentInObjectTo(obj\_bytes,\ 0,\ kChunkSize,\ os);}
+\DoxyCodeLine{00102\ \ \ \ \ *os\ <<\ \textcolor{stringliteral}{"{}\ ...\ "{}};}
+\DoxyCodeLine{00103\ \ \ \ \ \textcolor{comment}{//\ Rounds\ up\ to\ 2-\/byte\ boundary.}}
+\DoxyCodeLine{00104\ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{size\_t}\ resume\_pos\ =\ (count\ -\/\ kChunkSize\ +\ 1)/2*2;}
+\DoxyCodeLine{00105\ \ \ \ \ PrintByteSegmentInObjectTo(obj\_bytes,\ resume\_pos,\ count\ -\/\ resume\_pos,\ os);}
+\DoxyCodeLine{00106\ \ \ \}}
+\DoxyCodeLine{00107\ \ \ *os\ <<\ \textcolor{stringliteral}{"{}>"{}};}
+\DoxyCodeLine{00108\ \}}
+\DoxyCodeLine{00109\ }
+\DoxyCodeLine{00110\ \textcolor{comment}{//\ Helpers\ for\ widening\ a\ character\ to\ char32\_t.\ Since\ the\ standard\ does\ not}}
+\DoxyCodeLine{00111\ \textcolor{comment}{//\ specify\ if\ char\ /\ wchar\_t\ is\ signed\ or\ unsigned,\ it\ is\ important\ to\ first}}
+\DoxyCodeLine{00112\ \textcolor{comment}{//\ convert\ it\ to\ the\ unsigned\ type\ of\ the\ same\ width\ before\ widening\ it\ to}}
+\DoxyCodeLine{00113\ \textcolor{comment}{//\ char32\_t.}}
+\DoxyCodeLine{00114\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ CharType>}
+\DoxyCodeLine{00115\ \textcolor{keywordtype}{char32\_t}\ ToChar32(CharType\ in)\ \{}
+\DoxyCodeLine{00116\ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{char32\_t}\textcolor{keyword}{>}(}
+\DoxyCodeLine{00117\ \ \ \ \ \ \ \textcolor{keyword}{static\_cast<}typename\ std::make\_unsigned<CharType>::type\textcolor{keyword}{>}(in));}
+\DoxyCodeLine{00118\ \}}
+\DoxyCodeLine{00119\ }
+\DoxyCodeLine{00120\ \}\ \ \textcolor{comment}{//\ namespace}}
+\DoxyCodeLine{00121\ }
+\DoxyCodeLine{00122\ \textcolor{keyword}{namespace\ }internal\ \{}
+\DoxyCodeLine{00123\ }
+\DoxyCodeLine{00124\ \textcolor{comment}{//\ Delegates\ to\ PrintBytesInObjectToImpl()\ to\ print\ the\ bytes\ in\ the}}
+\DoxyCodeLine{00125\ \textcolor{comment}{//\ given\ object.\ \ The\ delegation\ simplifies\ the\ implementation,\ which}}
+\DoxyCodeLine{00126\ \textcolor{comment}{//\ uses\ the\ <<\ operator\ and\ thus\ is\ easier\ done\ outside\ of\ the}}
+\DoxyCodeLine{00127\ \textcolor{comment}{//\ ::testing::internal\ namespace,\ which\ contains\ a\ <<\ operator\ that}}
+\DoxyCodeLine{00128\ \textcolor{comment}{//\ sometimes\ conflicts\ with\ the\ one\ in\ STL.}}
+\DoxyCodeLine{00129\ \textcolor{keywordtype}{void}\ PrintBytesInObjectTo(\textcolor{keyword}{const}\ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}*\ obj\_bytes,\ \textcolor{keywordtype}{size\_t}\ count,}
+\DoxyCodeLine{00130\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ ostream*\ os)\ \{}
+\DoxyCodeLine{00131\ \ \ PrintBytesInObjectToImpl(obj\_bytes,\ count,\ os);}
+\DoxyCodeLine{00132\ \}}
+\DoxyCodeLine{00133\ }
+\DoxyCodeLine{00134\ \textcolor{comment}{//\ Depending\ on\ the\ value\ of\ a\ char\ (or\ wchar\_t),\ we\ print\ it\ in\ one}}
+\DoxyCodeLine{00135\ \textcolor{comment}{//\ of\ three\ formats:}}
+\DoxyCodeLine{00136\ \textcolor{comment}{//\ \ \ -\/\ as\ is\ if\ it's\ a\ printable\ ASCII\ (e.g.\ 'a',\ '2',\ '\ '),}}
+\DoxyCodeLine{00137\ \textcolor{comment}{//\ \ \ -\/\ as\ a\ hexadecimal\ escape\ sequence\ (e.g.\ '\(\backslash\)x7F'),\ or}}
+\DoxyCodeLine{00138\ \textcolor{comment}{//\ \ \ -\/\ as\ a\ special\ escape\ sequence\ (e.g.\ '\(\backslash\)r',\ '\(\backslash\)n').}}
+\DoxyCodeLine{00139\ \textcolor{keyword}{enum}\ CharFormat\ \{}
+\DoxyCodeLine{00140\ \ \ kAsIs,}
+\DoxyCodeLine{00141\ \ \ kHexEscape,}
+\DoxyCodeLine{00142\ \ \ kSpecialEscape}
+\DoxyCodeLine{00143\ \};}
+\DoxyCodeLine{00144\ }
+\DoxyCodeLine{00145\ \textcolor{comment}{//\ Returns\ true\ if\ c\ is\ a\ printable\ ASCII\ character.\ \ We\ test\ the}}
+\DoxyCodeLine{00146\ \textcolor{comment}{//\ value\ of\ c\ directly\ instead\ of\ calling\ isprint(),\ which\ is\ buggy\ on}}
+\DoxyCodeLine{00147\ \textcolor{comment}{//\ Windows\ Mobile.}}
+\DoxyCodeLine{00148\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{bool}\ IsPrintableAscii(\textcolor{keywordtype}{char32\_t}\ c)\ \{\ \textcolor{keywordflow}{return}\ 0x20\ <=\ c\ \&\&\ c\ <=\ 0x7E;\ \}}
+\DoxyCodeLine{00149\ }
+\DoxyCodeLine{00150\ \textcolor{comment}{//\ Prints\ c\ (of\ type\ char,\ char8\_t,\ char16\_t,\ char32\_t,\ or\ wchar\_t)\ as\ a}}
+\DoxyCodeLine{00151\ \textcolor{comment}{//\ character\ literal\ without\ the\ quotes,\ escaping\ it\ when\ necessary;\ returns\ how}}
+\DoxyCodeLine{00152\ \textcolor{comment}{//\ c\ was\ formatted.}}
+\DoxyCodeLine{00153\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Char>}
+\DoxyCodeLine{00154\ \textcolor{keyword}{static}\ CharFormat\ PrintAsCharLiteralTo(Char\ c,\ ostream*\ os)\ \{}
+\DoxyCodeLine{00155\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char32\_t}\ u\_c\ =\ ToChar32(c);}
+\DoxyCodeLine{00156\ \ \ \textcolor{keywordflow}{switch}\ (u\_c)\ \{}
+\DoxyCodeLine{00157\ \ \ \ \ \textcolor{keywordflow}{case}\ L\textcolor{charliteral}{'\(\backslash\)0'}:}
+\DoxyCodeLine{00158\ \ \ \ \ \ \ *os\ <<\ \textcolor{stringliteral}{"{}\(\backslash\)\(\backslash\)0"{}};}
+\DoxyCodeLine{00159\ \ \ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{00160\ \ \ \ \ \textcolor{keywordflow}{case}\ L\textcolor{charliteral}{'\(\backslash\)''}:}
+\DoxyCodeLine{00161\ \ \ \ \ \ \ *os\ <<\ \textcolor{stringliteral}{"{}\(\backslash\)\(\backslash\)'"{}};}
+\DoxyCodeLine{00162\ \ \ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{00163\ \ \ \ \ \textcolor{keywordflow}{case}\ L\textcolor{charliteral}{'\(\backslash\)\(\backslash\)'}:}
+\DoxyCodeLine{00164\ \ \ \ \ \ \ *os\ <<\ \textcolor{stringliteral}{"{}\(\backslash\)\(\backslash\)\(\backslash\)\(\backslash\)"{}};}
+\DoxyCodeLine{00165\ \ \ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{00166\ \ \ \ \ \textcolor{keywordflow}{case}\ L\textcolor{charliteral}{'\(\backslash\)a'}:}
+\DoxyCodeLine{00167\ \ \ \ \ \ \ *os\ <<\ \textcolor{stringliteral}{"{}\(\backslash\)\(\backslash\)a"{}};}
+\DoxyCodeLine{00168\ \ \ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{00169\ \ \ \ \ \textcolor{keywordflow}{case}\ L\textcolor{charliteral}{'\(\backslash\)b'}:}
+\DoxyCodeLine{00170\ \ \ \ \ \ \ *os\ <<\ \textcolor{stringliteral}{"{}\(\backslash\)\(\backslash\)b"{}};}
+\DoxyCodeLine{00171\ \ \ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{00172\ \ \ \ \ \textcolor{keywordflow}{case}\ L\textcolor{charliteral}{'\(\backslash\)f'}:}
+\DoxyCodeLine{00173\ \ \ \ \ \ \ *os\ <<\ \textcolor{stringliteral}{"{}\(\backslash\)\(\backslash\)f"{}};}
+\DoxyCodeLine{00174\ \ \ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{00175\ \ \ \ \ \textcolor{keywordflow}{case}\ L\textcolor{charliteral}{'\(\backslash\)n'}:}
+\DoxyCodeLine{00176\ \ \ \ \ \ \ *os\ <<\ \textcolor{stringliteral}{"{}\(\backslash\)\(\backslash\)n"{}};}
+\DoxyCodeLine{00177\ \ \ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{00178\ \ \ \ \ \textcolor{keywordflow}{case}\ L\textcolor{charliteral}{'\(\backslash\)r'}:}
+\DoxyCodeLine{00179\ \ \ \ \ \ \ *os\ <<\ \textcolor{stringliteral}{"{}\(\backslash\)\(\backslash\)r"{}};}
+\DoxyCodeLine{00180\ \ \ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{00181\ \ \ \ \ \textcolor{keywordflow}{case}\ L\textcolor{charliteral}{'\(\backslash\)t'}:}
+\DoxyCodeLine{00182\ \ \ \ \ \ \ *os\ <<\ \textcolor{stringliteral}{"{}\(\backslash\)\(\backslash\)t"{}};}
+\DoxyCodeLine{00183\ \ \ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{00184\ \ \ \ \ \textcolor{keywordflow}{case}\ L\textcolor{charliteral}{'\(\backslash\)v'}:}
+\DoxyCodeLine{00185\ \ \ \ \ \ \ *os\ <<\ \textcolor{stringliteral}{"{}\(\backslash\)\(\backslash\)v"{}};}
+\DoxyCodeLine{00186\ \ \ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{00187\ \ \ \ \ \textcolor{keywordflow}{default}:}
+\DoxyCodeLine{00188\ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (IsPrintableAscii(u\_c))\ \{}
+\DoxyCodeLine{00189\ \ \ \ \ \ \ \ \ *os\ <<\ static\_cast<char>(c);}
+\DoxyCodeLine{00190\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ kAsIs;}
+\DoxyCodeLine{00191\ \ \ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00192\ \ \ \ \ \ \ \ \ ostream::fmtflags\ flags\ =\ os-\/>flags();}
+\DoxyCodeLine{00193\ \ \ \ \ \ \ \ \ *os\ <<\ \textcolor{stringliteral}{"{}\(\backslash\)\(\backslash\)x"{}}\ <<\ std::hex\ <<\ std::uppercase\ <<\ static\_cast<int>(u\_c);}
+\DoxyCodeLine{00194\ \ \ \ \ \ \ \ \ os-\/>flags(flags);}
+\DoxyCodeLine{00195\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ kHexEscape;}
+\DoxyCodeLine{00196\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00197\ \ \ \}}
+\DoxyCodeLine{00198\ \ \ \textcolor{keywordflow}{return}\ kSpecialEscape;}
+\DoxyCodeLine{00199\ \}}
+\DoxyCodeLine{00200\ }
+\DoxyCodeLine{00201\ \textcolor{comment}{//\ Prints\ a\ char32\_t\ c\ as\ if\ it's\ part\ of\ a\ string\ literal,\ escaping\ it\ when}}
+\DoxyCodeLine{00202\ \textcolor{comment}{//\ necessary;\ returns\ how\ c\ was\ formatted.}}
+\DoxyCodeLine{00203\ \textcolor{keyword}{static}\ CharFormat\ PrintAsStringLiteralTo(\textcolor{keywordtype}{char32\_t}\ c,\ ostream*\ os)\ \{}
+\DoxyCodeLine{00204\ \ \ \textcolor{keywordflow}{switch}\ (c)\ \{}
+\DoxyCodeLine{00205\ \ \ \ \ \textcolor{keywordflow}{case}\ L\textcolor{charliteral}{'\(\backslash\)''}:}
+\DoxyCodeLine{00206\ \ \ \ \ \ \ *os\ <<\ \textcolor{stringliteral}{"{}'"{}};}
+\DoxyCodeLine{00207\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ kAsIs;}
+\DoxyCodeLine{00208\ \ \ \ \ \textcolor{keywordflow}{case}\ L\textcolor{charliteral}{'"{}'}:}
+\DoxyCodeLine{00209\ \ \ \ \ \ \ *os\ <<\ \textcolor{stringliteral}{"{}\(\backslash\)\(\backslash\)\(\backslash\)"{}"{}};}
+\DoxyCodeLine{00210\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ kSpecialEscape;}
+\DoxyCodeLine{00211\ \ \ \ \ \textcolor{keywordflow}{default}:}
+\DoxyCodeLine{00212\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ PrintAsCharLiteralTo(c,\ os);}
+\DoxyCodeLine{00213\ \ \ \}}
+\DoxyCodeLine{00214\ \}}
+\DoxyCodeLine{00215\ }
+\DoxyCodeLine{00216\ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ GetCharWidthPrefix(\textcolor{keywordtype}{char})\ \{}
+\DoxyCodeLine{00217\ \ \ \textcolor{keywordflow}{return}\ \textcolor{stringliteral}{"{}"{}};}
+\DoxyCodeLine{00218\ \}}
+\DoxyCodeLine{00219\ }
+\DoxyCodeLine{00220\ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ GetCharWidthPrefix(\textcolor{keywordtype}{signed}\ \textcolor{keywordtype}{char})\ \{}
+\DoxyCodeLine{00221\ \ \ \textcolor{keywordflow}{return}\ \textcolor{stringliteral}{"{}"{}};}
+\DoxyCodeLine{00222\ \}}
+\DoxyCodeLine{00223\ }
+\DoxyCodeLine{00224\ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ GetCharWidthPrefix(\textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char})\ \{}
+\DoxyCodeLine{00225\ \ \ \textcolor{keywordflow}{return}\ \textcolor{stringliteral}{"{}"{}};}
+\DoxyCodeLine{00226\ \}}
+\DoxyCodeLine{00227\ }
+\DoxyCodeLine{00228\ \textcolor{preprocessor}{\#ifdef\ \_\_cpp\_char8\_t}}
+\DoxyCodeLine{00229\ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ GetCharWidthPrefix(\textcolor{keywordtype}{char8\_t})\ \{}
+\DoxyCodeLine{00230\ \ \ \textcolor{keywordflow}{return}\ \textcolor{stringliteral}{"{}u8"{}};}
+\DoxyCodeLine{00231\ \}}
+\DoxyCodeLine{00232\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00233\ }
+\DoxyCodeLine{00234\ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ GetCharWidthPrefix(\textcolor{keywordtype}{char16\_t})\ \{}
+\DoxyCodeLine{00235\ \ \ \textcolor{keywordflow}{return}\ \textcolor{stringliteral}{"{}u"{}};}
+\DoxyCodeLine{00236\ \}}
+\DoxyCodeLine{00237\ }
+\DoxyCodeLine{00238\ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ GetCharWidthPrefix(\textcolor{keywordtype}{char32\_t})\ \{}
+\DoxyCodeLine{00239\ \ \ \textcolor{keywordflow}{return}\ \textcolor{stringliteral}{"{}U"{}};}
+\DoxyCodeLine{00240\ \}}
+\DoxyCodeLine{00241\ }
+\DoxyCodeLine{00242\ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ GetCharWidthPrefix(\textcolor{keywordtype}{wchar\_t})\ \{}
+\DoxyCodeLine{00243\ \ \ \textcolor{keywordflow}{return}\ \textcolor{stringliteral}{"{}L"{}};}
+\DoxyCodeLine{00244\ \}}
+\DoxyCodeLine{00245\ }
+\DoxyCodeLine{00246\ \textcolor{comment}{//\ Prints\ a\ char\ c\ as\ if\ it's\ part\ of\ a\ string\ literal,\ escaping\ it\ when}}
+\DoxyCodeLine{00247\ \textcolor{comment}{//\ necessary;\ returns\ how\ c\ was\ formatted.}}
+\DoxyCodeLine{00248\ \textcolor{keyword}{static}\ CharFormat\ PrintAsStringLiteralTo(\textcolor{keywordtype}{char}\ c,\ ostream*\ os)\ \{}
+\DoxyCodeLine{00249\ \ \ \textcolor{keywordflow}{return}\ PrintAsStringLiteralTo(ToChar32(c),\ os);}
+\DoxyCodeLine{00250\ \}}
+\DoxyCodeLine{00251\ }
+\DoxyCodeLine{00252\ \textcolor{preprocessor}{\#ifdef\ \_\_cpp\_char8\_t}}
+\DoxyCodeLine{00253\ \textcolor{keyword}{static}\ CharFormat\ PrintAsStringLiteralTo(\textcolor{keywordtype}{char8\_t}\ c,\ ostream*\ os)\ \{}
+\DoxyCodeLine{00254\ \ \ \textcolor{keywordflow}{return}\ PrintAsStringLiteralTo(ToChar32(c),\ os);}
+\DoxyCodeLine{00255\ \}}
+\DoxyCodeLine{00256\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00257\ }
+\DoxyCodeLine{00258\ \textcolor{keyword}{static}\ CharFormat\ PrintAsStringLiteralTo(\textcolor{keywordtype}{char16\_t}\ c,\ ostream*\ os)\ \{}
+\DoxyCodeLine{00259\ \ \ \textcolor{keywordflow}{return}\ PrintAsStringLiteralTo(ToChar32(c),\ os);}
+\DoxyCodeLine{00260\ \}}
+\DoxyCodeLine{00261\ }
+\DoxyCodeLine{00262\ \textcolor{keyword}{static}\ CharFormat\ PrintAsStringLiteralTo(\textcolor{keywordtype}{wchar\_t}\ c,\ ostream*\ os)\ \{}
+\DoxyCodeLine{00263\ \ \ \textcolor{keywordflow}{return}\ PrintAsStringLiteralTo(ToChar32(c),\ os);}
+\DoxyCodeLine{00264\ \}}
+\DoxyCodeLine{00265\ }
+\DoxyCodeLine{00266\ \textcolor{comment}{//\ Prints\ a\ character\ c\ (of\ type\ char,\ char8\_t,\ char16\_t,\ char32\_t,\ or\ wchar\_t)}}
+\DoxyCodeLine{00267\ \textcolor{comment}{//\ and\ its\ code.\ '\(\backslash\)0'\ is\ printed\ as\ "{}'\(\backslash\)\(\backslash\)0'"{},\ other\ unprintable\ characters\ are}}
+\DoxyCodeLine{00268\ \textcolor{comment}{//\ also\ properly\ escaped\ using\ the\ standard\ C++\ escape\ sequence.}}
+\DoxyCodeLine{00269\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Char>}
+\DoxyCodeLine{00270\ \textcolor{keywordtype}{void}\ PrintCharAndCodeTo(Char\ c,\ ostream*\ os)\ \{}
+\DoxyCodeLine{00271\ \ \ \textcolor{comment}{//\ First,\ print\ c\ as\ a\ literal\ in\ the\ most\ readable\ form\ we\ can\ find.}}
+\DoxyCodeLine{00272\ \ \ *os\ <<\ GetCharWidthPrefix(c)\ <<\ \textcolor{stringliteral}{"{}'"{}};}
+\DoxyCodeLine{00273\ \ \ \textcolor{keyword}{const}\ CharFormat\ format\ =\ PrintAsCharLiteralTo(c,\ os);}
+\DoxyCodeLine{00274\ \ \ *os\ <<\ \textcolor{stringliteral}{"{}'"{}};}
+\DoxyCodeLine{00275\ }
+\DoxyCodeLine{00276\ \ \ \textcolor{comment}{//\ To\ aid\ user\ debugging,\ we\ also\ print\ c's\ code\ in\ decimal,\ unless}}
+\DoxyCodeLine{00277\ \ \ \textcolor{comment}{//\ it's\ 0\ (in\ which\ case\ c\ was\ printed\ as\ '\(\backslash\)\(\backslash\)0',\ making\ the\ code}}
+\DoxyCodeLine{00278\ \ \ \textcolor{comment}{//\ obvious).}}
+\DoxyCodeLine{00279\ \ \ \textcolor{keywordflow}{if}\ (c\ ==\ 0)}
+\DoxyCodeLine{00280\ \ \ \ \ \textcolor{keywordflow}{return};}
+\DoxyCodeLine{00281\ \ \ *os\ <<\ \textcolor{stringliteral}{"{}\ ("{}}\ <<\ \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{int}\textcolor{keyword}{>}(c);}
+\DoxyCodeLine{00282\ }
+\DoxyCodeLine{00283\ \ \ \textcolor{comment}{//\ For\ more\ convenience,\ we\ print\ c's\ code\ again\ in\ hexadecimal,}}
+\DoxyCodeLine{00284\ \ \ \textcolor{comment}{//\ unless\ c\ was\ already\ printed\ in\ the\ form\ '\(\backslash\)x\#\#'\ or\ the\ code\ is\ in}}
+\DoxyCodeLine{00285\ \ \ \textcolor{comment}{//\ [1,\ 9].}}
+\DoxyCodeLine{00286\ \ \ \textcolor{keywordflow}{if}\ (format\ ==\ kHexEscape\ ||\ (1\ <=\ c\ \&\&\ c\ <=\ 9))\ \{}
+\DoxyCodeLine{00287\ \ \ \ \ \textcolor{comment}{//\ Do\ nothing.}}
+\DoxyCodeLine{00288\ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00289\ \ \ \ \ *os\ <<\ \textcolor{stringliteral}{"{},\ 0x"{}}\ <<\ String::FormatHexInt(\textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{int}\textcolor{keyword}{>}(c));}
+\DoxyCodeLine{00290\ \ \ \}}
+\DoxyCodeLine{00291\ \ \ *os\ <<\ \textcolor{stringliteral}{"{})"{}};}
+\DoxyCodeLine{00292\ \}}
+\DoxyCodeLine{00293\ }
+\DoxyCodeLine{00294\ \textcolor{keywordtype}{void}\ PrintTo(\textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}\ c,\ ::std::ostream*\ os)\ \{\ PrintCharAndCodeTo(c,\ os);\ \}}
+\DoxyCodeLine{00295\ \textcolor{keywordtype}{void}\ PrintTo(\textcolor{keywordtype}{signed}\ \textcolor{keywordtype}{char}\ c,\ ::std::ostream*\ os)\ \{\ PrintCharAndCodeTo(c,\ os);\ \}}
+\DoxyCodeLine{00296\ }
+\DoxyCodeLine{00297\ \textcolor{comment}{//\ Prints\ a\ wchar\_t\ as\ a\ symbol\ if\ it\ is\ printable\ or\ as\ its\ internal}}
+\DoxyCodeLine{00298\ \textcolor{comment}{//\ code\ otherwise\ and\ also\ as\ its\ code.\ \ L'\(\backslash\)0'\ is\ printed\ as\ "{}L'\(\backslash\)\(\backslash\)0'"{}.}}
+\DoxyCodeLine{00299\ \textcolor{keywordtype}{void}\ PrintTo(\textcolor{keywordtype}{wchar\_t}\ wc,\ ostream*\ os)\ \{\ PrintCharAndCodeTo(wc,\ os);\ \}}
+\DoxyCodeLine{00300\ }
+\DoxyCodeLine{00301\ \textcolor{comment}{//\ TODO(dcheng):\ Consider\ making\ this\ delegate\ to\ PrintCharAndCodeTo()\ as\ well.}}
+\DoxyCodeLine{00302\ \textcolor{keywordtype}{void}\ PrintTo(\textcolor{keywordtype}{char32\_t}\ c,\ ::std::ostream*\ os)\ \{}
+\DoxyCodeLine{00303\ \ \ *os\ <<\ std::hex\ <<\ \textcolor{stringliteral}{"{}U+"{}}\ <<\ std::uppercase\ <<\ std::setfill(\textcolor{charliteral}{'0'})\ <<\ std::setw(4)}
+\DoxyCodeLine{00304\ \ \ \ \ \ \ <<\ \textcolor{keyword}{static\_cast<}uint32\_t\textcolor{keyword}{>}(c);}
+\DoxyCodeLine{00305\ \}}
+\DoxyCodeLine{00306\ }
+\DoxyCodeLine{00307\ \textcolor{comment}{//\ Prints\ the\ given\ array\ of\ characters\ to\ the\ ostream.\ \ CharType\ must\ be\ either}}
+\DoxyCodeLine{00308\ \textcolor{comment}{//\ char,\ char8\_t,\ char16\_t,\ char32\_t,\ or\ wchar\_t.}}
+\DoxyCodeLine{00309\ \textcolor{comment}{//\ The\ array\ starts\ at\ begin,\ the\ length\ is\ len,\ it\ may\ include\ '\(\backslash\)0'\ characters}}
+\DoxyCodeLine{00310\ \textcolor{comment}{//\ and\ may\ not\ be\ NUL-\/terminated.}}
+\DoxyCodeLine{00311\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ CharType>}
+\DoxyCodeLine{00312\ GTEST\_ATTRIBUTE\_NO\_SANITIZE\_MEMORY\_}
+\DoxyCodeLine{00313\ GTEST\_ATTRIBUTE\_NO\_SANITIZE\_ADDRESS\_}
+\DoxyCodeLine{00314\ GTEST\_ATTRIBUTE\_NO\_SANITIZE\_HWADDRESS\_}
+\DoxyCodeLine{00315\ GTEST\_ATTRIBUTE\_NO\_SANITIZE\_THREAD\_}
+\DoxyCodeLine{00316\ \textcolor{keyword}{static}\ CharFormat\ PrintCharsAsStringTo(}
+\DoxyCodeLine{00317\ \ \ \ \ \textcolor{keyword}{const}\ CharType*\ begin,\ \textcolor{keywordtype}{size\_t}\ len,\ ostream*\ os)\ \{}
+\DoxyCodeLine{00318\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ \textcolor{keyword}{const}\ quote\_prefix\ =\ GetCharWidthPrefix(*begin);}
+\DoxyCodeLine{00319\ \ \ *os\ <<\ quote\_prefix\ <<\ \textcolor{stringliteral}{"{}\(\backslash\)"{}"{}};}
+\DoxyCodeLine{00320\ \ \ \textcolor{keywordtype}{bool}\ is\_previous\_hex\ =\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00321\ \ \ CharFormat\ print\_format\ =\ kAsIs;}
+\DoxyCodeLine{00322\ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{size\_t}\ index\ =\ 0;\ index\ <\ len;\ ++index)\ \{}
+\DoxyCodeLine{00323\ \ \ \ \ \textcolor{keyword}{const}\ CharType\ cur\ =\ begin[index];}
+\DoxyCodeLine{00324\ \ \ \ \ \textcolor{keywordflow}{if}\ (is\_previous\_hex\ \&\&\ IsXDigit(cur))\ \{}
+\DoxyCodeLine{00325\ \ \ \ \ \ \ \textcolor{comment}{//\ Previous\ character\ is\ of\ '\(\backslash\)x..'\ form\ and\ this\ character\ can\ be}}
+\DoxyCodeLine{00326\ \ \ \ \ \ \ \textcolor{comment}{//\ interpreted\ as\ another\ hexadecimal\ digit\ in\ its\ number.\ Break\ string\ to}}
+\DoxyCodeLine{00327\ \ \ \ \ \ \ \textcolor{comment}{//\ disambiguate.}}
+\DoxyCodeLine{00328\ \ \ \ \ \ \ *os\ <<\ \textcolor{stringliteral}{"{}\(\backslash\)"{}\ "{}}\ <<\ quote\_prefix\ <<\ \textcolor{stringliteral}{"{}\(\backslash\)"{}"{}};}
+\DoxyCodeLine{00329\ \ \ \ \ \}}
+\DoxyCodeLine{00330\ \ \ \ \ is\_previous\_hex\ =\ PrintAsStringLiteralTo(cur,\ os)\ ==\ kHexEscape;}
+\DoxyCodeLine{00331\ \ \ \ \ \textcolor{comment}{//\ Remember\ if\ any\ characters\ required\ hex\ escaping.}}
+\DoxyCodeLine{00332\ \ \ \ \ \textcolor{keywordflow}{if}\ (is\_previous\_hex)\ \{}
+\DoxyCodeLine{00333\ \ \ \ \ \ \ print\_format\ =\ kHexEscape;}
+\DoxyCodeLine{00334\ \ \ \ \ \}}
+\DoxyCodeLine{00335\ \ \ \}}
+\DoxyCodeLine{00336\ \ \ *os\ <<\ \textcolor{stringliteral}{"{}\(\backslash\)"{}"{}};}
+\DoxyCodeLine{00337\ \ \ \textcolor{keywordflow}{return}\ print\_format;}
+\DoxyCodeLine{00338\ \}}
+\DoxyCodeLine{00339\ }
+\DoxyCodeLine{00340\ \textcolor{comment}{//\ Prints\ a\ (const)\ char/wchar\_t\ array\ of\ 'len'\ elements,\ starting\ at\ address}}
+\DoxyCodeLine{00341\ \textcolor{comment}{//\ 'begin'.\ \ CharType\ must\ be\ either\ char\ or\ wchar\_t.}}
+\DoxyCodeLine{00342\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ CharType>}
+\DoxyCodeLine{00343\ GTEST\_ATTRIBUTE\_NO\_SANITIZE\_MEMORY\_}
+\DoxyCodeLine{00344\ GTEST\_ATTRIBUTE\_NO\_SANITIZE\_ADDRESS\_}
+\DoxyCodeLine{00345\ GTEST\_ATTRIBUTE\_NO\_SANITIZE\_HWADDRESS\_}
+\DoxyCodeLine{00346\ GTEST\_ATTRIBUTE\_NO\_SANITIZE\_THREAD\_}
+\DoxyCodeLine{00347\ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ UniversalPrintCharArray(}
+\DoxyCodeLine{00348\ \ \ \ \ \textcolor{keyword}{const}\ CharType*\ begin,\ \textcolor{keywordtype}{size\_t}\ len,\ ostream*\ os)\ \{}
+\DoxyCodeLine{00349\ \ \ \textcolor{comment}{//\ The\ code}}
+\DoxyCodeLine{00350\ \ \ \textcolor{comment}{//\ \ \ const\ char\ kFoo[]\ =\ "{}foo"{};}}
+\DoxyCodeLine{00351\ \ \ \textcolor{comment}{//\ generates\ an\ array\ of\ 4,\ not\ 3,\ elements,\ with\ the\ last\ one\ being\ '\(\backslash\)0'.}}
+\DoxyCodeLine{00352\ \ \ \textcolor{comment}{//}}
+\DoxyCodeLine{00353\ \ \ \textcolor{comment}{//\ Therefore\ when\ printing\ a\ char\ array,\ we\ don't\ print\ the\ last\ element\ if}}
+\DoxyCodeLine{00354\ \ \ \textcolor{comment}{//\ it's\ '\(\backslash\)0',\ such\ that\ the\ output\ matches\ the\ string\ literal\ as\ it's}}
+\DoxyCodeLine{00355\ \ \ \textcolor{comment}{//\ written\ in\ the\ source\ code.}}
+\DoxyCodeLine{00356\ \ \ \textcolor{keywordflow}{if}\ (len\ >\ 0\ \&\&\ begin[len\ -\/\ 1]\ ==\ \textcolor{charliteral}{'\(\backslash\)0'})\ \{}
+\DoxyCodeLine{00357\ \ \ \ \ PrintCharsAsStringTo(begin,\ len\ -\/\ 1,\ os);}
+\DoxyCodeLine{00358\ \ \ \ \ \textcolor{keywordflow}{return};}
+\DoxyCodeLine{00359\ \ \ \}}
+\DoxyCodeLine{00360\ }
+\DoxyCodeLine{00361\ \ \ \textcolor{comment}{//\ If,\ however,\ the\ last\ element\ in\ the\ array\ is\ not\ '\(\backslash\)0',\ e.g.}}
+\DoxyCodeLine{00362\ \ \ \textcolor{comment}{//\ \ \ \ const\ char\ kFoo[]\ =\ \{\ 'f',\ 'o',\ 'o'\ \};}}
+\DoxyCodeLine{00363\ \ \ \textcolor{comment}{//\ we\ must\ print\ the\ entire\ array.\ \ We\ also\ print\ a\ message\ to\ indicate}}
+\DoxyCodeLine{00364\ \ \ \textcolor{comment}{//\ that\ the\ array\ is\ not\ NUL-\/terminated.}}
+\DoxyCodeLine{00365\ \ \ PrintCharsAsStringTo(begin,\ len,\ os);}
+\DoxyCodeLine{00366\ \ \ *os\ <<\ \textcolor{stringliteral}{"{}\ (no\ terminating\ NUL)"{}};}
+\DoxyCodeLine{00367\ \}}
+\DoxyCodeLine{00368\ }
+\DoxyCodeLine{00369\ \textcolor{comment}{//\ Prints\ a\ (const)\ char\ array\ of\ 'len'\ elements,\ starting\ at\ address\ 'begin'.}}
+\DoxyCodeLine{00370\ \textcolor{keywordtype}{void}\ UniversalPrintArray(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ begin,\ \textcolor{keywordtype}{size\_t}\ len,\ ostream*\ os)\ \{}
+\DoxyCodeLine{00371\ \ \ UniversalPrintCharArray(begin,\ len,\ os);}
+\DoxyCodeLine{00372\ \}}
+\DoxyCodeLine{00373\ }
+\DoxyCodeLine{00374\ \textcolor{preprocessor}{\#ifdef\ \_\_cpp\_char8\_t}}
+\DoxyCodeLine{00375\ \textcolor{comment}{//\ Prints\ a\ (const)\ char8\_t\ array\ of\ 'len'\ elements,\ starting\ at\ address}}
+\DoxyCodeLine{00376\ \textcolor{comment}{//\ 'begin'.}}
+\DoxyCodeLine{00377\ \textcolor{keywordtype}{void}\ UniversalPrintArray(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char8\_t}*\ begin,\ \textcolor{keywordtype}{size\_t}\ len,\ ostream*\ os)\ \{}
+\DoxyCodeLine{00378\ \ \ UniversalPrintCharArray(begin,\ len,\ os);}
+\DoxyCodeLine{00379\ \}}
+\DoxyCodeLine{00380\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00381\ }
+\DoxyCodeLine{00382\ \textcolor{comment}{//\ Prints\ a\ (const)\ char16\_t\ array\ of\ 'len'\ elements,\ starting\ at\ address}}
+\DoxyCodeLine{00383\ \textcolor{comment}{//\ 'begin'.}}
+\DoxyCodeLine{00384\ \textcolor{keywordtype}{void}\ UniversalPrintArray(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char16\_t}*\ begin,\ \textcolor{keywordtype}{size\_t}\ len,\ ostream*\ os)\ \{}
+\DoxyCodeLine{00385\ \ \ UniversalPrintCharArray(begin,\ len,\ os);}
+\DoxyCodeLine{00386\ \}}
+\DoxyCodeLine{00387\ }
+\DoxyCodeLine{00388\ \textcolor{comment}{//\ Prints\ a\ (const)\ char32\_t\ array\ of\ 'len'\ elements,\ starting\ at\ address}}
+\DoxyCodeLine{00389\ \textcolor{comment}{//\ 'begin'.}}
+\DoxyCodeLine{00390\ \textcolor{keywordtype}{void}\ UniversalPrintArray(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char32\_t}*\ begin,\ \textcolor{keywordtype}{size\_t}\ len,\ ostream*\ os)\ \{}
+\DoxyCodeLine{00391\ \ \ UniversalPrintCharArray(begin,\ len,\ os);}
+\DoxyCodeLine{00392\ \}}
+\DoxyCodeLine{00393\ }
+\DoxyCodeLine{00394\ \textcolor{comment}{//\ Prints\ a\ (const)\ wchar\_t\ array\ of\ 'len'\ elements,\ starting\ at\ address}}
+\DoxyCodeLine{00395\ \textcolor{comment}{//\ 'begin'.}}
+\DoxyCodeLine{00396\ \textcolor{keywordtype}{void}\ UniversalPrintArray(\textcolor{keyword}{const}\ \textcolor{keywordtype}{wchar\_t}*\ begin,\ \textcolor{keywordtype}{size\_t}\ len,\ ostream*\ os)\ \{}
+\DoxyCodeLine{00397\ \ \ UniversalPrintCharArray(begin,\ len,\ os);}
+\DoxyCodeLine{00398\ \}}
+\DoxyCodeLine{00399\ }
+\DoxyCodeLine{00400\ \textcolor{keyword}{namespace\ }\{}
+\DoxyCodeLine{00401\ }
+\DoxyCodeLine{00402\ \textcolor{comment}{//\ Prints\ a\ null-\/terminated\ C-\/style\ string\ to\ the\ ostream.}}
+\DoxyCodeLine{00403\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ Char>}
+\DoxyCodeLine{00404\ \textcolor{keywordtype}{void}\ PrintCStringTo(\textcolor{keyword}{const}\ Char*\ s,\ ostream*\ os)\ \{}
+\DoxyCodeLine{00405\ \ \ \textcolor{keywordflow}{if}\ (s\ ==\ \textcolor{keyword}{nullptr})\ \{}
+\DoxyCodeLine{00406\ \ \ \ \ *os\ <<\ \textcolor{stringliteral}{"{}NULL"{}};}
+\DoxyCodeLine{00407\ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00408\ \ \ \ \ *os\ <<\ ImplicitCast\_<const\ void*>(s)\ <<\ \textcolor{stringliteral}{"{}\ pointing\ to\ "{}};}
+\DoxyCodeLine{00409\ \ \ \ \ PrintCharsAsStringTo(s,\ std::char\_traits<Char>::length(s),\ os);}
+\DoxyCodeLine{00410\ \ \ \}}
+\DoxyCodeLine{00411\ \}}
+\DoxyCodeLine{00412\ }
+\DoxyCodeLine{00413\ \}\ \ \textcolor{comment}{//\ anonymous\ namespace}}
+\DoxyCodeLine{00414\ }
+\DoxyCodeLine{00415\ \textcolor{keywordtype}{void}\ PrintTo(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ s,\ ostream*\ os)\ \{\ PrintCStringTo(s,\ os);\ \}}
+\DoxyCodeLine{00416\ }
+\DoxyCodeLine{00417\ \textcolor{preprocessor}{\#ifdef\ \_\_cpp\_char8\_t}}
+\DoxyCodeLine{00418\ \textcolor{keywordtype}{void}\ PrintTo(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char8\_t}*\ s,\ ostream*\ os)\ \{\ PrintCStringTo(s,\ os);\ \}}
+\DoxyCodeLine{00419\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00420\ }
+\DoxyCodeLine{00421\ \textcolor{keywordtype}{void}\ PrintTo(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char16\_t}*\ s,\ ostream*\ os)\ \{\ PrintCStringTo(s,\ os);\ \}}
+\DoxyCodeLine{00422\ }
+\DoxyCodeLine{00423\ \textcolor{keywordtype}{void}\ PrintTo(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char32\_t}*\ s,\ ostream*\ os)\ \{\ PrintCStringTo(s,\ os);\ \}}
+\DoxyCodeLine{00424\ }
+\DoxyCodeLine{00425\ \textcolor{comment}{//\ MSVC\ compiler\ can\ be\ configured\ to\ define\ whar\_t\ as\ a\ typedef}}
+\DoxyCodeLine{00426\ \textcolor{comment}{//\ of\ unsigned\ short.\ Defining\ an\ overload\ for\ const\ wchar\_t*\ in\ that\ case}}
+\DoxyCodeLine{00427\ \textcolor{comment}{//\ would\ cause\ pointers\ to\ unsigned\ shorts\ be\ printed\ as\ wide\ strings,}}
+\DoxyCodeLine{00428\ \textcolor{comment}{//\ possibly\ accessing\ more\ memory\ than\ intended\ and\ causing\ invalid}}
+\DoxyCodeLine{00429\ \textcolor{comment}{//\ memory\ accesses.\ MSVC\ defines\ \_NATIVE\_WCHAR\_T\_DEFINED\ symbol\ when}}
+\DoxyCodeLine{00430\ \textcolor{comment}{//\ wchar\_t\ is\ implemented\ as\ a\ native\ type.}}
+\DoxyCodeLine{00431\ \textcolor{preprocessor}{\#if\ !defined(\_MSC\_VER)\ ||\ defined(\_NATIVE\_WCHAR\_T\_DEFINED)}}
+\DoxyCodeLine{00432\ \textcolor{comment}{//\ Prints\ the\ given\ wide\ C\ string\ to\ the\ ostream.}}
+\DoxyCodeLine{00433\ \textcolor{keywordtype}{void}\ PrintTo(\textcolor{keyword}{const}\ \textcolor{keywordtype}{wchar\_t}*\ s,\ ostream*\ os)\ \{\ PrintCStringTo(s,\ os);\ \}}
+\DoxyCodeLine{00434\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ wchar\_t\ is\ native}}
+\DoxyCodeLine{00435\ }
+\DoxyCodeLine{00436\ \textcolor{keyword}{namespace\ }\{}
+\DoxyCodeLine{00437\ }
+\DoxyCodeLine{00438\ \textcolor{keywordtype}{bool}\ ContainsUnprintableControlCodes(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ str,\ \textcolor{keywordtype}{size\_t}\ length)\ \{}
+\DoxyCodeLine{00439\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}\ *s\ =\ \textcolor{keyword}{reinterpret\_cast<}\textcolor{keyword}{const\ }\textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}\ *\textcolor{keyword}{>}(str);}
+\DoxyCodeLine{00440\ }
+\DoxyCodeLine{00441\ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{size\_t}\ i\ =\ 0;\ i\ <\ length;\ i++)\ \{}
+\DoxyCodeLine{00442\ \ \ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}\ ch\ =\ *s++;}
+\DoxyCodeLine{00443\ \ \ \ \ \textcolor{keywordflow}{if}\ (std::iscntrl(ch))\ \{}
+\DoxyCodeLine{00444\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{switch}\ (ch)\ \{}
+\DoxyCodeLine{00445\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ \textcolor{charliteral}{'\(\backslash\)t'}:}
+\DoxyCodeLine{00446\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ \textcolor{charliteral}{'\(\backslash\)n'}:}
+\DoxyCodeLine{00447\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{case}\ \textcolor{charliteral}{'\(\backslash\)r'}:}
+\DoxyCodeLine{00448\ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{break};}
+\DoxyCodeLine{00449\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{default}:}
+\DoxyCodeLine{00450\ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00451\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00452\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00453\ \ \ \}}
+\DoxyCodeLine{00454\ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00455\ \}}
+\DoxyCodeLine{00456\ }
+\DoxyCodeLine{00457\ \textcolor{keywordtype}{bool}\ IsUTF8TrailByte(\textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}\ t)\ \{\ \textcolor{keywordflow}{return}\ 0x80\ <=\ t\ \&\&\ t<=\ 0xbf;\ \}}
+\DoxyCodeLine{00458\ }
+\DoxyCodeLine{00459\ \textcolor{keywordtype}{bool}\ IsValidUTF8(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ str,\ \textcolor{keywordtype}{size\_t}\ length)\ \{}
+\DoxyCodeLine{00460\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}\ *s\ =\ \textcolor{keyword}{reinterpret\_cast<}\textcolor{keyword}{const\ }\textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}\ *\textcolor{keyword}{>}(str);}
+\DoxyCodeLine{00461\ }
+\DoxyCodeLine{00462\ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{size\_t}\ i\ =\ 0;\ i\ <\ length;)\ \{}
+\DoxyCodeLine{00463\ \ \ \ \ \textcolor{keywordtype}{unsigned}\ \textcolor{keywordtype}{char}\ lead\ =\ s[i++];}
+\DoxyCodeLine{00464\ }
+\DoxyCodeLine{00465\ \ \ \ \ \textcolor{keywordflow}{if}\ (lead\ <=\ 0x7f)\ \{}
+\DoxyCodeLine{00466\ \ \ \ \ \ \ \textcolor{keywordflow}{continue};\ \ \textcolor{comment}{//\ single-\/byte\ character\ (ASCII)\ 0..7F}}
+\DoxyCodeLine{00467\ \ \ \ \ \}}
+\DoxyCodeLine{00468\ \ \ \ \ \textcolor{keywordflow}{if}\ (lead\ <\ 0xc2)\ \{}
+\DoxyCodeLine{00469\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};\ \ \textcolor{comment}{//\ trail\ byte\ or\ non-\/shortest\ form}}
+\DoxyCodeLine{00470\ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}\ (lead\ <=\ 0xdf\ \&\&\ (i\ +\ 1)\ <=\ length\ \&\&\ IsUTF8TrailByte(s[i]))\ \{}
+\DoxyCodeLine{00471\ \ \ \ \ \ \ ++i;\ \ \textcolor{comment}{//\ 2-\/byte\ character}}
+\DoxyCodeLine{00472\ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}\ (0xe0\ <=\ lead\ \&\&\ lead\ <=\ 0xef\ \&\&\ (i\ +\ 2)\ <=\ length\ \&\&}
+\DoxyCodeLine{00473\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ IsUTF8TrailByte(s[i])\ \&\&}
+\DoxyCodeLine{00474\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ IsUTF8TrailByte(s[i\ +\ 1])\ \&\&}
+\DoxyCodeLine{00475\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ check\ for\ non-\/shortest\ form\ and\ surrogate}}
+\DoxyCodeLine{00476\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ (lead\ !=\ 0xe0\ ||\ s[i]\ >=\ 0xa0)\ \&\&}
+\DoxyCodeLine{00477\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ (lead\ !=\ 0xed\ ||\ s[i]\ <\ 0xa0))\ \{}
+\DoxyCodeLine{00478\ \ \ \ \ \ \ i\ +=\ 2;\ \ \textcolor{comment}{//\ 3-\/byte\ character}}
+\DoxyCodeLine{00479\ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \textcolor{keywordflow}{if}\ (0xf0\ <=\ lead\ \&\&\ lead\ <=\ 0xf4\ \&\&\ (i\ +\ 3)\ <=\ length\ \&\&}
+\DoxyCodeLine{00480\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ IsUTF8TrailByte(s[i])\ \&\&}
+\DoxyCodeLine{00481\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ IsUTF8TrailByte(s[i\ +\ 1])\ \&\&}
+\DoxyCodeLine{00482\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ IsUTF8TrailByte(s[i\ +\ 2])\ \&\&}
+\DoxyCodeLine{00483\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ check\ for\ non-\/shortest\ form}}
+\DoxyCodeLine{00484\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ (lead\ !=\ 0xf0\ ||\ s[i]\ >=\ 0x90)\ \&\&}
+\DoxyCodeLine{00485\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ (lead\ !=\ 0xf4\ ||\ s[i]\ <\ 0x90))\ \{}
+\DoxyCodeLine{00486\ \ \ \ \ \ \ i\ +=\ 3;\ \ \textcolor{comment}{//\ 4-\/byte\ character}}
+\DoxyCodeLine{00487\ \ \ \ \ \}\ \textcolor{keywordflow}{else}\ \{}
+\DoxyCodeLine{00488\ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00489\ \ \ \ \ \}}
+\DoxyCodeLine{00490\ \ \ \}}
+\DoxyCodeLine{00491\ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00492\ \}}
+\DoxyCodeLine{00493\ }
+\DoxyCodeLine{00494\ \textcolor{keywordtype}{void}\ ConditionalPrintAsText(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ str,\ \textcolor{keywordtype}{size\_t}\ length,\ ostream*\ os)\ \{}
+\DoxyCodeLine{00495\ \ \ \textcolor{keywordflow}{if}\ (!ContainsUnprintableControlCodes(str,\ length)\ \&\&}
+\DoxyCodeLine{00496\ \ \ \ \ \ \ IsValidUTF8(str,\ length))\ \{}
+\DoxyCodeLine{00497\ \ \ \ \ *os\ <<\ \textcolor{stringliteral}{"{}\(\backslash\)n\ \ \ \ As\ Text:\ \(\backslash\)"{}"{}}\ <<\ str\ <<\ \textcolor{stringliteral}{"{}\(\backslash\)"{}"{}};}
+\DoxyCodeLine{00498\ \ \ \}}
+\DoxyCodeLine{00499\ \}}
+\DoxyCodeLine{00500\ }
+\DoxyCodeLine{00501\ \}\ \ \textcolor{comment}{//\ anonymous\ namespace}}
+\DoxyCodeLine{00502\ }
+\DoxyCodeLine{00503\ \textcolor{keywordtype}{void}\ PrintStringTo(const\ ::std::string\&\ s,\ ostream*\ os)\ \{}
+\DoxyCodeLine{00504\ \ \ \textcolor{keywordflow}{if}\ (PrintCharsAsStringTo(s.data(),\ s.size(),\ os)\ ==\ kHexEscape)\ \{}
+\DoxyCodeLine{00505\ \ \ \ \ \textcolor{keywordflow}{if}\ (GTEST\_FLAG(print\_utf8))\ \{}
+\DoxyCodeLine{00506\ \ \ \ \ \ \ ConditionalPrintAsText(s.data(),\ s.size(),\ os);}
+\DoxyCodeLine{00507\ \ \ \ \ \}}
+\DoxyCodeLine{00508\ \ \ \}}
+\DoxyCodeLine{00509\ \}}
+\DoxyCodeLine{00510\ }
+\DoxyCodeLine{00511\ \textcolor{preprocessor}{\#ifdef\ \_\_cpp\_char8\_t}}
+\DoxyCodeLine{00512\ \textcolor{keywordtype}{void}\ PrintU8StringTo(const\ ::std::u8string\&\ s,\ ostream*\ os)\ \{}
+\DoxyCodeLine{00513\ \ \ PrintCharsAsStringTo(s.data(),\ s.size(),\ os);}
+\DoxyCodeLine{00514\ \}}
+\DoxyCodeLine{00515\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00516\ }
+\DoxyCodeLine{00517\ \textcolor{keywordtype}{void}\ PrintU16StringTo(const\ ::std::u16string\&\ s,\ ostream*\ os)\ \{}
+\DoxyCodeLine{00518\ \ \ PrintCharsAsStringTo(s.data(),\ s.size(),\ os);}
+\DoxyCodeLine{00519\ \}}
+\DoxyCodeLine{00520\ }
+\DoxyCodeLine{00521\ \textcolor{keywordtype}{void}\ PrintU32StringTo(const\ ::std::u32string\&\ s,\ ostream*\ os)\ \{}
+\DoxyCodeLine{00522\ \ \ PrintCharsAsStringTo(s.data(),\ s.size(),\ os);}
+\DoxyCodeLine{00523\ \}}
+\DoxyCodeLine{00524\ }
+\DoxyCodeLine{00525\ \textcolor{preprocessor}{\#if\ GTEST\_HAS\_STD\_WSTRING}}
+\DoxyCodeLine{00526\ \textcolor{keywordtype}{void}\ PrintWideStringTo(const\ ::std::wstring\&\ s,\ ostream*\ os)\ \{}
+\DoxyCodeLine{00527\ \ \ PrintCharsAsStringTo(s.data(),\ s.size(),\ os);}
+\DoxyCodeLine{00528\ \}}
+\DoxyCodeLine{00529\ \textcolor{preprocessor}{\#endif\ \ }\textcolor{comment}{//\ GTEST\_HAS\_STD\_WSTRING}}
+\DoxyCodeLine{00530\ }
+\DoxyCodeLine{00531\ \}\ \ \textcolor{comment}{//\ namespace\ internal}}
+\DoxyCodeLine{00532\ }
+\DoxyCodeLine{00533\ \}\ \ \textcolor{comment}{//\ namespace\ testing}}
+
+\end{DoxyCode}

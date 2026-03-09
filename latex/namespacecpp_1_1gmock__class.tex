@@ -1,0 +1,88 @@
+\doxysection{cpp.\+gmock\+\_\+class Namespace Reference}
+\hypertarget{namespacecpp_1_1gmock__class}{}\label{namespacecpp_1_1gmock__class}\index{cpp.gmock\_class@{cpp.gmock\_class}}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{namespacecpp_1_1gmock__class_ab3e9062dc83f6624dbe71ed59d0a6b41}{\+\_\+\+Render\+Type}} (ast\+\_\+type)
+\item 
+\mbox{\hyperlink{namespacecpp_1_1gmock__class_a3204239891768ee7bf55667329c76bbe}{\+\_\+\+Generate\+Arg}} (source)
+\item 
+\mbox{\hyperlink{namespacecpp_1_1gmock__class_af67b27efa54e5ab51d5a305ea19a4f71}{\+\_\+\+Escape\+For\+Macro}} (s)
+\item 
+\Hypertarget{namespacecpp_1_1gmock__class_ab7951ac071cce54c62f7eca4262820a1}\label{namespacecpp_1_1gmock__class_ab7951ac071cce54c62f7eca4262820a1} 
+{\bfseries \+\_\+\+Generate\+Methods} (output\+\_\+lines, source, class\+\_\+node)
+\item 
+\Hypertarget{namespacecpp_1_1gmock__class_aab4e7f3244efb6cead21f4a51fc9ca5e}\label{namespacecpp_1_1gmock__class_aab4e7f3244efb6cead21f4a51fc9ca5e} 
+{\bfseries \+\_\+\+Generate\+Mocks} (filename, source, ast\+\_\+list, desired\+\_\+class\+\_\+names)
+\item 
+\Hypertarget{namespacecpp_1_1gmock__class_a3d6f1153474842c967c17ff866e1af88}\label{namespacecpp_1_1gmock__class_a3d6f1153474842c967c17ff866e1af88} 
+{\bfseries main} (argv=sys.\+argv)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{namespacecpp_1_1gmock__class_ab4128a969856897356b7956c5ba4fc01}\label{namespacecpp_1_1gmock__class_ab4128a969856897356b7956c5ba4fc01} 
+{\bfseries \+\_\+dummy} = set
+\item 
+\Hypertarget{namespacecpp_1_1gmock__class_a2157e96eee0b4bf9ca6d195ab76f59c2}\label{namespacecpp_1_1gmock__class_a2157e96eee0b4bf9ca6d195ab76f59c2} 
+{\bfseries set} = sets.\+Set
+\item 
+\Hypertarget{namespacecpp_1_1gmock__class_ae5d7185c5f485142460e91de1394283c}\label{namespacecpp_1_1gmock__class_ae5d7185c5f485142460e91de1394283c} 
+tuple {\bfseries \+\_\+\+VERSION} = (1, 0, 1)
+\item 
+\Hypertarget{namespacecpp_1_1gmock__class_aa09d38d618dd2e76366852c660a832e8}\label{namespacecpp_1_1gmock__class_aa09d38d618dd2e76366852c660a832e8} 
+int {\bfseries \+\_\+\+INDENT} = 2
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyVerb}Generate Google Mock classes from base classes.
+
+This program will read in a C++ source file and output the Google Mock
+classes for the specified classes.  If no class is specified, all
+classes in the source file are emitted.
+
+Usage:
+  gmock_class.py header-file.h [ClassName]...
+
+Output is sent to stdout.
+\end{DoxyVerb}
+ 
+
+\doxysubsection{Function Documentation}
+\Hypertarget{namespacecpp_1_1gmock__class_af67b27efa54e5ab51d5a305ea19a4f71}\label{namespacecpp_1_1gmock__class_af67b27efa54e5ab51d5a305ea19a4f71} 
+\index{cpp.gmock\_class@{cpp.gmock\_class}!\_EscapeForMacro@{\_EscapeForMacro}}
+\index{\_EscapeForMacro@{\_EscapeForMacro}!cpp.gmock\_class@{cpp.gmock\_class}}
+\doxysubsubsection{\texorpdfstring{\_EscapeForMacro()}{\_EscapeForMacro()}}
+{\footnotesize\ttfamily cpp.\+gmock\+\_\+class.\+\_\+\+Escape\+For\+Macro (\begin{DoxyParamCaption}\item[{}]{s }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+\begin{DoxyVerb}Escapes a string for use as an argument to a C++ macro.\end{DoxyVerb}
+ \Hypertarget{namespacecpp_1_1gmock__class_a3204239891768ee7bf55667329c76bbe}\label{namespacecpp_1_1gmock__class_a3204239891768ee7bf55667329c76bbe} 
+\index{cpp.gmock\_class@{cpp.gmock\_class}!\_GenerateArg@{\_GenerateArg}}
+\index{\_GenerateArg@{\_GenerateArg}!cpp.gmock\_class@{cpp.gmock\_class}}
+\doxysubsubsection{\texorpdfstring{\_GenerateArg()}{\_GenerateArg()}}
+{\footnotesize\ttfamily cpp.\+gmock\+\_\+class.\+\_\+\+Generate\+Arg (\begin{DoxyParamCaption}\item[{}]{source }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+\begin{DoxyVerb}Strips out comments, default arguments, and redundant spaces from a single argument.
+
+Args:
+  source: A string for a single argument.
+
+Returns:
+  Rendered string of the argument.
+\end{DoxyVerb}
+ \Hypertarget{namespacecpp_1_1gmock__class_ab3e9062dc83f6624dbe71ed59d0a6b41}\label{namespacecpp_1_1gmock__class_ab3e9062dc83f6624dbe71ed59d0a6b41} 
+\index{cpp.gmock\_class@{cpp.gmock\_class}!\_RenderType@{\_RenderType}}
+\index{\_RenderType@{\_RenderType}!cpp.gmock\_class@{cpp.gmock\_class}}
+\doxysubsubsection{\texorpdfstring{\_RenderType()}{\_RenderType()}}
+{\footnotesize\ttfamily cpp.\+gmock\+\_\+class.\+\_\+\+Render\+Type (\begin{DoxyParamCaption}\item[{}]{ast\+\_\+type }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+\begin{DoxyVerb}Renders the potentially recursively templated type into a string.
+
+Args:
+  ast_type: The AST of the type.
+
+Returns:
+  Rendered string of the type.
+\end{DoxyVerb}
+ 

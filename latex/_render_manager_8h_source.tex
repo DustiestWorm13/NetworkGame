@@ -1,0 +1,50 @@
+\doxysection{Render\+Manager.\+h}
+\hypertarget{_render_manager_8h_source}{}\label{_render_manager_8h_source}\index{src/client/RenderManager.h@{src/client/RenderManager.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{//I\ take\ care\ of\ rendering\ things!}}
+\DoxyCodeLine{00002\ }
+\DoxyCodeLine{00003\ \textcolor{preprocessor}{\#ifndef\ RENDER\_MANAGER\_H}}
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#define\ RENDER\_MANAGER\_H}}
+\DoxyCodeLine{00005\ }
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ <memory>}}
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#include\ <vector>}}
+\DoxyCodeLine{00008\ \textcolor{keyword}{using\ }std::vector;}
+\DoxyCodeLine{00009\ }
+\DoxyCodeLine{00010\ \textcolor{preprocessor}{\#ifndef\ \_WIN32}}
+\DoxyCodeLine{00011\ \textcolor{preprocessor}{\#include\ <SDL2/SDL.h>}}
+\DoxyCodeLine{00012\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{00013\ \textcolor{preprocessor}{\#include\ <SDL.h>}}
+\DoxyCodeLine{00014\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00015\ }
+\DoxyCodeLine{00016\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_sprite_component}{SpriteComponent}};}
+\DoxyCodeLine{00017\ }
+\DoxyCodeLine{00018\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_render_manager}{RenderManager}}}
+\DoxyCodeLine{00019\ \{}
+\DoxyCodeLine{00020\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00021\ }
+\DoxyCodeLine{00022\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ StaticInit();}
+\DoxyCodeLine{00023\ \ \ \ \ \textcolor{keyword}{static}\ std::unique\_ptr<\ RenderManager\ >\ sInstance;}
+\DoxyCodeLine{00024\ }
+\DoxyCodeLine{00025\ \ \ \ \ \textcolor{keywordtype}{void}\ Render();}
+\DoxyCodeLine{00026\ \ \ \ \ \textcolor{keywordtype}{void}\ RenderComponents();}
+\DoxyCodeLine{00027\ }
+\DoxyCodeLine{00028\ \ \ \ \ \textcolor{comment}{//vert\ inefficient\ method\ of\ tracking\ scene\ graph...}}
+\DoxyCodeLine{00029\ \ \ \ \ \textcolor{keywordtype}{void}\ AddComponent(\ \mbox{\hyperlink{class_sprite_component}{SpriteComponent}}*\ inComponent\ );}
+\DoxyCodeLine{00030\ \ \ \ \ \textcolor{keywordtype}{void}\ RemoveComponent(\ \mbox{\hyperlink{class_sprite_component}{SpriteComponent}}*\ inComponent\ );}
+\DoxyCodeLine{00031\ \ \ \ \ \textcolor{keywordtype}{int}\ \ GetComponentIndex(\ \mbox{\hyperlink{class_sprite_component}{SpriteComponent}}*\ inComponent\ )\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00032\ }
+\DoxyCodeLine{00033\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00034\ }
+\DoxyCodeLine{00035\ \ \ \ \ \mbox{\hyperlink{class_render_manager}{RenderManager}}();}
+\DoxyCodeLine{00036\ }
+\DoxyCodeLine{00037\ \ \ \ \ \textcolor{comment}{//this\ can't\ be\ only\ place\ that\ holds\ on\ to\ component-\/\ it\ has\ to\ live\ inside\ a\ GameObject\ in\ the\ world}}
+\DoxyCodeLine{00038\ \ \ \ \ vector<\ SpriteComponent*\ >\ \ \ \ \ \ mComponents;}
+\DoxyCodeLine{00039\ }
+\DoxyCodeLine{00040\ \ \ \ \ SDL\_Rect\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ mViewTransform;}
+\DoxyCodeLine{00041\ }
+\DoxyCodeLine{00042\ \};}
+\DoxyCodeLine{00043\ }
+\DoxyCodeLine{00044\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{//\ RENDER\_MANAGER\_H}}
+
+\end{DoxyCode}

@@ -1,0 +1,81 @@
+\doxysection{Server Class Reference}
+\hypertarget{class_server}{}\label{class_server}\index{Server@{Server}}
+Inheritance diagram for Server\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_server}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+virtual void \mbox{\hyperlink{class_server_a6143c9d0d63417a8b790461adba00b09}{Do\+Frame}} () override
+\item 
+virtual int \mbox{\hyperlink{class_server_a696259b475a6e10bd029333c07626b21}{Run}} ()
+\item 
+\Hypertarget{class_server_a01ce0da589fdc8e9d9b6f3e655d9a183}\label{class_server_a01ce0da589fdc8e9d9b6f3e655d9a183} 
+void {\bfseries Handle\+New\+Client} (Client\+Proxy\+Ptr in\+Client\+Proxy)
+\item 
+\Hypertarget{class_server_a6e0e353695a565b343e1ae041e806b36}\label{class_server_a6e0e353695a565b343e1ae041e806b36} 
+void {\bfseries Handle\+Lost\+Client} (Client\+Proxy\+Ptr in\+Client\+Proxy)
+\item 
+\Hypertarget{class_server_a3ca5f4cace09f10602066dcdf5abb63e}\label{class_server_a3ca5f4cace09f10602066dcdf5abb63e} 
+Player\+Ptr {\bfseries Get\+Player} (int in\+Player\+Id)
+\item 
+\Hypertarget{class_server_a3803b02af95a658afa109c2c0d5e7885}\label{class_server_a3803b02af95a658afa109c2c0d5e7885} 
+Rock\+Ptr {\bfseries Get\+Rock} (int in\+Rock\+Id)
+\item 
+\Hypertarget{class_server_a26825fad140f7b3f74171226151e1071}\label{class_server_a26825fad140f7b3f74171226151e1071} 
+void {\bfseries Spawn\+Player} (int in\+Player\+Id)
+\item 
+\Hypertarget{class_server_a2e14b395e2ac860e5ec6b41743a676b9}\label{class_server_a2e14b395e2ac860e5ec6b41743a676b9} 
+void {\bfseries Spawn\+Rock} (int in\+Rock\+Id)
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \mbox{\hyperlink{class_engine}{Engine}}}
+\begin{DoxyCompactItemize}
+\item 
+void {\bfseries Set\+Should\+Keep\+Running} (bool in\+Should\+Keep\+Running)
+\item 
+virtual void {\bfseries Handle\+Event} (SDL\+\_\+\+Event \texorpdfstring{$\ast$}{*}in\+Event)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_server_a821813e3aaba24f1836715b5b5d0306e}\label{class_server_a821813e3aaba24f1836715b5b5d0306e} 
+static bool {\bfseries Static\+Init} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Additional Inherited Members}
+\doxysubsection*{Static Public Attributes inherited from \mbox{\hyperlink{class_engine}{Engine}}}
+\begin{DoxyCompactItemize}
+\item 
+static std\+::unique\+\_\+ptr$<$ \mbox{\hyperlink{class_engine}{Engine}} $>$ {\bfseries s\+Instance}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_server_a6143c9d0d63417a8b790461adba00b09}\label{class_server_a6143c9d0d63417a8b790461adba00b09} 
+\index{Server@{Server}!DoFrame@{DoFrame}}
+\index{DoFrame@{DoFrame}!Server@{Server}}
+\doxysubsubsection{\texorpdfstring{DoFrame()}{DoFrame()}}
+{\footnotesize\ttfamily void Server\+::\+Do\+Frame (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Reimplemented from \mbox{\hyperlink{class_engine}{Engine}}.
+
+\Hypertarget{class_server_a696259b475a6e10bd029333c07626b21}\label{class_server_a696259b475a6e10bd029333c07626b21} 
+\index{Server@{Server}!Run@{Run}}
+\index{Run@{Run}!Server@{Server}}
+\doxysubsubsection{\texorpdfstring{Run()}{Run()}}
+{\footnotesize\ttfamily int Server\+::\+Run (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Reimplemented from \mbox{\hyperlink{class_engine}{Engine}}.
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+src/server/Server.\+h\item 
+src/server/Server.\+cpp\end{DoxyCompactItemize}

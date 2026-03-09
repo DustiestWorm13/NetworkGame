@@ -1,0 +1,50 @@
+\doxysection{Socket\+Util.\+h}
+\hypertarget{_socket_util_8h_source}{}\label{_socket_util_8h_source}\index{src/networking/SocketUtil.h@{src/networking/SocketUtil.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#ifndef\ SOCKET\_UTIL\_H\_}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#define\ SOCKET\_UTIL\_H\_}}
+\DoxyCodeLine{00003\ }
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ "{}NetworkingCommon.h"{}}}
+\DoxyCodeLine{00005\ }
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ "{}TCPSocket.h"{}}}
+\DoxyCodeLine{00007\ \textcolor{preprocessor}{\#include\ "{}UDPSocket.h"{}}}
+\DoxyCodeLine{00008\ }
+\DoxyCodeLine{00009\ \textcolor{preprocessor}{\#include\ <vector>}}
+\DoxyCodeLine{00010\ \textcolor{keyword}{using\ }std::vector;}
+\DoxyCodeLine{00011\ }
+\DoxyCodeLine{00012\ \textcolor{keyword}{enum}\ SocketAddressFamily}
+\DoxyCodeLine{00013\ \{}
+\DoxyCodeLine{00014\ \ \ \ \ INET\ =\ AF\_INET,}
+\DoxyCodeLine{00015\ \ \ \ \ INET6\ =\ AF\_INET6}
+\DoxyCodeLine{00016\ \};}
+\DoxyCodeLine{00017\ }
+\DoxyCodeLine{00018\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_socket_util}{SocketUtil}}}
+\DoxyCodeLine{00019\ \{}
+\DoxyCodeLine{00020\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00021\ }
+\DoxyCodeLine{00022\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ \ \ \ \ \ \ \ \ StaticInit();}
+\DoxyCodeLine{00023\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ \ \ \ \ \ \ \ \ CleanUp();}
+\DoxyCodeLine{00024\ }
+\DoxyCodeLine{00025\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ \ \ \ \ \ \ \ \ ReportError(\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ inOperationDesc\ );}
+\DoxyCodeLine{00026\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{int}\ \ \ \ \ \ \ \ \ \ GetLastError();}
+\DoxyCodeLine{00027\ }
+\DoxyCodeLine{00028\ \ \ \ \ \textcolor{keyword}{static}\ \textcolor{keywordtype}{int}\ \ \ \ \ \ \ \ \ \ Select(\ \textcolor{keyword}{const}\ vector<\ TCPSocketPtr\ >*\ inReadSet,}
+\DoxyCodeLine{00029\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vector<\ TCPSocketPtr\ >*\ outReadSet,}
+\DoxyCodeLine{00030\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ vector<\ TCPSocketPtr\ >*\ inWriteSet,}
+\DoxyCodeLine{00031\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vector<\ TCPSocketPtr\ >*\ outWriteSet,}
+\DoxyCodeLine{00032\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ vector<\ TCPSocketPtr\ >*\ inExceptSet,}
+\DoxyCodeLine{00033\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ vector<\ TCPSocketPtr\ >*\ outExceptSet\ );}
+\DoxyCodeLine{00034\ }
+\DoxyCodeLine{00035\ \ \ \ \ \textcolor{keyword}{static}\ UDPSocketPtr\ CreateUDPSocket(\ SocketAddressFamily\ inFamily\ );}
+\DoxyCodeLine{00036\ \ \ \ \ \textcolor{keyword}{static}\ TCPSocketPtr\ CreateTCPSocket(\ SocketAddressFamily\ inFamily\ );}
+\DoxyCodeLine{00037\ }
+\DoxyCodeLine{00038\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00039\ }
+\DoxyCodeLine{00040\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keyword}{static}\ fd\_set*\ FillSetFromVector(\ fd\_set\&\ outSet,\ \textcolor{keyword}{const}\ vector<\ TCPSocketPtr\ >*\ inSockets,\ \textcolor{keywordtype}{int}\&\ ioNaxNfds\ );}
+\DoxyCodeLine{00041\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keyword}{static}\ \textcolor{keywordtype}{void}\ FillVectorFromSet(\ vector<\ TCPSocketPtr\ >*\ outSockets,\ \textcolor{keyword}{const}\ vector<\ TCPSocketPtr\ >*\ inSockets,\ \textcolor{keyword}{const}\ fd\_set\&\ inSet\ );}
+\DoxyCodeLine{00042\ \};}
+\DoxyCodeLine{00043\ }
+\DoxyCodeLine{00044\ \textcolor{preprocessor}{\#endif}}
+
+\end{DoxyCode}

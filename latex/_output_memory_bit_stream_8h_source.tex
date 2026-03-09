@@ -1,0 +1,87 @@
+\doxysection{Output\+Memory\+Bit\+Stream.\+h}
+\hypertarget{_output_memory_bit_stream_8h_source}{}\label{_output_memory_bit_stream_8h_source}\index{src/serialisation/OutputMemoryBitStream.h@{src/serialisation/OutputMemoryBitStream.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#ifndef\ OUTPUT\_MEMORY\_BIT\_STREAM\_H}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#define\ OUTPUT\_MEMORY\_BIT\_STREAM\_H}}
+\DoxyCodeLine{00003\ }
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ <cstdint>}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ <cstdlib>}}
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ <string>}}
+\DoxyCodeLine{00007\ }
+\DoxyCodeLine{00008\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_game_object}{GameObject}};}
+\DoxyCodeLine{00009\ }
+\DoxyCodeLine{00010\ \textcolor{preprocessor}{\#include\ "{}SerialisationCommon.h"{}}}
+\DoxyCodeLine{00011\ \textcolor{preprocessor}{\#include\ "{}Fixed.h"{}}}
+\DoxyCodeLine{00012\ \textcolor{preprocessor}{\#include\ "{}BitMan.h"{}}}
+\DoxyCodeLine{00013\ }
+\DoxyCodeLine{00014\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_vector3}{Vector3}};}
+\DoxyCodeLine{00015\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_quaternion}{Quaternion}};}
+\DoxyCodeLine{00016\ }
+\DoxyCodeLine{00017\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_output_memory_bit_stream}{OutputMemoryBitStream}}}
+\DoxyCodeLine{00018\ \{}
+\DoxyCodeLine{00019\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00020\ \ \ \ \ \textcolor{keywordtype}{void}\ \ \ \ \ \ \ \ ReallocBuffer(\ uint32\_t\ inNewBitCapacity\ );}
+\DoxyCodeLine{00021\ }
+\DoxyCodeLine{00022\ \ \ \ \ \textcolor{keywordtype}{char}*\ \ \ \ \ \ \ mBuffer;}
+\DoxyCodeLine{00023\ \ \ \ \ uint32\_t\ \ \ \ mBitHead;}
+\DoxyCodeLine{00024\ \ \ \ \ uint32\_t\ \ \ \ mBitCapacity;}
+\DoxyCodeLine{00025\ }
+\DoxyCodeLine{00026\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00027\ \ \ \ \ \mbox{\hyperlink{class_output_memory_bit_stream}{OutputMemoryBitStream}}()\ :}
+\DoxyCodeLine{00028\ \ \ \ \ \ \ \ \ mBuffer(\textcolor{keyword}{nullptr}),}
+\DoxyCodeLine{00029\ \ \ \ \ \ \ \ \ mBitHead(0)}
+\DoxyCodeLine{00030\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00031\ \ \ \ \ \ \ \ \ \ \ \ \ ReallocBuffer(\ 1500\ *\ 8\ );}
+\DoxyCodeLine{00032\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00033\ }
+\DoxyCodeLine{00034\ \ \ \ \ \mbox{\hyperlink{class_output_memory_bit_stream}{\string~OutputMemoryBitStream}}();}
+\DoxyCodeLine{00035\ }
+\DoxyCodeLine{00036\ \ \ \ \ \textcolor{keywordtype}{void}\ \ \ \ \ \ \ \ WriteBits(\ uint8\_t\ inData,\ uint32\_t\ inBitCount\ );}
+\DoxyCodeLine{00037\ \ \ \ \ \textcolor{keywordtype}{void}\ \ \ \ \ \ \ \ WriteBits(\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{void}*\ inData,\ uint32\_t\ inBitCount\ );}
+\DoxyCodeLine{00038\ }
+\DoxyCodeLine{00039\ \ \ \ \ \textcolor{keyword}{const}\ \ \ \textcolor{keywordtype}{char}*\ \ \ GetBufferPtr()\textcolor{keyword}{\ \ \ \ \ \ const\ \ \ }\{\ \textcolor{keywordflow}{return}\ mBuffer;\ \}}
+\DoxyCodeLine{00040\ \ \ \ \ uint32\_t\ \ \ \ \ \ \ \ GetBitLength()\textcolor{keyword}{\ \ \ \ \ \ const\ \ \ }\{\ \textcolor{keywordflow}{return}\ mBitHead;\ \}}
+\DoxyCodeLine{00041\ \ \ \ \ uint32\_t\ \ \ \ \ \ \ \ GetByteLength()\textcolor{keyword}{\ \ \ \ \ const\ \ \ }\{\ \textcolor{keywordflow}{return}\ (\ mBitHead\ +\ 7\ )\ >>\ 3;\ \}}
+\DoxyCodeLine{00042\ }
+\DoxyCodeLine{00043\ \ \ \ \ \textcolor{keywordtype}{void}\ WriteBytes(\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{void}*\ inData,\ uint32\_t\ inByteCount\ )\ \{\ WriteBits(\ inData,\ inByteCount\ <<\ 3\ );\ \}}
+\DoxyCodeLine{00044\ }
+\DoxyCodeLine{00045\ \ \ \ \ \textcolor{comment}{/*}}
+\DoxyCodeLine{00046\ \textcolor{comment}{\ \ \ \ void\ Write(\ uint32\_t\ inData,\ uint32\_t\ inBitCount\ =\ 32\ )\ \{\ WriteBits(\ \&inData,\ inBitCount\ );\ \}}}
+\DoxyCodeLine{00047\ \textcolor{comment}{\ \ \ \ void\ Write(\ int\ inData,\ uint32\_t\ inBitCount\ =\ 32\ )\ \ \ \ \ \ \{\ WriteBits(\ \&inData,\ inBitCount\ );\ \}}}
+\DoxyCodeLine{00048\ \textcolor{comment}{\ \ \ \ void\ Write(\ float\ inData\ )\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{\ WriteBits(\ \&inData,\ 32\ );\ \}}}
+\DoxyCodeLine{00049\ \textcolor{comment}{}}
+\DoxyCodeLine{00050\ \textcolor{comment}{\ \ \ \ void\ Write(\ uint16\_t\ inData,\ uint32\_t\ inBitCount\ =\ 16\ )\ \{\ WriteBits(\ \&inData,\ inBitCount\ );\ \}}}
+\DoxyCodeLine{00051\ \textcolor{comment}{\ \ \ \ void\ Write(\ int16\_t\ inData,\ uint32\_t\ inBitCount\ =\ 16\ )\ \ \{\ WriteBits(\ \&inData,\ inBitCount\ );\ \}}}
+\DoxyCodeLine{00052\ \textcolor{comment}{}}
+\DoxyCodeLine{00053\ \textcolor{comment}{\ \ \ \ void\ Write(\ uint8\_t\ inData,\ uint32\_t\ inBitCount\ =\ 8\ )\ \ \ \{\ WriteBits(\ \&inData,\ inBitCount\ );\ \}}}
+\DoxyCodeLine{00054\ \textcolor{comment}{\ \ \ \ */}}
+\DoxyCodeLine{00055\ }
+\DoxyCodeLine{00056\ \ \ \ \ \textcolor{keyword}{template}<\ \textcolor{keyword}{typename}\ T\ >}
+\DoxyCodeLine{00057\ \ \ \ \ \textcolor{keywordtype}{void}\ Write(\ T\ inData,\ uint32\_t\ inBitCount\ =\ \textcolor{keyword}{sizeof}(\ T\ )\ *\ 8\ )}
+\DoxyCodeLine{00058\ \ \ \ \ \{}
+\DoxyCodeLine{00059\ \ \ \ \ \ \ \ \ \textcolor{keyword}{static\_assert}(\ std::is\_arithmetic<\ T\ >::value\ ||}
+\DoxyCodeLine{00060\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::is\_enum<\ T\ >::value,}
+\DoxyCodeLine{00061\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}Generic\ Write\ only\ supports\ primitive\ data\ types"{}}\ );}
+\DoxyCodeLine{00062\ \ \ \ \ \ \ \ \ WriteBits(\ \&inData,\ inBitCount\ );}
+\DoxyCodeLine{00063\ \ \ \ \ \}}
+\DoxyCodeLine{00064\ }
+\DoxyCodeLine{00065\ \ \ \ \ \textcolor{keywordtype}{void}\ \ \ \ \ \ \ \ Write(\ \textcolor{keywordtype}{bool}\ inData\ )\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{\ WriteBits(\ \&inData,\ 1\ );\ \}}
+\DoxyCodeLine{00066\ }
+\DoxyCodeLine{00067\ \ \ \ \ \textcolor{keywordtype}{void}\ \ \ \ \ \ \ \ Write(\ \textcolor{keyword}{const}\ \mbox{\hyperlink{class_vector3}{Vector3}}\&\ inVector\ );}
+\DoxyCodeLine{00068\ \ \ \ \ \textcolor{keywordtype}{void}\ \ \ \ \ \ \ \ Write(\ \textcolor{keyword}{const}\ \mbox{\hyperlink{class_quaternion}{Quaternion}}\&\ inQuat\ );}
+\DoxyCodeLine{00069\ }
+\DoxyCodeLine{00070\ \ \ \ \ \textcolor{keywordtype}{void}\ Write(\ \textcolor{keyword}{const}\ std::string\&\ inString\ )}
+\DoxyCodeLine{00071\ \ \ \ \ \{}
+\DoxyCodeLine{00072\ \ \ \ \ \ \ \ \ uint32\_t\ elementCount\ =\ \textcolor{keyword}{static\_cast<}\ uint32\_t\ \textcolor{keyword}{>}(\ inString.size()\ );}
+\DoxyCodeLine{00073\ \ \ \ \ \ \ \ \ Write(\ elementCount\ );}
+\DoxyCodeLine{00074\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}(\ \textcolor{keyword}{const}\ \textcolor{keyword}{auto}\&\ element\ :\ inString\ )}
+\DoxyCodeLine{00075\ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00076\ \ \ \ \ \ \ \ \ \ \ \ \ Write(\ element\ );}
+\DoxyCodeLine{00077\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00078\ \ \ \ \ \}}
+\DoxyCodeLine{00079\ \};}
+\DoxyCodeLine{00080\ }
+\DoxyCodeLine{00081\ \textcolor{preprocessor}{\#endif}}
+
+\end{DoxyCode}

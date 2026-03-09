@@ -1,0 +1,137 @@
+\doxysection{upload.\+Mercurial\+VCS Class Reference}
+\hypertarget{classupload_1_1_mercurial_v_c_s}{}\label{classupload_1_1_mercurial_v_c_s}\index{upload.MercurialVCS@{upload.MercurialVCS}}
+Inheritance diagram for upload.\+Mercurial\+VCS\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.000000cm]{classupload_1_1_mercurial_v_c_s}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classupload_1_1_mercurial_v_c_s_a68e4fc1308e45b9929b6c08b1df19f9f}{\+\_\+\+\_\+init\+\_\+\+\_\+}} (self, options, repo\+\_\+dir)
+\item 
+\mbox{\hyperlink{classupload_1_1_mercurial_v_c_s_a00d1227902572ac557e054b9c9c33791}{Generate\+Diff}} (self, extra\+\_\+args)
+\item 
+\mbox{\hyperlink{classupload_1_1_mercurial_v_c_s_a453e37400923d6fdc6dbbe1203a097a1}{Get\+Unknown\+Files}} (self)
+\item 
+\mbox{\hyperlink{classupload_1_1_mercurial_v_c_s_a7bd835c63bb09c3f01fb24fce4657f4c}{Get\+Base\+File}} (self, filename)
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \mbox{\hyperlink{classupload_1_1_version_control_system}{upload.\+Version\+Control\+System}}}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classupload_1_1_version_control_system_aed703e2def2bc9505f182de7b753499d}{Check\+For\+Unknown\+Files}} (self)
+\item 
+\mbox{\hyperlink{classupload_1_1_version_control_system_a426cb9d4ad9f94754c9122653e3aa24f}{Get\+Base\+Files}} (self, diff)
+\item 
+\mbox{\hyperlink{classupload_1_1_version_control_system_ac1549d3e1616a01a27581a03ee754189}{Upload\+Base\+Files}} (self, issue, rpc\+\_\+server, patch\+\_\+list, patchset, options, files)
+\item 
+\mbox{\hyperlink{classupload_1_1_version_control_system_a8d49726fefa641c183d210889491396c}{Is\+Image}} (self, filename)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classupload_1_1_mercurial_v_c_s_a219c1e0ab9ce864e3231913762ea489b}\label{classupload_1_1_mercurial_v_c_s_a219c1e0ab9ce864e3231913762ea489b} 
+{\bfseries repo\+\_\+dir}
+\item 
+\Hypertarget{classupload_1_1_mercurial_v_c_s_a0dad32e621f5523e3430d867184f0b42}\label{classupload_1_1_mercurial_v_c_s_a0dad32e621f5523e3430d867184f0b42} 
+{\bfseries subdir}
+\item 
+\Hypertarget{classupload_1_1_mercurial_v_c_s_a41faae7820d5a015f4a42476e5e4ab8c}\label{classupload_1_1_mercurial_v_c_s_a41faae7820d5a015f4a42476e5e4ab8c} 
+{\bfseries base\+\_\+rev}
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Attributes inherited from \mbox{\hyperlink{classupload_1_1_version_control_system}{upload.\+Version\+Control\+System}}}
+\begin{DoxyCompactItemize}
+\item 
+{\bfseries options}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classupload_1_1_mercurial_v_c_s_a61c499a1578467be3ea93e6c52362b74}{\+\_\+\+Get\+Rel\+Path}} (self, filename)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyVerb}Implementation of the VersionControlSystem interface for Mercurial.\end{DoxyVerb}
+ 
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{classupload_1_1_mercurial_v_c_s_a68e4fc1308e45b9929b6c08b1df19f9f}\label{classupload_1_1_mercurial_v_c_s_a68e4fc1308e45b9929b6c08b1df19f9f} 
+\index{upload.MercurialVCS@{upload.MercurialVCS}!\_\_init\_\_@{\_\_init\_\_}}
+\index{\_\_init\_\_@{\_\_init\_\_}!upload.MercurialVCS@{upload.MercurialVCS}}
+\doxysubsubsection{\texorpdfstring{\_\_init\_\_()}{\_\_init\_\_()}}
+{\footnotesize\ttfamily upload.\+Mercurial\+VCS.\+\_\+\+\_\+init\+\_\+\+\_\+ (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{options,  }\item[{}]{repo\+\_\+dir }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Constructor.
+
+Args:
+  options: Command line options.
+\end{DoxyVerb}
+ 
+
+Reimplemented from \mbox{\hyperlink{classupload_1_1_version_control_system_ab2a3da53878c9d8bdfbd0fc03091ce1b}{upload.\+Version\+Control\+System}}.
+
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classupload_1_1_mercurial_v_c_s_a61c499a1578467be3ea93e6c52362b74}\label{classupload_1_1_mercurial_v_c_s_a61c499a1578467be3ea93e6c52362b74} 
+\index{upload.MercurialVCS@{upload.MercurialVCS}!\_GetRelPath@{\_GetRelPath}}
+\index{\_GetRelPath@{\_GetRelPath}!upload.MercurialVCS@{upload.MercurialVCS}}
+\doxysubsubsection{\texorpdfstring{\_GetRelPath()}{\_GetRelPath()}}
+{\footnotesize\ttfamily upload.\+Mercurial\+VCS.\+\_\+\+Get\+Rel\+Path (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{filename }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+\begin{DoxyVerb}Get relative path of a file according to the current directory,
+given its logical path in the repo.\end{DoxyVerb}
+ \Hypertarget{classupload_1_1_mercurial_v_c_s_a00d1227902572ac557e054b9c9c33791}\label{classupload_1_1_mercurial_v_c_s_a00d1227902572ac557e054b9c9c33791} 
+\index{upload.MercurialVCS@{upload.MercurialVCS}!GenerateDiff@{GenerateDiff}}
+\index{GenerateDiff@{GenerateDiff}!upload.MercurialVCS@{upload.MercurialVCS}}
+\doxysubsubsection{\texorpdfstring{GenerateDiff()}{GenerateDiff()}}
+{\footnotesize\ttfamily upload.\+Mercurial\+VCS.\+Generate\+Diff (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{args }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Return the current diff as a string.
+
+Args:
+  args: Extra arguments to pass to the diff command.
+\end{DoxyVerb}
+ 
+
+Reimplemented from \mbox{\hyperlink{classupload_1_1_version_control_system_a64aa85ea51b6f34918309a733fb58a97}{upload.\+Version\+Control\+System}}.
+
+\Hypertarget{classupload_1_1_mercurial_v_c_s_a7bd835c63bb09c3f01fb24fce4657f4c}\label{classupload_1_1_mercurial_v_c_s_a7bd835c63bb09c3f01fb24fce4657f4c} 
+\index{upload.MercurialVCS@{upload.MercurialVCS}!GetBaseFile@{GetBaseFile}}
+\index{GetBaseFile@{GetBaseFile}!upload.MercurialVCS@{upload.MercurialVCS}}
+\doxysubsubsection{\texorpdfstring{GetBaseFile()}{GetBaseFile()}}
+{\footnotesize\ttfamily upload.\+Mercurial\+VCS.\+Get\+Base\+File (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{filename }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Get the content of the upstream version of a file.
+
+Returns:
+  A tuple (base_content, new_content, is_binary, status)
+    base_content: The contents of the base file.
+    new_content: For text files, this is empty.  For binary files, this is
+      the contents of the new file, since the diff output won't contain
+      information to reconstruct the current file.
+    is_binary: True iff the file is binary.
+    status: The status of the file.
+\end{DoxyVerb}
+ 
+
+Reimplemented from \mbox{\hyperlink{classupload_1_1_version_control_system_adf8a0253323a47c6a12e235c9160bb38}{upload.\+Version\+Control\+System}}.
+
+\Hypertarget{classupload_1_1_mercurial_v_c_s_a453e37400923d6fdc6dbbe1203a097a1}\label{classupload_1_1_mercurial_v_c_s_a453e37400923d6fdc6dbbe1203a097a1} 
+\index{upload.MercurialVCS@{upload.MercurialVCS}!GetUnknownFiles@{GetUnknownFiles}}
+\index{GetUnknownFiles@{GetUnknownFiles}!upload.MercurialVCS@{upload.MercurialVCS}}
+\doxysubsubsection{\texorpdfstring{GetUnknownFiles()}{GetUnknownFiles()}}
+{\footnotesize\ttfamily upload.\+Mercurial\+VCS.\+Get\+Unknown\+Files (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Return a list of files unknown to the VCS.\end{DoxyVerb}
+ 
+
+Reimplemented from \mbox{\hyperlink{classupload_1_1_version_control_system_a500344e5ca80b8fb29773ebe8aac4844}{upload.\+Version\+Control\+System}}.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+build/\+\_\+deps/googletest-\/src/googletest/scripts/upload.\+py\end{DoxyCompactItemize}

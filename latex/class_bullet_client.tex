@@ -1,0 +1,161 @@
+\doxysection{Bullet\+Client Class Reference}
+\hypertarget{class_bullet_client}{}\label{class_bullet_client}\index{BulletClient@{BulletClient}}
+Inheritance diagram for Bullet\+Client\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.000000cm]{class_bullet_client}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+virtual void \mbox{\hyperlink{class_bullet_client_aa81c33d44f1971a5acba6299395b67d2}{Update}} ()
+\item 
+virtual void \mbox{\hyperlink{class_bullet_client_a00efb49c94df6484a2900488573b2a44}{Read}} (\mbox{\hyperlink{class_input_memory_bit_stream}{Input\+Memory\+Bit\+Stream}} \&in\+Input\+Stream) override
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \mbox{\hyperlink{class_bullet}{Bullet}}}
+\begin{DoxyCompactItemize}
+\item 
+virtual uint32\+\_\+t \mbox{\hyperlink{class_bullet_ae8417cbb816e604781524017309c8e70}{Get\+All\+State\+Mask}} () const override
+\item 
+virtual bool \mbox{\hyperlink{class_bullet_a7f1efd2435163bf833483291f4c7e014}{Handle\+Collision\+With\+Player}} (\mbox{\hyperlink{class_player}{Player}} \texorpdfstring{$\ast$}{*}in\+Player)
+\item 
+virtual bool \mbox{\hyperlink{class_bullet_ac84d538eb6ccc2abdf6cfabc1b630e04}{Handle\+Collision\+With\+Rock}} (\mbox{\hyperlink{class_rock}{Rock}} \texorpdfstring{$\ast$}{*}in\+Rock)
+\item 
+virtual bool \mbox{\hyperlink{class_bullet_a8f833ea1fed46d3ea2aaeea8a4cfef22}{Handle\+Collision\+With\+Bullet}} (\mbox{\hyperlink{class_bullet}{Bullet}} \texorpdfstring{$\ast$}{*}in\+Bullet)
+\item 
+void {\bfseries Process\+Input} (float in\+Delta\+Time, const \mbox{\hyperlink{class_input_state}{Input\+State}} \&in\+Input\+State)
+\item 
+void {\bfseries Simulate\+Movement} (float in\+Delta\+Time)
+\item 
+void {\bfseries Init\+From\+Shooter} (\mbox{\hyperlink{class_player}{Player}} \texorpdfstring{$\ast$}{*}player)
+\item 
+void {\bfseries Process\+Collisions} ()
+\item 
+void {\bfseries Process\+Collisions\+With\+Screen\+Walls} ()
+\item 
+void {\bfseries Set\+Bullet\+Id} (uint32\+\_\+t in\+Bullet\+Id)
+\item 
+uint32\+\_\+t {\bfseries Get\+Bullet\+Id} () const
+\item 
+void {\bfseries Set\+Velocity} (const \mbox{\hyperlink{class_vector3}{Vector3}} \&in\+Velocity)
+\item 
+const \mbox{\hyperlink{class_vector3}{Vector3}} \& {\bfseries Get\+Velocity} () const
+\item 
+uint32\+\_\+t \mbox{\hyperlink{class_bullet_a8cee3337c767d003cd1dee882ad99c39}{Write}} (\mbox{\hyperlink{class_output_memory_bit_stream}{Output\+Memory\+Bit\+Stream}} \&in\+Output\+Stream, uint32\+\_\+t in\+Dirty\+State) const override
+\item 
+float {\bfseries Get\+Max\+Linear\+Speed} ()
+\item 
+float {\bfseries Get\+Max\+Rotation\+Speed} ()
+\item 
+float {\bfseries Get\+Wall\+Restitution} ()
+\item 
+float {\bfseries Get\+NPCRestitution} ()
+\item 
+float {\bfseries Get\+Last\+Move\+Timestamp} ()
+\item 
+float {\bfseries Get\+Thrust\+Dir} ()
+\item 
+bool {\bfseries operator==} (\mbox{\hyperlink{class_bullet}{Bullet}} \&other)
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \mbox{\hyperlink{class_game_object}{Game\+Object}}}
+\begin{DoxyCompactItemize}
+\item 
+virtual void {\bfseries Handle\+Dying} ()
+\item 
+void {\bfseries Set\+Index\+In\+World} (int in\+Index)
+\item 
+int {\bfseries Get\+Index\+In\+World} () const
+\item 
+void {\bfseries Set\+Rotation} (float in\+Rotation)
+\item 
+float {\bfseries Get\+Rotation} () const
+\item 
+void {\bfseries Set\+Scale} (float in\+Scale)
+\item 
+float {\bfseries Get\+Scale} () const
+\item 
+const \mbox{\hyperlink{class_vector3}{Vector3}} \& {\bfseries Get\+Location} () const
+\item 
+void {\bfseries Set\+Location} (const \mbox{\hyperlink{class_vector3}{Vector3}} \&in\+Location)
+\item 
+float {\bfseries Get\+Collision\+Radius} () const
+\item 
+void {\bfseries Set\+Collision\+Radius} (float in\+Radius)
+\item 
+\mbox{\hyperlink{class_vector3}{Vector3}} {\bfseries Get\+Forward\+Vector} () const
+\item 
+void {\bfseries Set\+Color} (const \mbox{\hyperlink{class_vector3}{Vector3}} \&in\+Color)
+\item 
+const \mbox{\hyperlink{class_vector3}{Vector3}} \& {\bfseries Get\+Color} () const
+\item 
+bool {\bfseries Does\+Want\+To\+Die} () const
+\item 
+void {\bfseries Set\+Does\+Want\+To\+Die} (bool in\+Wants)
+\item 
+int {\bfseries Get\+Network\+Id} () const
+\item 
+void {\bfseries Set\+Network\+Id} (int in\+Network\+Id)
+\item 
+bool {\bfseries operator==} (\mbox{\hyperlink{class_game_object}{Game\+Object}} \&other)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_bullet_client_aa2d9d061364325e3bfbbd055ba6840db}\label{class_bullet_client_aa2d9d061364325e3bfbbd055ba6840db} 
+static Game\+Object\+Ptr {\bfseries Static\+Create} ()
+\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Member Functions inherited from \mbox{\hyperlink{class_bullet}{Bullet}}}
+\begin{DoxyCompactItemize}
+\item 
+static \mbox{\hyperlink{class_game_object}{Game\+Object}} \texorpdfstring{$\ast$}{*} {\bfseries Static\+Create} ()
+\item 
+static Game\+Object\+Ptr {\bfseries Static\+Create\+Ptr} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Additional Inherited Members}
+\doxysubsection*{Public Types inherited from \mbox{\hyperlink{class_bullet}{Bullet}}}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_bullet_a8a3c8432ca3fb79e91163a5448b8a01e}\label{class_bullet_a8a3c8432ca3fb79e91163a5448b8a01e} 
+enum {\bfseries EBullet\+Replication\+State} \{ {\bfseries ECRS\+\_\+\+Pose} = 1 \texorpdfstring{$<$}{<}\texorpdfstring{$<$}{<} 0
+, {\bfseries ECRS\+\_\+\+Color} = 1 \texorpdfstring{$<$}{<}\texorpdfstring{$<$}{<} 1
+, {\bfseries ECRS\+\_\+\+Bullet\+Id} = 1 \texorpdfstring{$<$}{<}\texorpdfstring{$<$}{<} 2
+, {\bfseries ECRS\+\_\+\+All\+State} = ECRS\+\_\+\+Pose \texorpdfstring{$\vert$}{|} ECRS\+\_\+\+Color \texorpdfstring{$\vert$}{|} ECRS\+\_\+\+Bullet\+Id
+ \}
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Attributes inherited from \mbox{\hyperlink{class_bullet}{Bullet}}}
+\begin{DoxyCompactItemize}
+\item 
+float {\bfseries m\+Last\+Move\+Timestamp}
+\begin{DoxyCompactList}\small\item\em move down here for padding reasons... \end{DoxyCompactList}\item 
+float {\bfseries m\+Thrust\+Dir}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_bullet_client_a00efb49c94df6484a2900488573b2a44}\label{class_bullet_client_a00efb49c94df6484a2900488573b2a44} 
+\index{BulletClient@{BulletClient}!Read@{Read}}
+\index{Read@{Read}!BulletClient@{BulletClient}}
+\doxysubsubsection{\texorpdfstring{Read()}{Read()}}
+{\footnotesize\ttfamily void Bullet\+Client\+::\+Read (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_input_memory_bit_stream}{Input\+Memory\+Bit\+Stream}} \&}]{in\+Input\+Stream }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Reimplemented from \mbox{\hyperlink{class_game_object}{Game\+Object}}.
+
+\Hypertarget{class_bullet_client_aa81c33d44f1971a5acba6299395b67d2}\label{class_bullet_client_aa81c33d44f1971a5acba6299395b67d2} 
+\index{BulletClient@{BulletClient}!Update@{Update}}
+\index{Update@{Update}!BulletClient@{BulletClient}}
+\doxysubsubsection{\texorpdfstring{Update()}{Update()}}
+{\footnotesize\ttfamily void Bullet\+Client\+::\+Update (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+
+
+Reimplemented from \mbox{\hyperlink{class_bullet}{Bullet}}.
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+src/client/Bullet\+Client.\+h\item 
+src/client/Bullet\+Client.\+cpp\end{DoxyCompactItemize}

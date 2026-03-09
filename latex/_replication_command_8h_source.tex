@@ -1,0 +1,55 @@
+\doxysection{Replication\+Command.\+h}
+\hypertarget{_replication_command_8h_source}{}\label{_replication_command_8h_source}\index{src/replication/ReplicationCommand.h@{src/replication/ReplicationCommand.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#ifndef\ REPLICATION\_COMMAND\_H\_}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#define\ REPLICATION\_COMMAND\_H\_}}
+\DoxyCodeLine{00003\ }
+\DoxyCodeLine{00004\ \textcolor{keyword}{enum}\ ReplicationAction}
+\DoxyCodeLine{00005\ \{}
+\DoxyCodeLine{00006\ \ \ \ \ RA\_Create,}
+\DoxyCodeLine{00007\ \ \ \ \ RA\_Update,}
+\DoxyCodeLine{00008\ \ \ \ \ RA\_Destroy,}
+\DoxyCodeLine{00009\ \ \ \ \ RA\_RPC,}
+\DoxyCodeLine{00010\ \ \ \ \ RA\_MAX}
+\DoxyCodeLine{00011\ \};}
+\DoxyCodeLine{00012\ }
+\DoxyCodeLine{00013\ }
+\DoxyCodeLine{00014\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{struct_replication_command}{ReplicationCommand}}}
+\DoxyCodeLine{00015\ \{}
+\DoxyCodeLine{00016\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00017\ }
+\DoxyCodeLine{00018\ \ \ \ \ \mbox{\hyperlink{struct_replication_command}{ReplicationCommand}}()\ \{\}}
+\DoxyCodeLine{00019\ \ \ \ \ \mbox{\hyperlink{struct_replication_command}{ReplicationCommand}}(\ uint32\_t\ inInitialDirtyState\ )\ :\ mAction(\ RA\_Create\ ),\ mDirtyState(\ inInitialDirtyState\ )\ \{\}}
+\DoxyCodeLine{00020\ }
+\DoxyCodeLine{00021\ \ \ \ \ \textcolor{comment}{//if\ the\ create\ is\ ack'd,\ we\ can\ demote\ to\ just\ an\ update...}}
+\DoxyCodeLine{00022\ \ \ \ \ \textcolor{keywordtype}{void}\ HandleCreateAckd()\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{\ \textcolor{keywordflow}{if}(\ mAction\ ==\ RA\_Create\ )\ \{\ mAction\ =\ RA\_Update;\ \}\ \}}
+\DoxyCodeLine{00023\ \ \ \ \ \textcolor{keywordtype}{void}\ AddDirtyState(\ uint32\_t\ inState\ )\ \ \ \ \ \ \ \ \ \ \{\ mDirtyState\ |=\ inState;\ \}}
+\DoxyCodeLine{00024\ \ \ \ \ \textcolor{keywordtype}{void}\ SetDestroy()\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \{\ mAction\ =\ RA\_Destroy;\ \}}
+\DoxyCodeLine{00025\ }
+\DoxyCodeLine{00026\ \ \ \ \ \textcolor{keywordtype}{bool}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ HasDirtyState()\textcolor{keyword}{\ const\ \ \ }\{\ \textcolor{keywordflow}{return}\ (\ mAction\ ==\ RA\_Destroy\ )\ ||\ (\ mDirtyState\ !=\ 0\ );\ \}}
+\DoxyCodeLine{00027\ }
+\DoxyCodeLine{00028\ \ \ \ \ \textcolor{keywordtype}{void}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ SetAction(\ ReplicationAction\ inAction\ )\ \ \ \ \ \{\ mAction\ =\ inAction;\ \}}
+\DoxyCodeLine{00029\ \ \ \ \ ReplicationAction\ \ \ GetAction()\textcolor{keyword}{\ const\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\{\ \textcolor{keywordflow}{return}\ mAction;\ \}}
+\DoxyCodeLine{00030\ \ \ \ \ uint32\_t\ \ \ \ \ \ \ \ \ \ \ \ GetDirtyState()\textcolor{keyword}{\ const\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\{\ \textcolor{keywordflow}{return}\ mDirtyState;\ \}}
+\DoxyCodeLine{00031\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ \ \ \ \ \ \ \ \ ClearDirtyState(\ uint32\_t\ inStateToClear\ );}
+\DoxyCodeLine{00032\ }
+\DoxyCodeLine{00033\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00034\ }
+\DoxyCodeLine{00035\ \ \ \ \ uint32\_t\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ mDirtyState;}
+\DoxyCodeLine{00036\ \ \ \ \ ReplicationAction\ \ \ \ \ \ \ mAction;}
+\DoxyCodeLine{00037\ \};}
+\DoxyCodeLine{00038\ }
+\DoxyCodeLine{00039\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ \ ReplicationCommand::ClearDirtyState(\ uint32\_t\ inStateToClear\ )}
+\DoxyCodeLine{00040\ \{}
+\DoxyCodeLine{00041\ \ \ \ \ mDirtyState\ \&=\ \string~inStateToClear;}
+\DoxyCodeLine{00042\ }
+\DoxyCodeLine{00043\ \ \ \ \ \textcolor{keywordflow}{if}(\ mAction\ ==\ RA\_Destroy\ )}
+\DoxyCodeLine{00044\ \ \ \ \ \{}
+\DoxyCodeLine{00045\ \ \ \ \ \ \ \ \ mAction\ =\ RA\_Update;}
+\DoxyCodeLine{00046\ \ \ \ \ \}}
+\DoxyCodeLine{00047\ \}}
+\DoxyCodeLine{00048\ }
+\DoxyCodeLine{00049\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{//\ REPLICATION\_COMMAND\_H\_}}
+
+\end{DoxyCode}

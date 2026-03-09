@@ -1,0 +1,86 @@
+\doxysection{release\+\_\+docs Namespace Reference}
+\hypertarget{namespacerelease__docs}{}\label{namespacerelease__docs}\index{release\_docs@{release\_docs}}
+\doxysubsubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \mbox{\hyperlink{classrelease__docs_1_1_wiki_brancher}{Wiki\+Brancher}}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{namespacerelease__docs_a244126c0293b9100e7fcfff1a2edd30a}{Drop\+Wiki\+Suffix}} (wiki\+\_\+filename)
+\item 
+\Hypertarget{namespacerelease__docs_a1daf128d38dad3e1f9da062bd07dc9c1}\label{namespacerelease__docs_a1daf128d38dad3e1f9da062bd07dc9c1} 
+{\bfseries main} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{namespacerelease__docs_aaeabb8c74d9db7a4b2f3c66e8f1a04ee}\label{namespacerelease__docs_aaeabb8c74d9db7a4b2f3c66e8f1a04ee} 
+list {\bfseries GTEST\+\_\+\+UNVERSIONED\+\_\+\+WIKIS} = \mbox{[}\textquotesingle{}Dev\+Guide.\+wiki\textquotesingle{}\mbox{]}
+\item 
+list \mbox{\hyperlink{namespacerelease__docs_a675f92ba4643a6aef7773a6178e49b29}{GMOCK\+\_\+\+UNVERSIONED\+\_\+\+WIKIS}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyVerb}Script for branching Google Test/Mock wiki pages for a new version.
+
+SYNOPSIS
+       release_docs.py NEW_RELEASE_VERSION
+
+       Google Test and Google Mock's external user documentation is in
+       interlinked wiki files.  When we release a new version of
+       Google Test or Google Mock, we need to branch the wiki files
+       such that users of a specific version of Google Test/Mock can
+       look up documentation relevant for that version.  This script
+       automates that process by:
+
+         - branching the current wiki pages (which document the
+           behavior of the SVN trunk head) to pages for the specified
+           version (e.g. branching FAQ.wiki to V2_6_FAQ.wiki when
+           NEW_RELEASE_VERSION is 2.6);
+         - updating the links in the branched files to point to the branched
+           version (e.g. a link in V2_6_FAQ.wiki that pointed to
+           Primer.wiki#Anchor will now point to V2_6_Primer.wiki#Anchor).
+
+       NOTE: NEW_RELEASE_VERSION must be a NEW version number for
+       which the wiki pages don't yet exist; otherwise you'll get SVN
+       errors like "svn: Path 'V1_7_PumpManual.wiki' is not a
+       directory" when running the script.
+
+EXAMPLE
+       $ cd PATH/TO/GTEST_SVN_WORKSPACE/trunk
+       $ scripts/release_docs.py 2.6  # create wiki pages for v2.6
+       $ svn status                   # verify the file list
+       $ svn diff                     # verify the file contents
+       $ svn commit -m "release wiki pages for v2.6"
+\end{DoxyVerb}
+ 
+
+\doxysubsection{Function Documentation}
+\Hypertarget{namespacerelease__docs_a244126c0293b9100e7fcfff1a2edd30a}\label{namespacerelease__docs_a244126c0293b9100e7fcfff1a2edd30a} 
+\index{release\_docs@{release\_docs}!DropWikiSuffix@{DropWikiSuffix}}
+\index{DropWikiSuffix@{DropWikiSuffix}!release\_docs@{release\_docs}}
+\doxysubsubsection{\texorpdfstring{DropWikiSuffix()}{DropWikiSuffix()}}
+{\footnotesize\ttfamily release\+\_\+docs.\+Drop\+Wiki\+Suffix (\begin{DoxyParamCaption}\item[{}]{wiki\+\_\+filename }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Removes the .wiki suffix (if any) from the given filename.\end{DoxyVerb}
+ 
+
+\doxysubsection{Variable Documentation}
+\Hypertarget{namespacerelease__docs_a675f92ba4643a6aef7773a6178e49b29}\label{namespacerelease__docs_a675f92ba4643a6aef7773a6178e49b29} 
+\index{release\_docs@{release\_docs}!GMOCK\_UNVERSIONED\_WIKIS@{GMOCK\_UNVERSIONED\_WIKIS}}
+\index{GMOCK\_UNVERSIONED\_WIKIS@{GMOCK\_UNVERSIONED\_WIKIS}!release\_docs@{release\_docs}}
+\doxysubsubsection{\texorpdfstring{GMOCK\_UNVERSIONED\_WIKIS}{GMOCK\_UNVERSIONED\_WIKIS}}
+{\footnotesize\ttfamily list release\+\_\+docs.\+GMOCK\+\_\+\+UNVERSIONED\+\_\+\+WIKIS}
+
+{\bfseries Initial value\+:}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ =\ \ [}
+\DoxyCodeLine{00002\ \ \ \ \ \textcolor{stringliteral}{'DesignDoc.wiki'},}
+\DoxyCodeLine{00003\ \ \ \ \ \textcolor{stringliteral}{'DevGuide.wiki'},}
+\DoxyCodeLine{00004\ \ \ \ \ \textcolor{stringliteral}{'KnownIssues.wiki'}}
+\DoxyCodeLine{00005\ \ \ \ \ ]}
+
+\end{DoxyCode}

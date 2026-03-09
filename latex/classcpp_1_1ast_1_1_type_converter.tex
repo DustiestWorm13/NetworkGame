@@ -1,0 +1,60 @@
+\doxysection{cpp.\+ast.\+Type\+Converter Class Reference}
+\hypertarget{classcpp_1_1ast_1_1_type_converter}{}\label{classcpp_1_1ast_1_1_type_converter}\index{cpp.ast.TypeConverter@{cpp.ast.TypeConverter}}
+Inheritance diagram for cpp.\+ast.\+Type\+Converter\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classcpp_1_1ast_1_1_type_converter}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classcpp_1_1ast_1_1_type_converter_a2831e3c33d0f3e057f18e16e66a21ecb}\label{classcpp_1_1ast_1_1_type_converter_a2831e3c33d0f3e057f18e16e66a21ecb} 
+{\bfseries \+\_\+\+\_\+init\+\_\+\+\_\+} (self, namespace\+\_\+stack)
+\item 
+\mbox{\hyperlink{classcpp_1_1ast_1_1_type_converter_a7742fbf10acd32ae2931a2c6c2813a6d}{To\+Type}} (self, tokens)
+\item 
+\Hypertarget{classcpp_1_1ast_1_1_type_converter_ab4d1f20ddb72e831c4f01a946c12b1f3}\label{classcpp_1_1ast_1_1_type_converter_ab4d1f20ddb72e831c4f01a946c12b1f3} 
+{\bfseries Declaration\+To\+Parts} (self, parts, needs\+\_\+name\+\_\+removed)
+\item 
+\Hypertarget{classcpp_1_1ast_1_1_type_converter_abc78663dfbcf81279d4bda9249502c4e}\label{classcpp_1_1ast_1_1_type_converter_abc78663dfbcf81279d4bda9249502c4e} 
+{\bfseries To\+Parameters} (self, tokens)
+\item 
+\Hypertarget{classcpp_1_1ast_1_1_type_converter_aee403709c68279f5b0f65f2b0198b693}\label{classcpp_1_1ast_1_1_type_converter_aee403709c68279f5b0f65f2b0198b693} 
+{\bfseries Create\+Return\+Type} (self, return\+\_\+type\+\_\+seq)
+\item 
+\Hypertarget{classcpp_1_1ast_1_1_type_converter_a1c22bd43ca011717bc639f5900166533}\label{classcpp_1_1ast_1_1_type_converter_a1c22bd43ca011717bc639f5900166533} 
+{\bfseries Get\+Template\+Indices} (self, names)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classcpp_1_1ast_1_1_type_converter_abb739f15c6cd0800e07c086c2b30833e}\label{classcpp_1_1ast_1_1_type_converter_abb739f15c6cd0800e07c086c2b30833e} 
+{\bfseries namespace\+\_\+stack}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classcpp_1_1ast_1_1_type_converter_addae0e30b289a768cc9fa1e7e5740b2a}\label{classcpp_1_1ast_1_1_type_converter_addae0e30b289a768cc9fa1e7e5740b2a} 
+{\bfseries \+\_\+\+Get\+Template\+End} (self, tokens, start)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classcpp_1_1ast_1_1_type_converter_a7742fbf10acd32ae2931a2c6c2813a6d}\label{classcpp_1_1ast_1_1_type_converter_a7742fbf10acd32ae2931a2c6c2813a6d} 
+\index{cpp.ast.TypeConverter@{cpp.ast.TypeConverter}!ToType@{ToType}}
+\index{ToType@{ToType}!cpp.ast.TypeConverter@{cpp.ast.TypeConverter}}
+\doxysubsubsection{\texorpdfstring{ToType()}{ToType()}}
+{\footnotesize\ttfamily cpp.\+ast.\+Type\+Converter.\+To\+Type (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{tokens }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Convert [Token,...] to [Class(...), ] useful for base classes.
+    For example, code like class Foo : public Bar<x, y> { ... };
+    the "Bar<x, y>" portion gets converted to an AST.
+
+    Returns:
+      [Class(...), ...]\end{DoxyVerb}
+ 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+build/\+\_\+deps/googletest-\/src/googlemock/scripts/generator/cpp/ast.\+py\end{DoxyCompactItemize}

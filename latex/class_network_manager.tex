@@ -1,0 +1,83 @@
+\doxysection{Network\+Manager Class Reference}
+\hypertarget{class_network_manager}{}\label{class_network_manager}\index{NetworkManager@{NetworkManager}}
+Inheritance diagram for Network\+Manager\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_network_manager}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_network_manager_a12e854ea41817c272276a75db5bc41bb}\label{class_network_manager_a12e854ea41817c272276a75db5bc41bb} 
+bool {\bfseries Init} (uint16\+\_\+t in\+Port)
+\item 
+\Hypertarget{class_network_manager_a4160ea2efca34d12ca4db095964d1dee}\label{class_network_manager_a4160ea2efca34d12ca4db095964d1dee} 
+void {\bfseries Process\+Incoming\+Packets} ()
+\item 
+\Hypertarget{class_network_manager_adc9fdb0f55cc751950327e23ecf5c164}\label{class_network_manager_adc9fdb0f55cc751950327e23ecf5c164} 
+virtual void {\bfseries Process\+Packet} (\mbox{\hyperlink{class_input_memory_bit_stream}{Input\+Memory\+Bit\+Stream}} \&in\+Input\+Stream, const \mbox{\hyperlink{class_socket_address}{Socket\+Address}} \&in\+From\+Address)=0
+\item 
+\Hypertarget{class_network_manager_a54167eca0ba5e3fcfaa09188f4166fc5}\label{class_network_manager_a54167eca0ba5e3fcfaa09188f4166fc5} 
+virtual void {\bfseries Handle\+Connection\+Reset} (const \mbox{\hyperlink{class_socket_address}{Socket\+Address}} \&in\+From\+Address)
+\item 
+\Hypertarget{class_network_manager_ae6f702aa53454b3937b8b23ec5851fa7}\label{class_network_manager_ae6f702aa53454b3937b8b23ec5851fa7} 
+void {\bfseries Send\+Packet} (const \mbox{\hyperlink{class_output_memory_bit_stream}{Output\+Memory\+Bit\+Stream}} \&in\+Output\+Stream, const \mbox{\hyperlink{class_socket_address}{Socket\+Address}} \&in\+From\+Address)
+\item 
+\Hypertarget{class_network_manager_a908e0f1c079ae6fe7f64b5f071d574db}\label{class_network_manager_a908e0f1c079ae6fe7f64b5f071d574db} 
+const \mbox{\hyperlink{class_weighted_timed_moving_average}{Weighted\+Timed\+Moving\+Average}} \& {\bfseries Get\+Bytes\+Received\+Per\+Second} () const
+\item 
+\Hypertarget{class_network_manager_a8d23c643d40caca3e9c67baf4fca11f5}\label{class_network_manager_a8d23c643d40caca3e9c67baf4fca11f5} 
+const \mbox{\hyperlink{class_weighted_timed_moving_average}{Weighted\+Timed\+Moving\+Average}} \& {\bfseries Get\+Bytes\+Sent\+Per\+Second} () const
+\item 
+\Hypertarget{class_network_manager_a620ee21e1b818659034e9118dc80d987}\label{class_network_manager_a620ee21e1b818659034e9118dc80d987} 
+void {\bfseries Set\+Drop\+Packet\+Chance} (float in\+Chance)
+\item 
+\Hypertarget{class_network_manager_a44bab7875bdf4c85054eeb247856bbbb}\label{class_network_manager_a44bab7875bdf4c85054eeb247856bbbb} 
+float {\bfseries Get\+Drop\+Packet\+Chance} () const
+\item 
+\Hypertarget{class_network_manager_a723d551ad12d96547b8132038a8b338b}\label{class_network_manager_a723d551ad12d96547b8132038a8b338b} 
+void {\bfseries Set\+Simulated\+Latency} (float in\+Latency)
+\item 
+\Hypertarget{class_network_manager_a60d26a2b7c5a4cd0cdf199a187b9c923}\label{class_network_manager_a60d26a2b7c5a4cd0cdf199a187b9c923} 
+float {\bfseries Get\+Simulated\+Latency} () const
+\item 
+\Hypertarget{class_network_manager_af09aa83353fed18614388b079e5f00c9}\label{class_network_manager_af09aa83353fed18614388b079e5f00c9} 
+Game\+Object\+Ptr {\bfseries Get\+Game\+Object} (int in\+Network\+Id) const
+\item 
+\Hypertarget{class_network_manager_aeba01e8f554b3f7ad896eb62bb0dae1d}\label{class_network_manager_aeba01e8f554b3f7ad896eb62bb0dae1d} 
+void {\bfseries Add\+To\+Network\+Id\+To\+Game\+Object\+Map} (Game\+Object\+Ptr in\+Game\+Object)
+\item 
+\Hypertarget{class_network_manager_aae78eeec8dcae2ed624f49bbd2f3b8de}\label{class_network_manager_aae78eeec8dcae2ed624f49bbd2f3b8de} 
+void {\bfseries Remove\+From\+Network\+Id\+To\+Game\+Object\+Map} (Game\+Object\+Ptr in\+Game\+Object)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_network_manager_ae2317291d7aab6d258d979dc3a6aa0aa}\label{class_network_manager_ae2317291d7aab6d258d979dc3a6aa0aa} 
+static const uint32\+\_\+t {\bfseries k\+Hello\+CC} = \textquotesingle{}HELO\textquotesingle{}
+\item 
+\Hypertarget{class_network_manager_a1d5ac92b8f05e69fe7c6819184093f1b}\label{class_network_manager_a1d5ac92b8f05e69fe7c6819184093f1b} 
+static const uint32\+\_\+t {\bfseries k\+Welcome\+CC} = \textquotesingle{}WLCM\textquotesingle{}
+\item 
+\Hypertarget{class_network_manager_a20fee34978a682da509713e32ee51fda}\label{class_network_manager_a20fee34978a682da509713e32ee51fda} 
+static const uint32\+\_\+t {\bfseries k\+State\+CC} = \textquotesingle{}STAT\textquotesingle{}
+\item 
+\Hypertarget{class_network_manager_affe0a7ea028ccbb8ad487b08f20e9902}\label{class_network_manager_affe0a7ea028ccbb8ad487b08f20e9902} 
+static const uint32\+\_\+t {\bfseries k\+Input\+CC} = \textquotesingle{}INPT\textquotesingle{}
+\item 
+\Hypertarget{class_network_manager_a81f06a41342a1313e5c8be332c9c7fef}\label{class_network_manager_a81f06a41342a1313e5c8be332c9c7fef} 
+static const int {\bfseries k\+Max\+Packets\+Per\+Frame\+Count} = 10
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_network_manager_a43c36c7d634ee90ab3d12ff45a69f578}\label{class_network_manager_a43c36c7d634ee90ab3d12ff45a69f578} 
+Int\+To\+Game\+Object\+Map {\bfseries m\+Network\+Id\+To\+Game\+Object\+Map}
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+src/replication/Network\+Manager.\+h\item 
+src/replication/Network\+Manager.\+cpp\end{DoxyCompactItemize}

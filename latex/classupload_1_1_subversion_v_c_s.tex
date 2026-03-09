@@ -1,0 +1,180 @@
+\doxysection{upload.\+Subversion\+VCS Class Reference}
+\hypertarget{classupload_1_1_subversion_v_c_s}{}\label{classupload_1_1_subversion_v_c_s}\index{upload.SubversionVCS@{upload.SubversionVCS}}
+Inheritance diagram for upload.\+Subversion\+VCS\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.000000cm]{classupload_1_1_subversion_v_c_s}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classupload_1_1_subversion_v_c_s_ad30faeba90b6d8f6ae8605a7991abe01}{\+\_\+\+\_\+init\+\_\+\+\_\+}} (self, options)
+\item 
+\mbox{\hyperlink{classupload_1_1_subversion_v_c_s_ae5b81c1c99084acccf1ac9117a0f1600}{Guess\+Base}} (self, required)
+\item 
+\mbox{\hyperlink{classupload_1_1_subversion_v_c_s_a072f68748f33344489532bb1c8764289}{Generate\+Diff}} (self, args)
+\item 
+\mbox{\hyperlink{classupload_1_1_subversion_v_c_s_a463e488be353b009fcc9a9ba04c1fa2a}{Get\+Unknown\+Files}} (self)
+\item 
+\mbox{\hyperlink{classupload_1_1_subversion_v_c_s_a601ffb1146763196a01ee546294248f2}{Read\+File}} (self, filename)
+\item 
+\mbox{\hyperlink{classupload_1_1_subversion_v_c_s_a1750ddc72b28b4ecfa8d9520cbda8f5b}{Get\+Status}} (self, filename)
+\item 
+\mbox{\hyperlink{classupload_1_1_subversion_v_c_s_af842b536e7d9aad2be83562c01c03d12}{Get\+Base\+File}} (self, filename)
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \mbox{\hyperlink{classupload_1_1_version_control_system}{upload.\+Version\+Control\+System}}}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classupload_1_1_version_control_system_aed703e2def2bc9505f182de7b753499d}{Check\+For\+Unknown\+Files}} (self)
+\item 
+\mbox{\hyperlink{classupload_1_1_version_control_system_a426cb9d4ad9f94754c9122653e3aa24f}{Get\+Base\+Files}} (self, diff)
+\item 
+\mbox{\hyperlink{classupload_1_1_version_control_system_ac1549d3e1616a01a27581a03ee754189}{Upload\+Base\+Files}} (self, issue, rpc\+\_\+server, patch\+\_\+list, patchset, options, files)
+\item 
+\mbox{\hyperlink{classupload_1_1_version_control_system_a8d49726fefa641c183d210889491396c}{Is\+Image}} (self, filename)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classupload_1_1_subversion_v_c_s_ad1553a69f4a790309273dbdeb9077732}\label{classupload_1_1_subversion_v_c_s_ad1553a69f4a790309273dbdeb9077732} 
+{\bfseries rev\+\_\+start}
+\item 
+\Hypertarget{classupload_1_1_subversion_v_c_s_ac0bb07a099c722b7f8622de4b225904f}\label{classupload_1_1_subversion_v_c_s_ac0bb07a099c722b7f8622de4b225904f} 
+{\bfseries rev\+\_\+end}
+\item 
+\Hypertarget{classupload_1_1_subversion_v_c_s_aa801782f807674b06f491df5d7ca9942}\label{classupload_1_1_subversion_v_c_s_aa801782f807674b06f491df5d7ca9942} 
+{\bfseries svnls\+\_\+cache}
+\item 
+\Hypertarget{classupload_1_1_subversion_v_c_s_a60645c40d2fea4cd52881576bd13341f}\label{classupload_1_1_subversion_v_c_s_a60645c40d2fea4cd52881576bd13341f} 
+{\bfseries svn\+\_\+base}
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Attributes inherited from \mbox{\hyperlink{classupload_1_1_version_control_system}{upload.\+Version\+Control\+System}}}
+\begin{DoxyCompactItemize}
+\item 
+{\bfseries options}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classupload_1_1_subversion_v_c_s_af6e85f037341ec3a6e62ae31c26e458e}{\+\_\+\+Guess\+Base}} (self, required)
+\item 
+\mbox{\hyperlink{classupload_1_1_subversion_v_c_s_aacf758f1aa12459517d17f24e2ae7fe1}{\+\_\+\+Collapse\+Keywords}} (self, content, keyword\+\_\+str)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyVerb}Implementation of the VersionControlSystem interface for Subversion.\end{DoxyVerb}
+ 
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{classupload_1_1_subversion_v_c_s_ad30faeba90b6d8f6ae8605a7991abe01}\label{classupload_1_1_subversion_v_c_s_ad30faeba90b6d8f6ae8605a7991abe01} 
+\index{upload.SubversionVCS@{upload.SubversionVCS}!\_\_init\_\_@{\_\_init\_\_}}
+\index{\_\_init\_\_@{\_\_init\_\_}!upload.SubversionVCS@{upload.SubversionVCS}}
+\doxysubsubsection{\texorpdfstring{\_\_init\_\_()}{\_\_init\_\_()}}
+{\footnotesize\ttfamily upload.\+Subversion\+VCS.\+\_\+\+\_\+init\+\_\+\+\_\+ (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{options }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Constructor.
+
+Args:
+  options: Command line options.
+\end{DoxyVerb}
+ 
+
+Reimplemented from \mbox{\hyperlink{classupload_1_1_version_control_system_ab2a3da53878c9d8bdfbd0fc03091ce1b}{upload.\+Version\+Control\+System}}.
+
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classupload_1_1_subversion_v_c_s_aacf758f1aa12459517d17f24e2ae7fe1}\label{classupload_1_1_subversion_v_c_s_aacf758f1aa12459517d17f24e2ae7fe1} 
+\index{upload.SubversionVCS@{upload.SubversionVCS}!\_CollapseKeywords@{\_CollapseKeywords}}
+\index{\_CollapseKeywords@{\_CollapseKeywords}!upload.SubversionVCS@{upload.SubversionVCS}}
+\doxysubsubsection{\texorpdfstring{\_CollapseKeywords()}{\_CollapseKeywords()}}
+{\footnotesize\ttfamily upload.\+Subversion\+VCS.\+\_\+\+Collapse\+Keywords (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{content,  }\item[{}]{keyword\+\_\+str }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+\begin{DoxyVerb}Collapses SVN keywords.\end{DoxyVerb}
+ \Hypertarget{classupload_1_1_subversion_v_c_s_af6e85f037341ec3a6e62ae31c26e458e}\label{classupload_1_1_subversion_v_c_s_af6e85f037341ec3a6e62ae31c26e458e} 
+\index{upload.SubversionVCS@{upload.SubversionVCS}!\_GuessBase@{\_GuessBase}}
+\index{\_GuessBase@{\_GuessBase}!upload.SubversionVCS@{upload.SubversionVCS}}
+\doxysubsubsection{\texorpdfstring{\_GuessBase()}{\_GuessBase()}}
+{\footnotesize\ttfamily upload.\+Subversion\+VCS.\+\_\+\+Guess\+Base (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{required }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [protected]}}
+
+\begin{DoxyVerb}Returns the SVN base URL.
+
+Args:
+  required: If true, exits if the url can't be guessed, otherwise None is
+    returned.
+\end{DoxyVerb}
+ \Hypertarget{classupload_1_1_subversion_v_c_s_a072f68748f33344489532bb1c8764289}\label{classupload_1_1_subversion_v_c_s_a072f68748f33344489532bb1c8764289} 
+\index{upload.SubversionVCS@{upload.SubversionVCS}!GenerateDiff@{GenerateDiff}}
+\index{GenerateDiff@{GenerateDiff}!upload.SubversionVCS@{upload.SubversionVCS}}
+\doxysubsubsection{\texorpdfstring{GenerateDiff()}{GenerateDiff()}}
+{\footnotesize\ttfamily upload.\+Subversion\+VCS.\+Generate\+Diff (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{args }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Return the current diff as a string.
+
+Args:
+  args: Extra arguments to pass to the diff command.
+\end{DoxyVerb}
+ 
+
+Reimplemented from \mbox{\hyperlink{classupload_1_1_version_control_system_a64aa85ea51b6f34918309a733fb58a97}{upload.\+Version\+Control\+System}}.
+
+\Hypertarget{classupload_1_1_subversion_v_c_s_af842b536e7d9aad2be83562c01c03d12}\label{classupload_1_1_subversion_v_c_s_af842b536e7d9aad2be83562c01c03d12} 
+\index{upload.SubversionVCS@{upload.SubversionVCS}!GetBaseFile@{GetBaseFile}}
+\index{GetBaseFile@{GetBaseFile}!upload.SubversionVCS@{upload.SubversionVCS}}
+\doxysubsubsection{\texorpdfstring{GetBaseFile()}{GetBaseFile()}}
+{\footnotesize\ttfamily upload.\+Subversion\+VCS.\+Get\+Base\+File (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{filename }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Get the content of the upstream version of a file.
+
+Returns:
+  A tuple (base_content, new_content, is_binary, status)
+    base_content: The contents of the base file.
+    new_content: For text files, this is empty.  For binary files, this is
+      the contents of the new file, since the diff output won't contain
+      information to reconstruct the current file.
+    is_binary: True iff the file is binary.
+    status: The status of the file.
+\end{DoxyVerb}
+ 
+
+Reimplemented from \mbox{\hyperlink{classupload_1_1_version_control_system_adf8a0253323a47c6a12e235c9160bb38}{upload.\+Version\+Control\+System}}.
+
+\Hypertarget{classupload_1_1_subversion_v_c_s_a1750ddc72b28b4ecfa8d9520cbda8f5b}\label{classupload_1_1_subversion_v_c_s_a1750ddc72b28b4ecfa8d9520cbda8f5b} 
+\index{upload.SubversionVCS@{upload.SubversionVCS}!GetStatus@{GetStatus}}
+\index{GetStatus@{GetStatus}!upload.SubversionVCS@{upload.SubversionVCS}}
+\doxysubsubsection{\texorpdfstring{GetStatus()}{GetStatus()}}
+{\footnotesize\ttfamily upload.\+Subversion\+VCS.\+Get\+Status (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{filename }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Returns the status of a file.\end{DoxyVerb}
+ \Hypertarget{classupload_1_1_subversion_v_c_s_a463e488be353b009fcc9a9ba04c1fa2a}\label{classupload_1_1_subversion_v_c_s_a463e488be353b009fcc9a9ba04c1fa2a} 
+\index{upload.SubversionVCS@{upload.SubversionVCS}!GetUnknownFiles@{GetUnknownFiles}}
+\index{GetUnknownFiles@{GetUnknownFiles}!upload.SubversionVCS@{upload.SubversionVCS}}
+\doxysubsubsection{\texorpdfstring{GetUnknownFiles()}{GetUnknownFiles()}}
+{\footnotesize\ttfamily upload.\+Subversion\+VCS.\+Get\+Unknown\+Files (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Return a list of files unknown to the VCS.\end{DoxyVerb}
+ 
+
+Reimplemented from \mbox{\hyperlink{classupload_1_1_version_control_system_a500344e5ca80b8fb29773ebe8aac4844}{upload.\+Version\+Control\+System}}.
+
+\Hypertarget{classupload_1_1_subversion_v_c_s_ae5b81c1c99084acccf1ac9117a0f1600}\label{classupload_1_1_subversion_v_c_s_ae5b81c1c99084acccf1ac9117a0f1600} 
+\index{upload.SubversionVCS@{upload.SubversionVCS}!GuessBase@{GuessBase}}
+\index{GuessBase@{GuessBase}!upload.SubversionVCS@{upload.SubversionVCS}}
+\doxysubsubsection{\texorpdfstring{GuessBase()}{GuessBase()}}
+{\footnotesize\ttfamily upload.\+Subversion\+VCS.\+Guess\+Base (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{required }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Wrapper for _GuessBase.\end{DoxyVerb}
+ \Hypertarget{classupload_1_1_subversion_v_c_s_a601ffb1146763196a01ee546294248f2}\label{classupload_1_1_subversion_v_c_s_a601ffb1146763196a01ee546294248f2} 
+\index{upload.SubversionVCS@{upload.SubversionVCS}!ReadFile@{ReadFile}}
+\index{ReadFile@{ReadFile}!upload.SubversionVCS@{upload.SubversionVCS}}
+\doxysubsubsection{\texorpdfstring{ReadFile()}{ReadFile()}}
+{\footnotesize\ttfamily upload.\+Subversion\+VCS.\+Read\+File (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{filename }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Returns the contents of a file.\end{DoxyVerb}
+ 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+build/\+\_\+deps/googletest-\/src/googletest/scripts/upload.\+py\end{DoxyCompactItemize}

@@ -1,0 +1,152 @@
+\doxysection{fuse\+\_\+gtest\+\_\+files Namespace Reference}
+\hypertarget{namespacefuse__gtest__files}{}\label{namespacefuse__gtest__files}\index{fuse\_gtest\_files@{fuse\_gtest\_files}}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{namespacefuse__gtest__files_a36953ee7d6175d0ec327324e85a7b5c2}{Verify\+File\+Exists}} (directory, relative\+\_\+path)
+\item 
+\mbox{\hyperlink{namespacefuse__gtest__files_a2862a430d169e97f05cd2b5a56aa31bb}{Validate\+GTest\+Root\+Dir}} (gtest\+\_\+root)
+\item 
+\mbox{\hyperlink{namespacefuse__gtest__files_ad689800b355067f19aca43bef58508d1}{Verify\+Output\+File}} (output\+\_\+dir, relative\+\_\+path)
+\item 
+\mbox{\hyperlink{namespacefuse__gtest__files_a2fa3ce239c9375ad9198905c08ecca2a}{Validate\+Output\+Dir}} (output\+\_\+dir)
+\item 
+\mbox{\hyperlink{namespacefuse__gtest__files_acabcfda888e8407add49dd88cadb4d58}{Fuse\+GTestH}} (gtest\+\_\+root, output\+\_\+dir)
+\item 
+\mbox{\hyperlink{namespacefuse__gtest__files_affde1c27fbc30b8b9dfc197240295cd5}{Fuse\+GTest\+All\+Cc\+To\+File}} (gtest\+\_\+root, output\+\_\+file)
+\item 
+\mbox{\hyperlink{namespacefuse__gtest__files_a467dbe3be4aa0e0f56a26248db33b47e}{Fuse\+GTest\+All\+Cc}} (gtest\+\_\+root, output\+\_\+dir)
+\item 
+\mbox{\hyperlink{namespacefuse__gtest__files_a5fb4196ca16d6a3929b2ec261a739595}{Fuse\+GTest}} (gtest\+\_\+root, output\+\_\+dir)
+\item 
+\Hypertarget{namespacefuse__gtest__files_a572c4124b58a92f2210e5bc7c4429209}\label{namespacefuse__gtest__files_a572c4124b58a92f2210e5bc7c4429209} 
+{\bfseries main} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{namespacefuse__gtest__files_a68085bdb2912baa7e71d2b3eb37b05c9}\label{namespacefuse__gtest__files_a68085bdb2912baa7e71d2b3eb37b05c9} 
+{\bfseries DEFAULT\+\_\+\+GTEST\+\_\+\+ROOT\+\_\+\+DIR} = os.\+path.\+join(os.\+path.\+dirname(\+\_\+\+\_\+file\+\_\+\+\_\+), \textquotesingle{}..\textquotesingle{})
+\item 
+\Hypertarget{namespacefuse__gtest__files_ad7abe9bfa06bb1c5411e8b4a7a686e5b}\label{namespacefuse__gtest__files_ad7abe9bfa06bb1c5411e8b4a7a686e5b} 
+{\bfseries INCLUDE\+\_\+\+GTEST\+\_\+\+FILE\+\_\+\+REGEX} = re.\+compile(r\textquotesingle{}\texorpdfstring{$^\wedge$}{\string^}\textbackslash{}s\texorpdfstring{$\ast$}{*}\#\textbackslash{}s\texorpdfstring{$\ast$}{*}include\textbackslash{}s\texorpdfstring{$\ast$}{*}"{}(gtest/.+)"{}\textquotesingle{})
+\item 
+\Hypertarget{namespacefuse__gtest__files_aec4e054d0ab27276d6150468bb98a8a4}\label{namespacefuse__gtest__files_aec4e054d0ab27276d6150468bb98a8a4} 
+{\bfseries INCLUDE\+\_\+\+SRC\+\_\+\+FILE\+\_\+\+REGEX} = re.\+compile(r\textquotesingle{}\texorpdfstring{$^\wedge$}{\string^}\textbackslash{}s\texorpdfstring{$\ast$}{*}\#\textbackslash{}s\texorpdfstring{$\ast$}{*}include\textbackslash{}s\texorpdfstring{$\ast$}{*}"{}(src/.+)"{}\textquotesingle{})
+\item 
+\Hypertarget{namespacefuse__gtest__files_a8a229231304e81809ae99cb7ba6d74ae}\label{namespacefuse__gtest__files_a8a229231304e81809ae99cb7ba6d74ae} 
+str {\bfseries GTEST\+\_\+\+H\+\_\+\+SEED} = \textquotesingle{}include/gtest/gtest.\+h\textquotesingle{}
+\item 
+\Hypertarget{namespacefuse__gtest__files_a8a0579e22d520237c695e48b07c7bec9}\label{namespacefuse__gtest__files_a8a0579e22d520237c695e48b07c7bec9} 
+str {\bfseries GTEST\+\_\+\+SPI\+\_\+\+H\+\_\+\+SEED} = \textquotesingle{}include/gtest/gtest-\/spi.\+h\textquotesingle{}
+\item 
+\Hypertarget{namespacefuse__gtest__files_a5d1a1343261ba44e5fa760e266306c09}\label{namespacefuse__gtest__files_a5d1a1343261ba44e5fa760e266306c09} 
+str {\bfseries GTEST\+\_\+\+ALL\+\_\+\+CC\+\_\+\+SEED} = \textquotesingle{}src/gtest-\/all.\+cc\textquotesingle{}
+\item 
+\Hypertarget{namespacefuse__gtest__files_a7f5beb8ebb6d0ed522b4e262920e22c8}\label{namespacefuse__gtest__files_a7f5beb8ebb6d0ed522b4e262920e22c8} 
+str {\bfseries GTEST\+\_\+\+H\+\_\+\+OUTPUT} = \textquotesingle{}gtest/gtest.\+h\textquotesingle{}
+\item 
+\Hypertarget{namespacefuse__gtest__files_a61695208741f5186ffbe877ada039393}\label{namespacefuse__gtest__files_a61695208741f5186ffbe877ada039393} 
+str {\bfseries GTEST\+\_\+\+ALL\+\_\+\+CC\+\_\+\+OUTPUT} = \textquotesingle{}gtest/gtest-\/all.\+cc\textquotesingle{}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyVerb}fuse_gtest_files.py v0.2.0
+Fuses Google Test source code into a .h file and a .cc file.
+
+SYNOPSIS
+       fuse_gtest_files.py [GTEST_ROOT_DIR] OUTPUT_DIR
+
+       Scans GTEST_ROOT_DIR for Google Test source code, and generates
+       two files: OUTPUT_DIR/gtest/gtest.h and OUTPUT_DIR/gtest/gtest-all.cc.
+       Then you can build your tests by adding OUTPUT_DIR to the include
+       search path and linking with OUTPUT_DIR/gtest/gtest-all.cc.  These
+       two files contain everything you need to use Google Test.  Hence
+       you can "install" Google Test by copying them to wherever you want.
+
+       GTEST_ROOT_DIR can be omitted and defaults to the parent
+       directory of the directory holding this script.
+
+EXAMPLES
+       ./fuse_gtest_files.py fused_gtest
+       ./fuse_gtest_files.py path/to/unpacked/gtest fused_gtest
+
+This tool is experimental.  In particular, it assumes that there is no
+conditional inclusion of Google Test headers.  Please report any
+problems to googletestframework@googlegroups.com.  You can read
+https://github.com/google/googletest/blob/master/googletest/docs/advanced.md for
+more information.
+\end{DoxyVerb}
+ 
+
+\doxysubsection{Function Documentation}
+\Hypertarget{namespacefuse__gtest__files_a5fb4196ca16d6a3929b2ec261a739595}\label{namespacefuse__gtest__files_a5fb4196ca16d6a3929b2ec261a739595} 
+\index{fuse\_gtest\_files@{fuse\_gtest\_files}!FuseGTest@{FuseGTest}}
+\index{FuseGTest@{FuseGTest}!fuse\_gtest\_files@{fuse\_gtest\_files}}
+\doxysubsubsection{\texorpdfstring{FuseGTest()}{FuseGTest()}}
+{\footnotesize\ttfamily fuse\+\_\+gtest\+\_\+files.\+Fuse\+GTest (\begin{DoxyParamCaption}\item[{}]{gtest\+\_\+root,  }\item[{}]{output\+\_\+dir }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Fuses gtest.h and gtest-all.cc.\end{DoxyVerb}
+ \Hypertarget{namespacefuse__gtest__files_a467dbe3be4aa0e0f56a26248db33b47e}\label{namespacefuse__gtest__files_a467dbe3be4aa0e0f56a26248db33b47e} 
+\index{fuse\_gtest\_files@{fuse\_gtest\_files}!FuseGTestAllCc@{FuseGTestAllCc}}
+\index{FuseGTestAllCc@{FuseGTestAllCc}!fuse\_gtest\_files@{fuse\_gtest\_files}}
+\doxysubsubsection{\texorpdfstring{FuseGTestAllCc()}{FuseGTestAllCc()}}
+{\footnotesize\ttfamily fuse\+\_\+gtest\+\_\+files.\+Fuse\+GTest\+All\+Cc (\begin{DoxyParamCaption}\item[{}]{gtest\+\_\+root,  }\item[{}]{output\+\_\+dir }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Scans folder gtest_root to generate gtest/gtest-all.cc in output_dir.\end{DoxyVerb}
+ \Hypertarget{namespacefuse__gtest__files_affde1c27fbc30b8b9dfc197240295cd5}\label{namespacefuse__gtest__files_affde1c27fbc30b8b9dfc197240295cd5} 
+\index{fuse\_gtest\_files@{fuse\_gtest\_files}!FuseGTestAllCcToFile@{FuseGTestAllCcToFile}}
+\index{FuseGTestAllCcToFile@{FuseGTestAllCcToFile}!fuse\_gtest\_files@{fuse\_gtest\_files}}
+\doxysubsubsection{\texorpdfstring{FuseGTestAllCcToFile()}{FuseGTestAllCcToFile()}}
+{\footnotesize\ttfamily fuse\+\_\+gtest\+\_\+files.\+Fuse\+GTest\+All\+Cc\+To\+File (\begin{DoxyParamCaption}\item[{}]{gtest\+\_\+root,  }\item[{}]{output\+\_\+file }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Scans folder gtest_root to generate gtest/gtest-all.cc in output_file.\end{DoxyVerb}
+ \Hypertarget{namespacefuse__gtest__files_acabcfda888e8407add49dd88cadb4d58}\label{namespacefuse__gtest__files_acabcfda888e8407add49dd88cadb4d58} 
+\index{fuse\_gtest\_files@{fuse\_gtest\_files}!FuseGTestH@{FuseGTestH}}
+\index{FuseGTestH@{FuseGTestH}!fuse\_gtest\_files@{fuse\_gtest\_files}}
+\doxysubsubsection{\texorpdfstring{FuseGTestH()}{FuseGTestH()}}
+{\footnotesize\ttfamily fuse\+\_\+gtest\+\_\+files.\+Fuse\+GTestH (\begin{DoxyParamCaption}\item[{}]{gtest\+\_\+root,  }\item[{}]{output\+\_\+dir }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Scans folder gtest_root to generate gtest/gtest.h in output_dir.\end{DoxyVerb}
+ \Hypertarget{namespacefuse__gtest__files_a2862a430d169e97f05cd2b5a56aa31bb}\label{namespacefuse__gtest__files_a2862a430d169e97f05cd2b5a56aa31bb} 
+\index{fuse\_gtest\_files@{fuse\_gtest\_files}!ValidateGTestRootDir@{ValidateGTestRootDir}}
+\index{ValidateGTestRootDir@{ValidateGTestRootDir}!fuse\_gtest\_files@{fuse\_gtest\_files}}
+\doxysubsubsection{\texorpdfstring{ValidateGTestRootDir()}{ValidateGTestRootDir()}}
+{\footnotesize\ttfamily fuse\+\_\+gtest\+\_\+files.\+Validate\+GTest\+Root\+Dir (\begin{DoxyParamCaption}\item[{}]{gtest\+\_\+root }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Makes sure gtest_root points to a valid gtest root directory.
+
+The function aborts the program on failure.
+\end{DoxyVerb}
+ \Hypertarget{namespacefuse__gtest__files_a2fa3ce239c9375ad9198905c08ecca2a}\label{namespacefuse__gtest__files_a2fa3ce239c9375ad9198905c08ecca2a} 
+\index{fuse\_gtest\_files@{fuse\_gtest\_files}!ValidateOutputDir@{ValidateOutputDir}}
+\index{ValidateOutputDir@{ValidateOutputDir}!fuse\_gtest\_files@{fuse\_gtest\_files}}
+\doxysubsubsection{\texorpdfstring{ValidateOutputDir()}{ValidateOutputDir()}}
+{\footnotesize\ttfamily fuse\+\_\+gtest\+\_\+files.\+Validate\+Output\+Dir (\begin{DoxyParamCaption}\item[{}]{output\+\_\+dir }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Makes sure output_dir points to a valid output directory.
+
+The function aborts the program on failure.
+\end{DoxyVerb}
+ \Hypertarget{namespacefuse__gtest__files_a36953ee7d6175d0ec327324e85a7b5c2}\label{namespacefuse__gtest__files_a36953ee7d6175d0ec327324e85a7b5c2} 
+\index{fuse\_gtest\_files@{fuse\_gtest\_files}!VerifyFileExists@{VerifyFileExists}}
+\index{VerifyFileExists@{VerifyFileExists}!fuse\_gtest\_files@{fuse\_gtest\_files}}
+\doxysubsubsection{\texorpdfstring{VerifyFileExists()}{VerifyFileExists()}}
+{\footnotesize\ttfamily fuse\+\_\+gtest\+\_\+files.\+Verify\+File\+Exists (\begin{DoxyParamCaption}\item[{}]{directory,  }\item[{}]{relative\+\_\+path }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Verifies that the given file exists; aborts on failure.
+
+relative_path is the file path relative to the given directory.
+\end{DoxyVerb}
+ \Hypertarget{namespacefuse__gtest__files_ad689800b355067f19aca43bef58508d1}\label{namespacefuse__gtest__files_ad689800b355067f19aca43bef58508d1} 
+\index{fuse\_gtest\_files@{fuse\_gtest\_files}!VerifyOutputFile@{VerifyOutputFile}}
+\index{VerifyOutputFile@{VerifyOutputFile}!fuse\_gtest\_files@{fuse\_gtest\_files}}
+\doxysubsubsection{\texorpdfstring{VerifyOutputFile()}{VerifyOutputFile()}}
+{\footnotesize\ttfamily fuse\+\_\+gtest\+\_\+files.\+Verify\+Output\+File (\begin{DoxyParamCaption}\item[{}]{output\+\_\+dir,  }\item[{}]{relative\+\_\+path }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Verifies that the given output file path is valid.
+
+relative_path is relative to the output_dir directory.
+\end{DoxyVerb}
+ 

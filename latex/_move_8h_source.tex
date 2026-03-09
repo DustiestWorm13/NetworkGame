@@ -1,0 +1,53 @@
+\doxysection{Move.\+h}
+\hypertarget{_move_8h_source}{}\label{_move_8h_source}\index{src/engine/Move.h@{src/engine/Move.h}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#ifndef\ MOVE\_H}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#define\ MOVE\_H}}
+\DoxyCodeLine{00003\ }
+\DoxyCodeLine{00004\ \textcolor{preprocessor}{\#include\ "{}InputState.h"{}}}
+\DoxyCodeLine{00005\ \textcolor{preprocessor}{\#include\ "{}InputMemoryBitStream.h"{}}}
+\DoxyCodeLine{00006\ \textcolor{preprocessor}{\#include\ "{}OutputMemoryBitStream.h"{}}}
+\DoxyCodeLine{00007\ }
+\DoxyCodeLine{00008\ \textcolor{preprocessor}{\#include\ <memory>}}
+\DoxyCodeLine{00009\ \textcolor{keyword}{using\ }std::shared\_ptr;}
+\DoxyCodeLine{00010\ }
+\DoxyCodeLine{00011\ \textcolor{keyword}{class\ }\mbox{\hyperlink{class_move}{Move}}}
+\DoxyCodeLine{00012\ \{}
+\DoxyCodeLine{00013\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00014\ }
+\DoxyCodeLine{00015\ \ \ \ \ \mbox{\hyperlink{class_move}{Move}}()\ :}
+\DoxyCodeLine{00016\ \ \ \ \ \ \ \ \ mTimestamp(\ 0.0f\ ),}
+\DoxyCodeLine{00017\ \ \ \ \ \ \ \ \ mDeltaTime(\ 0.0f\ )}
+\DoxyCodeLine{00018\ \ \ \ \ \ \ \ \ \{\}}
+\DoxyCodeLine{00019\ }
+\DoxyCodeLine{00020\ \ \ \ \ \mbox{\hyperlink{class_move}{Move}}(\ \textcolor{keyword}{const}\ \mbox{\hyperlink{class_input_state}{InputState}}\&\ inInputState,\ \textcolor{keywordtype}{float}\ inTimestamp,\ \textcolor{keywordtype}{float}\ inDeltaTime\ )\ :}
+\DoxyCodeLine{00021\ \ \ \ \ \ \ \ \ mInputState(\ inInputState\ ),}
+\DoxyCodeLine{00022\ \ \ \ \ \ \ \ \ mTimestamp(\ inTimestamp\ ),}
+\DoxyCodeLine{00023\ \ \ \ \ \ \ \ \ mDeltaTime(\ inDeltaTime\ )}
+\DoxyCodeLine{00024\ \ \ \ \ \{\}}
+\DoxyCodeLine{00025\ }
+\DoxyCodeLine{00026\ }
+\DoxyCodeLine{00027\ \ \ \ \ \textcolor{keyword}{const}\ \mbox{\hyperlink{class_input_state}{InputState}}\&\ GetInputState()\textcolor{keyword}{\ const\ \ \ \ \ \ \ }\{\ \textcolor{keywordflow}{return}\ mInputState;\ \}}
+\DoxyCodeLine{00028\ \ \ \ \ \textcolor{keywordtype}{float}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ GetTimestamp()\textcolor{keyword}{\ \ const\ \ \ \ \ \ \ }\{\ \textcolor{keywordflow}{return}\ mTimestamp;\ \}}
+\DoxyCodeLine{00029\ \ \ \ \ \textcolor{keywordtype}{float}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ GetDeltaTime()\textcolor{keyword}{\ \ const\ \ \ \ \ \ \ }\{\ \textcolor{keywordflow}{return}\ mDeltaTime;\ \}}
+\DoxyCodeLine{00030\ }
+\DoxyCodeLine{00031\ \ \ \ \ \textcolor{keywordtype}{void}\ setInputState(\mbox{\hyperlink{class_input_state}{InputState}}\&\ inInputState)\ \ \{\ mInputState\ =\ inInputState;\ \}}
+\DoxyCodeLine{00032\ \ \ \ \ \textcolor{keywordtype}{void}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ SetTimestamp(\textcolor{keywordtype}{float}\ inTimeStamp)\ \{\ mTimestamp\ =\ inTimeStamp;\ \}}
+\DoxyCodeLine{00033\ \ \ \ \ \textcolor{keywordtype}{void}\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ SetDeltaTime(\textcolor{keywordtype}{float}\ inDetlaTime)\ \{\ mDeltaTime\ =\ inDetlaTime;\ \}}
+\DoxyCodeLine{00034\ }
+\DoxyCodeLine{00035\ \ \ \ \ \textcolor{keywordtype}{bool}\ Write(\ \mbox{\hyperlink{class_output_memory_bit_stream}{OutputMemoryBitStream}}\&\ inOutputStream\ )\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00036\ \ \ \ \ \textcolor{keywordtype}{bool}\ Read(\ \mbox{\hyperlink{class_input_memory_bit_stream}{InputMemoryBitStream}}\&\ inInputStream\ );}
+\DoxyCodeLine{00037\ }
+\DoxyCodeLine{00038\ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00039\ \ \ \ \ \mbox{\hyperlink{class_input_state}{InputState}}\ \ \ \ mInputState;}
+\DoxyCodeLine{00040\ \ \ \ \ \textcolor{keywordtype}{float}\ \ \ \ \ \ \ mTimestamp;}
+\DoxyCodeLine{00041\ \ \ \ \ \textcolor{keywordtype}{float}\ \ \ \ \ \ \ mDeltaTime;}
+\DoxyCodeLine{00042\ }
+\DoxyCodeLine{00043\ \};}
+\DoxyCodeLine{00044\ }
+\DoxyCodeLine{00045\ \textcolor{keyword}{typedef}\ shared\_ptr<\ Move\ >\ \ MovePtr;}
+\DoxyCodeLine{00046\ }
+\DoxyCodeLine{00047\ \textcolor{preprocessor}{\#endif}}
+
+\end{DoxyCode}

@@ -1,0 +1,144 @@
+\doxysection{upload.\+Version\+Control\+System Class Reference}
+\hypertarget{classupload_1_1_version_control_system}{}\label{classupload_1_1_version_control_system}\index{upload.VersionControlSystem@{upload.VersionControlSystem}}
+Inheritance diagram for upload.\+Version\+Control\+System\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.994653cm]{classupload_1_1_version_control_system}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classupload_1_1_version_control_system_ab2a3da53878c9d8bdfbd0fc03091ce1b}{\+\_\+\+\_\+init\+\_\+\+\_\+}} (self, options)
+\item 
+\mbox{\hyperlink{classupload_1_1_version_control_system_a64aa85ea51b6f34918309a733fb58a97}{Generate\+Diff}} (self, args)
+\item 
+\mbox{\hyperlink{classupload_1_1_version_control_system_a500344e5ca80b8fb29773ebe8aac4844}{Get\+Unknown\+Files}} (self)
+\item 
+\mbox{\hyperlink{classupload_1_1_version_control_system_aed703e2def2bc9505f182de7b753499d}{Check\+For\+Unknown\+Files}} (self)
+\item 
+\mbox{\hyperlink{classupload_1_1_version_control_system_adf8a0253323a47c6a12e235c9160bb38}{Get\+Base\+File}} (self, filename)
+\item 
+\mbox{\hyperlink{classupload_1_1_version_control_system_a426cb9d4ad9f94754c9122653e3aa24f}{Get\+Base\+Files}} (self, diff)
+\item 
+\mbox{\hyperlink{classupload_1_1_version_control_system_ac1549d3e1616a01a27581a03ee754189}{Upload\+Base\+Files}} (self, issue, rpc\+\_\+server, patch\+\_\+list, patchset, options, files)
+\item 
+\mbox{\hyperlink{classupload_1_1_version_control_system_a8d49726fefa641c183d210889491396c}{Is\+Image}} (self, filename)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classupload_1_1_version_control_system_a4d57d043bc408887b94269fe4cea9556}\label{classupload_1_1_version_control_system_a4d57d043bc408887b94269fe4cea9556} 
+{\bfseries options}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyVerb}Abstract base class providing an interface to the VCS.\end{DoxyVerb}
+ 
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{classupload_1_1_version_control_system_ab2a3da53878c9d8bdfbd0fc03091ce1b}\label{classupload_1_1_version_control_system_ab2a3da53878c9d8bdfbd0fc03091ce1b} 
+\index{upload.VersionControlSystem@{upload.VersionControlSystem}!\_\_init\_\_@{\_\_init\_\_}}
+\index{\_\_init\_\_@{\_\_init\_\_}!upload.VersionControlSystem@{upload.VersionControlSystem}}
+\doxysubsubsection{\texorpdfstring{\_\_init\_\_()}{\_\_init\_\_()}}
+{\footnotesize\ttfamily upload.\+Version\+Control\+System.\+\_\+\+\_\+init\+\_\+\+\_\+ (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{options }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Constructor.
+
+Args:
+  options: Command line options.
+\end{DoxyVerb}
+ 
+
+Reimplemented in \mbox{\hyperlink{classupload_1_1_subversion_v_c_s_ad30faeba90b6d8f6ae8605a7991abe01}{upload.\+Subversion\+VCS}}, \mbox{\hyperlink{classupload_1_1_git_v_c_s_a324d85469c965db1ada15350c9892c72}{upload.\+Git\+VCS}}, and \mbox{\hyperlink{classupload_1_1_mercurial_v_c_s_a68e4fc1308e45b9929b6c08b1df19f9f}{upload.\+Mercurial\+VCS}}.
+
+
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classupload_1_1_version_control_system_aed703e2def2bc9505f182de7b753499d}\label{classupload_1_1_version_control_system_aed703e2def2bc9505f182de7b753499d} 
+\index{upload.VersionControlSystem@{upload.VersionControlSystem}!CheckForUnknownFiles@{CheckForUnknownFiles}}
+\index{CheckForUnknownFiles@{CheckForUnknownFiles}!upload.VersionControlSystem@{upload.VersionControlSystem}}
+\doxysubsubsection{\texorpdfstring{CheckForUnknownFiles()}{CheckForUnknownFiles()}}
+{\footnotesize\ttfamily upload.\+Version\+Control\+System.\+Check\+For\+Unknown\+Files (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Show an "are you sure?" prompt if there are unknown files.\end{DoxyVerb}
+ \Hypertarget{classupload_1_1_version_control_system_a64aa85ea51b6f34918309a733fb58a97}\label{classupload_1_1_version_control_system_a64aa85ea51b6f34918309a733fb58a97} 
+\index{upload.VersionControlSystem@{upload.VersionControlSystem}!GenerateDiff@{GenerateDiff}}
+\index{GenerateDiff@{GenerateDiff}!upload.VersionControlSystem@{upload.VersionControlSystem}}
+\doxysubsubsection{\texorpdfstring{GenerateDiff()}{GenerateDiff()}}
+{\footnotesize\ttfamily upload.\+Version\+Control\+System.\+Generate\+Diff (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{args }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Return the current diff as a string.
+
+Args:
+  args: Extra arguments to pass to the diff command.
+\end{DoxyVerb}
+ 
+
+Reimplemented in \mbox{\hyperlink{classupload_1_1_subversion_v_c_s_a072f68748f33344489532bb1c8764289}{upload.\+Subversion\+VCS}}, \mbox{\hyperlink{classupload_1_1_git_v_c_s_a4336325497c1aa6cfeac30868b732a63}{upload.\+Git\+VCS}}, and \mbox{\hyperlink{classupload_1_1_mercurial_v_c_s_a00d1227902572ac557e054b9c9c33791}{upload.\+Mercurial\+VCS}}.
+
+\Hypertarget{classupload_1_1_version_control_system_adf8a0253323a47c6a12e235c9160bb38}\label{classupload_1_1_version_control_system_adf8a0253323a47c6a12e235c9160bb38} 
+\index{upload.VersionControlSystem@{upload.VersionControlSystem}!GetBaseFile@{GetBaseFile}}
+\index{GetBaseFile@{GetBaseFile}!upload.VersionControlSystem@{upload.VersionControlSystem}}
+\doxysubsubsection{\texorpdfstring{GetBaseFile()}{GetBaseFile()}}
+{\footnotesize\ttfamily upload.\+Version\+Control\+System.\+Get\+Base\+File (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{filename }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Get the content of the upstream version of a file.
+
+Returns:
+  A tuple (base_content, new_content, is_binary, status)
+    base_content: The contents of the base file.
+    new_content: For text files, this is empty.  For binary files, this is
+      the contents of the new file, since the diff output won't contain
+      information to reconstruct the current file.
+    is_binary: True iff the file is binary.
+    status: The status of the file.
+\end{DoxyVerb}
+ 
+
+Reimplemented in \mbox{\hyperlink{classupload_1_1_subversion_v_c_s_af842b536e7d9aad2be83562c01c03d12}{upload.\+Subversion\+VCS}}, \mbox{\hyperlink{classupload_1_1_git_v_c_s_ad38b27f3c3b0d341a21edd9d393683f3}{upload.\+Git\+VCS}}, and \mbox{\hyperlink{classupload_1_1_mercurial_v_c_s_a7bd835c63bb09c3f01fb24fce4657f4c}{upload.\+Mercurial\+VCS}}.
+
+\Hypertarget{classupload_1_1_version_control_system_a426cb9d4ad9f94754c9122653e3aa24f}\label{classupload_1_1_version_control_system_a426cb9d4ad9f94754c9122653e3aa24f} 
+\index{upload.VersionControlSystem@{upload.VersionControlSystem}!GetBaseFiles@{GetBaseFiles}}
+\index{GetBaseFiles@{GetBaseFiles}!upload.VersionControlSystem@{upload.VersionControlSystem}}
+\doxysubsubsection{\texorpdfstring{GetBaseFiles()}{GetBaseFiles()}}
+{\footnotesize\ttfamily upload.\+Version\+Control\+System.\+Get\+Base\+Files (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{diff }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Helper that calls GetBase file for each file in the patch.
+
+Returns:
+  A dictionary that maps from filename to GetBaseFile's tuple.  Filenames
+  are retrieved based on lines that start with "Index:" or
+  "Property changes on:".
+\end{DoxyVerb}
+ \Hypertarget{classupload_1_1_version_control_system_a500344e5ca80b8fb29773ebe8aac4844}\label{classupload_1_1_version_control_system_a500344e5ca80b8fb29773ebe8aac4844} 
+\index{upload.VersionControlSystem@{upload.VersionControlSystem}!GetUnknownFiles@{GetUnknownFiles}}
+\index{GetUnknownFiles@{GetUnknownFiles}!upload.VersionControlSystem@{upload.VersionControlSystem}}
+\doxysubsubsection{\texorpdfstring{GetUnknownFiles()}{GetUnknownFiles()}}
+{\footnotesize\ttfamily upload.\+Version\+Control\+System.\+Get\+Unknown\+Files (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Return a list of files unknown to the VCS.\end{DoxyVerb}
+ 
+
+Reimplemented in \mbox{\hyperlink{classupload_1_1_subversion_v_c_s_a463e488be353b009fcc9a9ba04c1fa2a}{upload.\+Subversion\+VCS}}, \mbox{\hyperlink{classupload_1_1_git_v_c_s_a435002a80c0afb73fe388af93db1a7b1}{upload.\+Git\+VCS}}, and \mbox{\hyperlink{classupload_1_1_mercurial_v_c_s_a453e37400923d6fdc6dbbe1203a097a1}{upload.\+Mercurial\+VCS}}.
+
+\Hypertarget{classupload_1_1_version_control_system_a8d49726fefa641c183d210889491396c}\label{classupload_1_1_version_control_system_a8d49726fefa641c183d210889491396c} 
+\index{upload.VersionControlSystem@{upload.VersionControlSystem}!IsImage@{IsImage}}
+\index{IsImage@{IsImage}!upload.VersionControlSystem@{upload.VersionControlSystem}}
+\doxysubsubsection{\texorpdfstring{IsImage()}{IsImage()}}
+{\footnotesize\ttfamily upload.\+Version\+Control\+System.\+Is\+Image (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{filename }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Returns true if the filename has an image extension.\end{DoxyVerb}
+ \Hypertarget{classupload_1_1_version_control_system_ac1549d3e1616a01a27581a03ee754189}\label{classupload_1_1_version_control_system_ac1549d3e1616a01a27581a03ee754189} 
+\index{upload.VersionControlSystem@{upload.VersionControlSystem}!UploadBaseFiles@{UploadBaseFiles}}
+\index{UploadBaseFiles@{UploadBaseFiles}!upload.VersionControlSystem@{upload.VersionControlSystem}}
+\doxysubsubsection{\texorpdfstring{UploadBaseFiles()}{UploadBaseFiles()}}
+{\footnotesize\ttfamily upload.\+Version\+Control\+System.\+Upload\+Base\+Files (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{}]{issue,  }\item[{}]{rpc\+\_\+server,  }\item[{}]{patch\+\_\+list,  }\item[{}]{patchset,  }\item[{}]{options,  }\item[{}]{files }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Uploads the base files (and if necessary, the current ones as well).\end{DoxyVerb}
+ 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+build/\+\_\+deps/googletest-\/src/googletest/scripts/upload.\+py\end{DoxyCompactItemize}

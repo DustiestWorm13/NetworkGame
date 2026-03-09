@@ -1,0 +1,219 @@
+\doxysection{gmock.\+cc}
+\hypertarget{gmock_8cc_source}{}\label{gmock_8cc_source}\index{build/\_deps/googletest-\/src/googlemock/src/gmock.cc@{build/\_deps/googletest-\/src/googlemock/src/gmock.cc}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{//\ Copyright\ 2008,\ Google\ Inc.}}
+\DoxyCodeLine{00002\ \textcolor{comment}{//\ All\ rights\ reserved.}}
+\DoxyCodeLine{00003\ \textcolor{comment}{//}}
+\DoxyCodeLine{00004\ \textcolor{comment}{//\ Redistribution\ and\ use\ in\ source\ and\ binary\ forms,\ with\ or\ without}}
+\DoxyCodeLine{00005\ \textcolor{comment}{//\ modification,\ are\ permitted\ provided\ that\ the\ following\ conditions\ are}}
+\DoxyCodeLine{00006\ \textcolor{comment}{//\ met:}}
+\DoxyCodeLine{00007\ \textcolor{comment}{//}}
+\DoxyCodeLine{00008\ \textcolor{comment}{//\ \ \ \ \ *\ Redistributions\ of\ source\ code\ must\ retain\ the\ above\ copyright}}
+\DoxyCodeLine{00009\ \textcolor{comment}{//\ notice,\ this\ list\ of\ conditions\ and\ the\ following\ disclaimer.}}
+\DoxyCodeLine{00010\ \textcolor{comment}{//\ \ \ \ \ *\ Redistributions\ in\ binary\ form\ must\ reproduce\ the\ above}}
+\DoxyCodeLine{00011\ \textcolor{comment}{//\ copyright\ notice,\ this\ list\ of\ conditions\ and\ the\ following\ disclaimer}}
+\DoxyCodeLine{00012\ \textcolor{comment}{//\ in\ the\ documentation\ and/or\ other\ materials\ provided\ with\ the}}
+\DoxyCodeLine{00013\ \textcolor{comment}{//\ distribution.}}
+\DoxyCodeLine{00014\ \textcolor{comment}{//\ \ \ \ \ *\ Neither\ the\ name\ of\ Google\ Inc.\ nor\ the\ names\ of\ its}}
+\DoxyCodeLine{00015\ \textcolor{comment}{//\ contributors\ may\ be\ used\ to\ endorse\ or\ promote\ products\ derived\ from}}
+\DoxyCodeLine{00016\ \textcolor{comment}{//\ this\ software\ without\ specific\ prior\ written\ permission.}}
+\DoxyCodeLine{00017\ \textcolor{comment}{//}}
+\DoxyCodeLine{00018\ \textcolor{comment}{//\ THIS\ SOFTWARE\ IS\ PROVIDED\ BY\ THE\ COPYRIGHT\ HOLDERS\ AND\ CONTRIBUTORS}}
+\DoxyCodeLine{00019\ \textcolor{comment}{//\ "{}AS\ IS"{}\ AND\ ANY\ EXPRESS\ OR\ IMPLIED\ WARRANTIES,\ INCLUDING,\ BUT\ NOT}}
+\DoxyCodeLine{00020\ \textcolor{comment}{//\ LIMITED\ TO,\ THE\ IMPLIED\ WARRANTIES\ OF\ MERCHANTABILITY\ AND\ FITNESS\ FOR}}
+\DoxyCodeLine{00021\ \textcolor{comment}{//\ A\ PARTICULAR\ PURPOSE\ ARE\ DISCLAIMED.\ IN\ NO\ EVENT\ SHALL\ THE\ COPYRIGHT}}
+\DoxyCodeLine{00022\ \textcolor{comment}{//\ OWNER\ OR\ CONTRIBUTORS\ BE\ LIABLE\ FOR\ ANY\ DIRECT,\ INDIRECT,\ INCIDENTAL,}}
+\DoxyCodeLine{00023\ \textcolor{comment}{//\ SPECIAL,\ EXEMPLARY,\ OR\ CONSEQUENTIAL\ DAMAGES\ (INCLUDING,\ BUT\ NOT}}
+\DoxyCodeLine{00024\ \textcolor{comment}{//\ LIMITED\ TO,\ PROCUREMENT\ OF\ SUBSTITUTE\ GOODS\ OR\ SERVICES;\ LOSS\ OF\ USE,}}
+\DoxyCodeLine{00025\ \textcolor{comment}{//\ DATA,\ OR\ PROFITS;\ OR\ BUSINESS\ INTERRUPTION)\ HOWEVER\ CAUSED\ AND\ ON\ ANY}}
+\DoxyCodeLine{00026\ \textcolor{comment}{//\ THEORY\ OF\ LIABILITY,\ WHETHER\ IN\ CONTRACT,\ STRICT\ LIABILITY,\ OR\ TORT}}
+\DoxyCodeLine{00027\ \textcolor{comment}{//\ (INCLUDING\ NEGLIGENCE\ OR\ OTHERWISE)\ ARISING\ IN\ ANY\ WAY\ OUT\ OF\ THE\ USE}}
+\DoxyCodeLine{00028\ \textcolor{comment}{//\ OF\ THIS\ SOFTWARE,\ EVEN\ IF\ ADVISED\ OF\ THE\ POSSIBILITY\ OF\ SUCH\ DAMAGE.}}
+\DoxyCodeLine{00029\ }
+\DoxyCodeLine{00030\ }
+\DoxyCodeLine{00031\ \textcolor{preprocessor}{\#include\ "{}gmock/gmock.h"{}}}
+\DoxyCodeLine{00032\ \textcolor{preprocessor}{\#include\ "{}gmock/internal/gmock-\/port.h"{}}}
+\DoxyCodeLine{00033\ }
+\DoxyCodeLine{00034\ \textcolor{keyword}{namespace\ }testing\ \{}
+\DoxyCodeLine{00035\ }
+\DoxyCodeLine{00036\ GMOCK\_DEFINE\_bool\_(catch\_leaked\_mocks,\ \textcolor{keyword}{true},}
+\DoxyCodeLine{00037\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}true\ if\ and\ only\ if\ Google\ Mock\ should\ report\ leaked\ "{}}}
+\DoxyCodeLine{00038\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}mock\ objects\ as\ failures."{}});}
+\DoxyCodeLine{00039\ }
+\DoxyCodeLine{00040\ GMOCK\_DEFINE\_string\_(verbose,\ internal::kWarningVerbosity,}
+\DoxyCodeLine{00041\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}Controls\ how\ verbose\ Google\ Mock's\ output\ is."{}}}
+\DoxyCodeLine{00042\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}\ \ Valid\ values:\(\backslash\)n"{}}}
+\DoxyCodeLine{00043\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}\ \ info\ \ \ \ -\/\ prints\ all\ messages.\(\backslash\)n"{}}}
+\DoxyCodeLine{00044\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}\ \ warning\ -\/\ prints\ warnings\ and\ errors.\(\backslash\)n"{}}}
+\DoxyCodeLine{00045\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}\ \ error\ \ \ -\/\ prints\ errors\ only."{}});}
+\DoxyCodeLine{00046\ }
+\DoxyCodeLine{00047\ GMOCK\_DEFINE\_int32\_(default\_mock\_behavior,\ 1,}
+\DoxyCodeLine{00048\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}Controls\ the\ default\ behavior\ of\ mocks."{}}}
+\DoxyCodeLine{00049\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}\ \ Valid\ values:\(\backslash\)n"{}}}
+\DoxyCodeLine{00050\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}\ \ 0\ -\/\ by\ default,\ mocks\ act\ as\ NiceMocks.\(\backslash\)n"{}}}
+\DoxyCodeLine{00051\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}\ \ 1\ -\/\ by\ default,\ mocks\ act\ as\ NaggyMocks.\(\backslash\)n"{}}}
+\DoxyCodeLine{00052\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{stringliteral}{"{}\ \ 2\ -\/\ by\ default,\ mocks\ act\ as\ StrictMocks."{}});}
+\DoxyCodeLine{00053\ }
+\DoxyCodeLine{00054\ \textcolor{keyword}{namespace\ }internal\ \{}
+\DoxyCodeLine{00055\ }
+\DoxyCodeLine{00056\ \textcolor{comment}{//\ Parses\ a\ string\ as\ a\ command\ line\ flag.\ \ The\ string\ should\ have\ the}}
+\DoxyCodeLine{00057\ \textcolor{comment}{//\ format\ "{}-\/-\/gmock\_flag=value"{}.\ \ When\ def\_optional\ is\ true,\ the}}
+\DoxyCodeLine{00058\ \textcolor{comment}{//\ "{}=value"{}\ part\ can\ be\ omitted.}}
+\DoxyCodeLine{00059\ \textcolor{comment}{//}}
+\DoxyCodeLine{00060\ \textcolor{comment}{//\ Returns\ the\ value\ of\ the\ flag,\ or\ NULL\ if\ the\ parsing\ failed.}}
+\DoxyCodeLine{00061\ \textcolor{keyword}{static}\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ ParseGoogleMockFlagValue(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ str,}
+\DoxyCodeLine{00062\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ flag,}
+\DoxyCodeLine{00063\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ def\_optional)\ \{}
+\DoxyCodeLine{00064\ \ \ \textcolor{comment}{//\ str\ and\ flag\ must\ not\ be\ NULL.}}
+\DoxyCodeLine{00065\ \ \ \textcolor{keywordflow}{if}\ (str\ ==\ \textcolor{keyword}{nullptr}\ ||\ flag\ ==\ \textcolor{keyword}{nullptr})\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00066\ }
+\DoxyCodeLine{00067\ \ \ \textcolor{comment}{//\ The\ flag\ must\ start\ with\ "{}-\/-\/gmock\_"{}.}}
+\DoxyCodeLine{00068\ \ \ \textcolor{keyword}{const}\ std::string\ flag\_str\ =\ std::string(\textcolor{stringliteral}{"{}-\/-\/gmock\_"{}})\ +\ flag;}
+\DoxyCodeLine{00069\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{size\_t}\ flag\_len\ =\ flag\_str.length();}
+\DoxyCodeLine{00070\ \ \ \textcolor{keywordflow}{if}\ (strncmp(str,\ flag\_str.c\_str(),\ flag\_len)\ !=\ 0)\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00071\ }
+\DoxyCodeLine{00072\ \ \ \textcolor{comment}{//\ Skips\ the\ flag\ name.}}
+\DoxyCodeLine{00073\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ flag\_end\ =\ str\ +\ flag\_len;}
+\DoxyCodeLine{00074\ }
+\DoxyCodeLine{00075\ \ \ \textcolor{comment}{//\ When\ def\_optional\ is\ true,\ it's\ OK\ to\ not\ have\ a\ "{}=value"{}\ part.}}
+\DoxyCodeLine{00076\ \ \ \textcolor{keywordflow}{if}\ (def\_optional\ \&\&\ (flag\_end[0]\ ==\ \textcolor{charliteral}{'\(\backslash\)0'}))\ \{}
+\DoxyCodeLine{00077\ \ \ \ \ \textcolor{keywordflow}{return}\ flag\_end;}
+\DoxyCodeLine{00078\ \ \ \}}
+\DoxyCodeLine{00079\ }
+\DoxyCodeLine{00080\ \ \ \textcolor{comment}{//\ If\ def\_optional\ is\ true\ and\ there\ are\ more\ characters\ after\ the}}
+\DoxyCodeLine{00081\ \ \ \textcolor{comment}{//\ flag\ name,\ or\ if\ def\_optional\ is\ false,\ there\ must\ be\ a\ '='\ after}}
+\DoxyCodeLine{00082\ \ \ \textcolor{comment}{//\ the\ flag\ name.}}
+\DoxyCodeLine{00083\ \ \ \textcolor{keywordflow}{if}\ (flag\_end[0]\ !=\ \textcolor{charliteral}{'='})\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00084\ }
+\DoxyCodeLine{00085\ \ \ \textcolor{comment}{//\ Returns\ the\ string\ after\ "{}="{}.}}
+\DoxyCodeLine{00086\ \ \ \textcolor{keywordflow}{return}\ flag\_end\ +\ 1;}
+\DoxyCodeLine{00087\ \}}
+\DoxyCodeLine{00088\ }
+\DoxyCodeLine{00089\ \textcolor{comment}{//\ Parses\ a\ string\ for\ a\ Google\ Mock\ bool\ flag,\ in\ the\ form\ of}}
+\DoxyCodeLine{00090\ \textcolor{comment}{//\ "{}-\/-\/gmock\_flag=value"{}.}}
+\DoxyCodeLine{00091\ \textcolor{comment}{//}}
+\DoxyCodeLine{00092\ \textcolor{comment}{//\ On\ success,\ stores\ the\ value\ of\ the\ flag\ in\ *value,\ and\ returns}}
+\DoxyCodeLine{00093\ \textcolor{comment}{//\ true.\ \ On\ failure,\ returns\ false\ without\ changing\ *value.}}
+\DoxyCodeLine{00094\ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ ParseGoogleMockBoolFlag(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ str,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ flag,}
+\DoxyCodeLine{00095\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}*\ value)\ \{}
+\DoxyCodeLine{00096\ \ \ \textcolor{comment}{//\ Gets\ the\ value\ of\ the\ flag\ as\ a\ string.}}
+\DoxyCodeLine{00097\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ \textcolor{keyword}{const}\ value\_str\ =\ ParseGoogleMockFlagValue(str,\ flag,\ \textcolor{keyword}{true});}
+\DoxyCodeLine{00098\ }
+\DoxyCodeLine{00099\ \ \ \textcolor{comment}{//\ Aborts\ if\ the\ parsing\ failed.}}
+\DoxyCodeLine{00100\ \ \ \textcolor{keywordflow}{if}\ (value\_str\ ==\ \textcolor{keyword}{nullptr})\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00101\ }
+\DoxyCodeLine{00102\ \ \ \textcolor{comment}{//\ Converts\ the\ string\ value\ to\ a\ bool.}}
+\DoxyCodeLine{00103\ \ \ *value\ =\ !(*value\_str\ ==\ \textcolor{charliteral}{'0'}\ ||\ *value\_str\ ==\ \textcolor{charliteral}{'f'}\ ||\ *value\_str\ ==\ \textcolor{charliteral}{'F'});}
+\DoxyCodeLine{00104\ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00105\ \}}
+\DoxyCodeLine{00106\ }
+\DoxyCodeLine{00107\ \textcolor{comment}{//\ Parses\ a\ string\ for\ a\ Google\ Mock\ string\ flag,\ in\ the\ form\ of}}
+\DoxyCodeLine{00108\ \textcolor{comment}{//\ "{}-\/-\/gmock\_flag=value"{}.}}
+\DoxyCodeLine{00109\ \textcolor{comment}{//}}
+\DoxyCodeLine{00110\ \textcolor{comment}{//\ On\ success,\ stores\ the\ value\ of\ the\ flag\ in\ *value,\ and\ returns}}
+\DoxyCodeLine{00111\ \textcolor{comment}{//\ true.\ \ On\ failure,\ returns\ false\ without\ changing\ *value.}}
+\DoxyCodeLine{00112\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ String>}
+\DoxyCodeLine{00113\ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ ParseGoogleMockStringFlag(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ str,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ flag,}
+\DoxyCodeLine{00114\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ String*\ value)\ \{}
+\DoxyCodeLine{00115\ \ \ \textcolor{comment}{//\ Gets\ the\ value\ of\ the\ flag\ as\ a\ string.}}
+\DoxyCodeLine{00116\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ \textcolor{keyword}{const}\ value\_str\ =\ ParseGoogleMockFlagValue(str,\ flag,\ \textcolor{keyword}{false});}
+\DoxyCodeLine{00117\ }
+\DoxyCodeLine{00118\ \ \ \textcolor{comment}{//\ Aborts\ if\ the\ parsing\ failed.}}
+\DoxyCodeLine{00119\ \ \ \textcolor{keywordflow}{if}\ (value\_str\ ==\ \textcolor{keyword}{nullptr})\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00120\ }
+\DoxyCodeLine{00121\ \ \ \textcolor{comment}{//\ Sets\ *value\ to\ the\ value\ of\ the\ flag.}}
+\DoxyCodeLine{00122\ \ \ *value\ =\ value\_str;}
+\DoxyCodeLine{00123\ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{true};}
+\DoxyCodeLine{00124\ \}}
+\DoxyCodeLine{00125\ }
+\DoxyCodeLine{00126\ \textcolor{keyword}{static}\ \textcolor{keywordtype}{bool}\ ParseGoogleMockIntFlag(\textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ str,\ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ flag,}
+\DoxyCodeLine{00127\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ int32\_t*\ value)\ \{}
+\DoxyCodeLine{00128\ \ \ \textcolor{comment}{//\ Gets\ the\ value\ of\ the\ flag\ as\ a\ string.}}
+\DoxyCodeLine{00129\ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ \textcolor{keyword}{const}\ value\_str\ =\ ParseGoogleMockFlagValue(str,\ flag,\ \textcolor{keyword}{true});}
+\DoxyCodeLine{00130\ }
+\DoxyCodeLine{00131\ \ \ \textcolor{comment}{//\ Aborts\ if\ the\ parsing\ failed.}}
+\DoxyCodeLine{00132\ \ \ \textcolor{keywordflow}{if}\ (value\_str\ ==\ \textcolor{keyword}{nullptr})\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{false};}
+\DoxyCodeLine{00133\ }
+\DoxyCodeLine{00134\ \ \ \textcolor{comment}{//\ Sets\ *value\ to\ the\ value\ of\ the\ flag.}}
+\DoxyCodeLine{00135\ \ \ \textcolor{keywordflow}{return}\ ParseInt32(Message()\ <<\ \textcolor{stringliteral}{"{}The\ value\ of\ flag\ -\/-\/"{}}\ <<\ flag,}
+\DoxyCodeLine{00136\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ value\_str,\ value);}
+\DoxyCodeLine{00137\ \}}
+\DoxyCodeLine{00138\ }
+\DoxyCodeLine{00139\ \textcolor{comment}{//\ The\ internal\ implementation\ of\ InitGoogleMock().}}
+\DoxyCodeLine{00140\ \textcolor{comment}{//}}
+\DoxyCodeLine{00141\ \textcolor{comment}{//\ The\ type\ parameter\ CharType\ can\ be\ instantiated\ to\ either\ char\ or}}
+\DoxyCodeLine{00142\ \textcolor{comment}{//\ wchar\_t.}}
+\DoxyCodeLine{00143\ \textcolor{keyword}{template}\ <\textcolor{keyword}{typename}\ CharType>}
+\DoxyCodeLine{00144\ \textcolor{keywordtype}{void}\ InitGoogleMockImpl(\textcolor{keywordtype}{int}*\ argc,\ CharType**\ argv)\ \{}
+\DoxyCodeLine{00145\ \ \ \textcolor{comment}{//\ Makes\ sure\ Google\ Test\ is\ initialized.\ \ InitGoogleTest()\ is}}
+\DoxyCodeLine{00146\ \ \ \textcolor{comment}{//\ idempotent,\ so\ it's\ fine\ if\ the\ user\ has\ already\ called\ it.}}
+\DoxyCodeLine{00147\ \ \ InitGoogleTest(argc,\ argv);}
+\DoxyCodeLine{00148\ \ \ \textcolor{keywordflow}{if}\ (*argc\ <=\ 0)\ \textcolor{keywordflow}{return};}
+\DoxyCodeLine{00149\ }
+\DoxyCodeLine{00150\ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ i\ =\ 1;\ i\ !=\ *argc;\ i++)\ \{}
+\DoxyCodeLine{00151\ \ \ \ \ \textcolor{keyword}{const}\ std::string\ arg\_string\ =\ StreamableToString(argv[i]);}
+\DoxyCodeLine{00152\ \ \ \ \ \textcolor{keyword}{const}\ \textcolor{keywordtype}{char}*\ \textcolor{keyword}{const}\ arg\ =\ arg\_string.c\_str();}
+\DoxyCodeLine{00153\ }
+\DoxyCodeLine{00154\ \ \ \ \ \textcolor{comment}{//\ Do\ we\ see\ a\ Google\ Mock\ flag?}}
+\DoxyCodeLine{00155\ \ \ \ \ \textcolor{keywordflow}{if}\ (ParseGoogleMockBoolFlag(arg,\ \textcolor{stringliteral}{"{}catch\_leaked\_mocks"{}},}
+\DoxyCodeLine{00156\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \&GMOCK\_FLAG(catch\_leaked\_mocks))\ ||}
+\DoxyCodeLine{00157\ \ \ \ \ \ \ \ \ ParseGoogleMockStringFlag(arg,\ \textcolor{stringliteral}{"{}verbose"{}},\ \&GMOCK\_FLAG(verbose))\ ||}
+\DoxyCodeLine{00158\ \ \ \ \ \ \ \ \ ParseGoogleMockIntFlag(arg,\ \textcolor{stringliteral}{"{}default\_mock\_behavior"{}},}
+\DoxyCodeLine{00159\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \&GMOCK\_FLAG(default\_mock\_behavior)))\ \{}
+\DoxyCodeLine{00160\ \ \ \ \ \ \ \textcolor{comment}{//\ Yes.\ \ Shift\ the\ remainder\ of\ the\ argv\ list\ left\ by\ one.\ \ Note}}
+\DoxyCodeLine{00161\ \ \ \ \ \ \ \textcolor{comment}{//\ that\ argv\ has\ (*argc\ +\ 1)\ elements,\ the\ last\ one\ always\ being}}
+\DoxyCodeLine{00162\ \ \ \ \ \ \ \textcolor{comment}{//\ NULL.\ \ The\ following\ loop\ moves\ the\ trailing\ NULL\ element\ as}}
+\DoxyCodeLine{00163\ \ \ \ \ \ \ \textcolor{comment}{//\ well.}}
+\DoxyCodeLine{00164\ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ j\ =\ i;\ j\ !=\ *argc;\ j++)\ \{}
+\DoxyCodeLine{00165\ \ \ \ \ \ \ \ \ argv[j]\ =\ argv[j\ +\ 1];}
+\DoxyCodeLine{00166\ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00167\ }
+\DoxyCodeLine{00168\ \ \ \ \ \ \ \textcolor{comment}{//\ Decrements\ the\ argument\ count.}}
+\DoxyCodeLine{00169\ \ \ \ \ \ \ (*argc)-\/-\/;}
+\DoxyCodeLine{00170\ }
+\DoxyCodeLine{00171\ \ \ \ \ \ \ \textcolor{comment}{//\ We\ also\ need\ to\ decrement\ the\ iterator\ as\ we\ just\ removed}}
+\DoxyCodeLine{00172\ \ \ \ \ \ \ \textcolor{comment}{//\ an\ element.}}
+\DoxyCodeLine{00173\ \ \ \ \ \ \ i-\/-\/;}
+\DoxyCodeLine{00174\ \ \ \ \ \}}
+\DoxyCodeLine{00175\ \ \ \}}
+\DoxyCodeLine{00176\ \}}
+\DoxyCodeLine{00177\ }
+\DoxyCodeLine{00178\ \}\ \ \textcolor{comment}{//\ namespace\ internal}}
+\DoxyCodeLine{00179\ }
+\DoxyCodeLine{00180\ \textcolor{comment}{//\ Initializes\ Google\ Mock.\ \ This\ must\ be\ called\ before\ running\ the}}
+\DoxyCodeLine{00181\ \textcolor{comment}{//\ tests.\ \ In\ particular,\ it\ parses\ a\ command\ line\ for\ the\ flags\ that}}
+\DoxyCodeLine{00182\ \textcolor{comment}{//\ Google\ Mock\ recognizes.\ \ Whenever\ a\ Google\ Mock\ flag\ is\ seen,\ it\ is}}
+\DoxyCodeLine{00183\ \textcolor{comment}{//\ removed\ from\ argv,\ and\ *argc\ is\ decremented.}}
+\DoxyCodeLine{00184\ \textcolor{comment}{//}}
+\DoxyCodeLine{00185\ \textcolor{comment}{//\ No\ value\ is\ returned.\ \ Instead,\ the\ Google\ Mock\ flag\ variables\ are}}
+\DoxyCodeLine{00186\ \textcolor{comment}{//\ updated.}}
+\DoxyCodeLine{00187\ \textcolor{comment}{//}}
+\DoxyCodeLine{00188\ \textcolor{comment}{//\ Since\ Google\ Test\ is\ needed\ for\ Google\ Mock\ to\ work,\ this\ function}}
+\DoxyCodeLine{00189\ \textcolor{comment}{//\ also\ initializes\ Google\ Test\ and\ parses\ its\ flags,\ if\ that\ hasn't}}
+\DoxyCodeLine{00190\ \textcolor{comment}{//\ been\ done.}}
+\DoxyCodeLine{00191\ GTEST\_API\_\ \textcolor{keywordtype}{void}\ InitGoogleMock(\textcolor{keywordtype}{int}*\ argc,\ \textcolor{keywordtype}{char}**\ argv)\ \{}
+\DoxyCodeLine{00192\ \ \ internal::InitGoogleMockImpl(argc,\ argv);}
+\DoxyCodeLine{00193\ \}}
+\DoxyCodeLine{00194\ }
+\DoxyCodeLine{00195\ \textcolor{comment}{//\ This\ overloaded\ version\ can\ be\ used\ in\ Windows\ programs\ compiled\ in}}
+\DoxyCodeLine{00196\ \textcolor{comment}{//\ UNICODE\ mode.}}
+\DoxyCodeLine{00197\ GTEST\_API\_\ \textcolor{keywordtype}{void}\ InitGoogleMock(\textcolor{keywordtype}{int}*\ argc,\ \textcolor{keywordtype}{wchar\_t}**\ argv)\ \{}
+\DoxyCodeLine{00198\ \ \ internal::InitGoogleMockImpl(argc,\ argv);}
+\DoxyCodeLine{00199\ \}}
+\DoxyCodeLine{00200\ }
+\DoxyCodeLine{00201\ \textcolor{comment}{//\ This\ overloaded\ version\ can\ be\ used\ on\ Arduino/embedded\ platforms\ where}}
+\DoxyCodeLine{00202\ \textcolor{comment}{//\ there\ is\ no\ argc/argv.}}
+\DoxyCodeLine{00203\ GTEST\_API\_\ \textcolor{keywordtype}{void}\ InitGoogleMock()\ \{}
+\DoxyCodeLine{00204\ \ \ \textcolor{comment}{//\ Since\ Arduino\ doesn't\ have\ a\ command\ line,\ fake\ out\ the\ argc/argv\ arguments}}
+\DoxyCodeLine{00205\ \ \ \textcolor{keywordtype}{int}\ argc\ =\ 1;}
+\DoxyCodeLine{00206\ \ \ \textcolor{keyword}{const}\ \textcolor{keyword}{auto}\ arg0\ =\ \textcolor{stringliteral}{"{}dummy"{}};}
+\DoxyCodeLine{00207\ \ \ \textcolor{keywordtype}{char}*\ argv0\ =\ \textcolor{keyword}{const\_cast<}\textcolor{keywordtype}{char}*\textcolor{keyword}{>}(arg0);}
+\DoxyCodeLine{00208\ \ \ \textcolor{keywordtype}{char}**\ argv\ =\ \&argv0;}
+\DoxyCodeLine{00209\ }
+\DoxyCodeLine{00210\ \ \ internal::InitGoogleMockImpl(\&argc,\ argv);}
+\DoxyCodeLine{00211\ \}}
+\DoxyCodeLine{00212\ }
+\DoxyCodeLine{00213\ \}\ \ \textcolor{comment}{//\ namespace\ testing}}
+
+\end{DoxyCode}
